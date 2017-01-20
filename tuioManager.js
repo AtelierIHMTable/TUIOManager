@@ -127,7 +127,7 @@ var socketData = null;
 
 // TEST ===================================================
 
-/*socketData = {
+/*socketData = {"
         type: "touch", //tag
         id: "12345",
         tagId: "",

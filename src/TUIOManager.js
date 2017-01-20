@@ -38,16 +38,15 @@ class TUIOManager {
    * @param {string} socketIOUrl - Socket IO Server's url. Default : 'http://localhost:9000/'
    */
   start(socketIOUrl = 'http://localhost:9000/') {
-    console.log(this.test);
     const socketIOClient = io(socketIOUrl);
     socketIOClient.on(CREATE_SOCKETIO_ACTION, (data) => {
-      console.log('CREATE_SOCKETIO_ACTION: ', data);
+      this.handleCreate(data);
     });
     socketIOClient.on(UPDATE_SOCKETIO_ACTION, (data) => {
-      console.log('UPDATE_SOCKETIO_ACTION:', data);
+      this.handleUpdate(data);
     });
     socketIOClient.on(DELETE_SOCKETIO_ACTION, (data) => {
-      console.log('DELETE_SOCKETIO_ACTION:', data);
+      this.handleDelete(data);
     });
   }
 
@@ -97,6 +96,33 @@ class TUIOManager {
           this._tags[socketData.id].moveTo(socketData.x, socketData.y);
           this._tags[socketData.id].rotate(socketData.angle);
           console.log('update tag :', this._tags[socketData.id]);
+        }
+        break;
+      }
+      default:
+        break;
+    }
+  }
+
+  /**
+   * Handle DELETE Action from socket.
+   *
+   * @method handleDelete
+   * @param {JSON} socketData - 'Delete' data from TUIOClient.
+   */
+  handleDelete(socketData) {
+    switch (socketData.type) {
+      case TOUCH_SOCKETIO_TYPE: {
+        if (typeof (this._touches[socketData.id]) !== 'undefined') {
+          delete this._touches[socketData.id];
+          console.log('delete touch :', socketData.id);
+        }
+        break;
+      }
+      case TAG_SOCKETIO_TYPE: {
+        if (typeof (this._tags[socketData.id]) !== 'undefined') {
+          delete this._tags[socketData.id];
+          console.log('delete tag :', socketData.id);
         }
         break;
       }

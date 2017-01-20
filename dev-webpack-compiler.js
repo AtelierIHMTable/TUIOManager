@@ -20,24 +20,10 @@ compiler.run((err, stats) => {
     return;
   }
 
-  const jsonStats = stats.toJson();
   console.info('Webpack compile completed.');
   console.log(stats.toString({
     chunks: false,
     colors: true,
   }));
-
-  if (jsonStats.errors.length > 0) {
-    console.error('Webpack compiler encountered errors.');
-    console.error(jsonStats.errors.join('\n'));
-    return;
-  } else if (jsonStats.warnings.length > 0) {
-    console.warn('Webpack compiler encountered warnings.');
-    console.warn(jsonStats.warnings.join('\n'));
-  } else {
-    console.info('No errors or warnings encountered.');
-
-    console.info(`Webpack Compiler : Compilation duration -> ${stats.endTime - stats.startTime} ms.`);
-  }
-  return;
+  console.info(`Webpack Compiler : Compilation duration -> ${stats.endTime - stats.startTime} ms.`);
 });
