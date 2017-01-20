@@ -37,14 +37,14 @@ class TUIOObject {
    *
    * @returns {string|number} TUIOObject's abscissa.
    */
-  get x() { return this._x };
+  get x() { return this._x; }
 
   /**
    * TUIOObject's ordinate getter.
    *
    * @returns {string|number} TUIOObject's ordinate.
    */
-  get y() { return this._y };
+  get y() { return this._y; }
 
   /**
    * Update TUIOObject's position.
