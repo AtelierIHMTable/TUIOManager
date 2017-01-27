@@ -6,4 +6,8 @@ const puts = function (error, stdout, stderr) {
   }
 }
 
-exec('npm link', puts);
+const isWin = /^win/.test(process.platform);
+
+const sudo = isWin? '' : 'sudo ';
+
+exec(sudo + 'npm link', puts);
