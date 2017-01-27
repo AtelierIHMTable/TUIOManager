@@ -2,7 +2,7 @@
   "name": "tuiomanager",
   "version": "1.0.0",
   "scripts": {
-    "devMode": "sudo node initTUIOManagerDevMode.js",
+    "devMode": "node initTUIOManagerDevMode.js",
     "build": "node dev-webpack-compiler.js",
     "dist": "node prod-webpack-compiler.js"
   },
