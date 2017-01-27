@@ -45,13 +45,17 @@ class TUIOTag extends TUIOObject {
   get angle() { return this._angle; }
 
   /**
-   * Update TUIOTag's angle.
+   * Update TUIOTag.
    *
-   * @method rotate
+   * @method update
+   * @param {string/number} x - New TUIOTag's abscissa.
+   * @param {string/number} y - New TUIOTag's ordinate.
    * @param {string/number} angle - New TUIOTag's angle.
    */
-  rotate(angle) {
+  update(x, y, angle) {
+    super.update(x, y);
     this._angle = angle;
+    this.notifyWidgets('onTagUpdate');
   }
 }
 

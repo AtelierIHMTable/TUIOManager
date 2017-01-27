@@ -6,6 +6,7 @@ const combineLoaders = require('webpack-combine-loaders/combineLoaders');
 
 const includePaths = [
   fs.realpathSync(`${__dirname}/src`),
+  fs.realpathSync(`${__dirname}/core`),
 ];
 
 const resolvePaths = [

@@ -15,7 +15,8 @@
   "main": "dist/index.js",
   "dependencies": {
     "jquery": "3.1.1",
-    "socket.io-client": "1.7.2"
+    "socket.io-client": "1.7.2",
+    "uuid": "3.0.1"
   },
   "devDependencies": {
     "babel-cli": "6.18.0",

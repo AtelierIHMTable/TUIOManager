@@ -3,7 +3,7 @@
  */
 
 // Import TUIOManager
-import TUIOManager from './TUIOManager';
+import TUIOManager from '../core/TUIOManager';
 
 const tuioManager = new TUIOManager();
 
