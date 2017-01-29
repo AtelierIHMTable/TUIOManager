@@ -10,8 +10,6 @@
     "type": "git",
     "url": "https://github.com/AtelierIHMTable/TUIOManager.git"
   },
-  "private": true,
-  "license": "AtelierIHM",
   "main": "dist/index.js",
   "dependencies": {
     "jquery": "3.1.1",
