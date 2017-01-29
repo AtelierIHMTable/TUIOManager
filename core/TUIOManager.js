@@ -135,7 +135,7 @@ class TUIOManager {
         break;
       }
       case TAG_SOCKETIO_TYPE: {
-        this._tags[socketData.id] = new TUIOTag(socketData.id, socketData.tagId, socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT, socketData.angle);
+        this._tags[socketData.id] = new TUIOTag(socketData.id, socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT, socketData.angle);
         this.notifyWidgets('onTagCreation', this._tags[socketData.id]);
         this._tags[socketData.id].update(socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT, socketData.angle);
         break;

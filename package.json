@@ -1,6 +1,6 @@
 {
   "name": "tuiomanager",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "scripts": {
     "devMode": "node initTUIOManagerDevMode.js",
     "build": "node dev-webpack-compiler.js",
@@ -10,8 +10,6 @@
     "type": "git",
     "url": "https://github.com/AtelierIHMTable/TUIOManager.git"
   },
-  "private": true,
-  "license": "AtelierIHM",
   "main": "dist/index.js",
   "dependencies": {
     "jquery": "3.1.1",
