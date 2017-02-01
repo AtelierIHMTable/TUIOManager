@@ -68,10 +68,10 @@ class TUIOManager {
    */
   addWidget(widget) {
     if (typeof (this._widgets[widget.id]) === 'undefined') {
-      this._widgets = {
-        ...this._widgets,
+      const toAdd = {
         [widget.id]: widget,
       };
+      this._widgets = Object.assign({}, this._widgets, toAdd);
     }
   }
 
