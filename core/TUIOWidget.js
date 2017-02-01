@@ -105,10 +105,10 @@ class TUIOWidget {
    */
   onTouchCreation(tuioTouch) {
     if (this.isTouched(tuioTouch.x, tuioTouch.y)) {
-      this._touches = {
-        ...this._touches,
+      const toAdd = {
         [tuioTouch.id]: tuioTouch,
       };
+      this._touches = Object.assign({}, this._touches, toAdd);
       this._touches[tuioTouch.id].addWidget(this);
     }
   }
@@ -121,10 +121,10 @@ class TUIOWidget {
    */
   onTagCreation(tuioTag) {
     if (this.isTouched(tuioTag.x, tuioTag.y)) {
-      this._tags = {
-        ...this._tags,
+      const toAdd = {
         [tuioTag.id]: tuioTag,
       };
+      this._tags = Object.assign({}, this._tags, toAdd);
       this._tags[tuioTag.id].addWidget(this);
     }
   }
