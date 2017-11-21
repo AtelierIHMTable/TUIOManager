@@ -132,6 +132,7 @@ class ElementWidget extends TUIOWidget {
           x: tuioTag.x,
           y: tuioTag.y,
           angle: tuioTag.angle,
+          scale: 1,
         },
       };
       this._lastTagsValues.angle = 0;
@@ -188,15 +189,18 @@ class ElementWidget extends TUIOWidget {
         console.log('Recognized TagZoom');
         console.log('angle = ' + tuioTag.angle);
         if (tuioTag.angle > this._lastTagsValues.angle) {
-          console.log('Gettin bigger');
+          var newscale = this._lastTagsValues.scale * 1.5;
+          console.log('Gettin bigger, new scale is ' + newscale );
+
           this._lastTagsValues.angle = tuioTag.angle;
-          this._domElem.css('transform', 'scale(2)');
+          this._domElem.css('transform', `scale(${newscale})`);
           console.log(`New angle  = , ${this._lastTagsValues.angle}`);
         }
         else if (tuioTag.angle < this._lastTagsValues.angle) {
-          console.log('Gettin smaller');
+          var newscale = this._lastTagsValues.scale * 0.75;
+          console.log('Gettin smaller, new scale = ' + newscale);
           this._lastTagsValues.angle = tuioTag.angle;
-          this._domElem.css('transform', `scale(0.5)`);
+          this._domElem.css('transform', `scale(${newscale})`);
 
           console.log(`New angle  = , ${this._lastTagsValues.angle}`);
         }
