@@ -85,7 +85,6 @@ class ElementWidget extends TUIOWidget {
    */
   onTouchUpdate(tuioTouch) {
     if (typeof (this._lastTouchesValues[tuioTouch.id]) !== 'undefined') {
-      // console.log(this.touches);
       const touchesWidgets = [];
       Object.keys(this.touches).forEach(function (key) {
         console.log(key, this.touches[key]);
