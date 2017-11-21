@@ -6,6 +6,7 @@
 
 import TUIOWidget from '../../core/TUIOWidget';
 import { WINDOW_WIDTH, WINDOW_HEIGHT } from '../../core/constants';
+import { radToDeg } from '../../core/helpers';
 
 /**
  * Abstract class to manage ImageElementWidget.
@@ -106,6 +107,68 @@ class ElementWidget extends TUIOWidget {
         [tuioTouch.id]: {
           x: tuioTouch.x,
           y: tuioTouch.y,
+        },
+      };
+    }
+  }
+
+    /**
+   * Call after a TUIOTag creation.
+   *
+   * @method onTagCreation
+   * @param {TUIOTag} tuioTag - A TUIOTag instance.
+   */
+  onTagCreation(tuioTag) {
+    super.onTagCreation(tuioTag);
+    if (this.isTouched(tuioTag.x, tuioTag.y)) {
+      this._lastTagsValues = {
+        ...this._lastTagsValues,
+        [tuioTag.id]: {
+          x: tuioTag.x,
+          y: tuioTag.y,
+        },
+      };
+    }
+  }
+
+  /**
+   * Call after a TUIOTag update.
+   *
+   * @method onTagUpdate
+   * @param {TUIOTag} tuioTag - A TUIOTag instance.
+   */
+  onTagUpdate(tuioTag) {
+    console.log(tuioTag);
+    if (typeof (this._lastTagsValues[tuioTag.id]) !== 'undefined' && tuioTag._id == "B3") {
+      const lastTagValue = this._lastTagsValues[tuioTag.id];
+      const diffX = tuioTag.x - lastTagValue.x;
+      const diffY = tuioTag.y - lastTagValue.y;
+
+      let newX = this.x + diffX;
+      let newY = this.y + diffY;
+
+      if (newX < 0) {
+        newX = 0;
+      }
+
+      if (newX > (WINDOW_WIDTH - this.width)) {
+        newX = WINDOW_WIDTH - this.width;
+      }
+
+      if (newY < 0) {
+        newY = 0;
+      }
+
+      if (newY > (WINDOW_HEIGHT - this.height)) {
+        newY = WINDOW_HEIGHT - this.height;
+      }
+
+      this.moveTo(newX, newY, radToDeg(tuioTag.angle));
+      this._lastTagsValues = {
+        ...this._lastTagsValues,
+        [tuioTag.id]: {
+          x: tuioTag.x,
+          y: tuioTag.y,
         },
       };
     }
