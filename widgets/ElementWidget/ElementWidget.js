@@ -184,10 +184,12 @@ class ElementWidget extends TUIOWidget {
         };
       }
       else if (tuioTag.id == this.idTagZoom  ) {
+        console.log('Recognized TagZoom');
+        console.log('angle = ' + tuioTag.angle);
         if (tuioTag.angle > this._lastTagsValues.angle) {
           console.log('Gettin bigger');
           this._lastTagsValues.angle = tuioTag.angle;
-          this._domElem.css('transform', `scale(2)`);
+          this._domElem.css('transform', 'scale(2)');
           console.log(`New angle  = , ${this._lastTagsValues.angle}`);
         }
         else if (tuioTag.angle < this._lastTagsValues.angle) {
