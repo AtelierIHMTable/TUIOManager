@@ -46,8 +46,9 @@ class ElementWidget extends TUIOWidget {
      */
   onTouchCreation(tuioTouch) {
     super.onTouchCreation(tuioTouch);
-    if (this.isTouched(tuioTouch.x, tuioTouch.y)) {
-      //ElementWidget.isAlreadyTouched = true;
+	console.log(ElementWidget.isAlreadyTouched);
+    if (this.isTouched(tuioTouch.x, tuioTouch.y) && !ElementWidget.isAlreadyTouched) {
+      ElementWidget.isAlreadyTouched = true;
       this._lastTouchesValues = {
         ...this._lastTouchesValues,
         [tuioTouch.id]: {
@@ -56,6 +57,9 @@ class ElementWidget extends TUIOWidget {
         },
       };
       this._lastTouchesValues.pinchDistance = 0;
+	  if (this._lastTouchesValues.scale == null) {
+        this._lastTouchesValues.scale = 1;
+      }
     }
   }
 
@@ -86,9 +90,10 @@ class ElementWidget extends TUIOWidget {
   onTouchUpdate(tuioTouch) {
     if (typeof (this._lastTouchesValues[tuioTouch.id]) !== 'undefined') {
       const touchesWidgets = [];
+	  const currentTouches = this.touches;
       Object.keys(this.touches).forEach(function (key) {
-        console.log(key, this.touches[key]);
-        touchesWidgets.push(this.touches[key]);
+        // console.log(key, currentTouches[key]);
+        touchesWidgets.push(currentTouches[key]);
       });
 
       if (touchesWidgets.length === 1) {
@@ -127,10 +132,15 @@ class ElementWidget extends TUIOWidget {
         const a = touchesWidgets[0].x - touchesWidgets[1].x;
         const b = touchesWidgets[0].y - touchesWidgets[1].y;
         const c = Math.sqrt((a * a) + (b * b));
+		let newscale;
         if (c > this._lastTouchesValues.pinchDistance) {
-          console.log('ZOOM');
+          newscale = this._lastTouchesValues.scale * 1.1; // new scale is 1.5 times the old scale
+          this._domElem.css('transform', `scale(${newscale})`); // We set the dom element scale
+          this._lastTouchesValues.scale = newscale; //  We save the scale
         } else {
-          console.log('DEZOOM');
+          newscale = this._lastTouchesValues.scale * 0.9; // new scale is 1.5 times the old scale
+          this._domElem.css('transform', `scale(${newscale})`); // We set the dom element scale
+          this._lastTouchesValues.scale = newscale; //  We save the scale
         }
         this._lastTouchesValues.pinchDistance = c;
       }
