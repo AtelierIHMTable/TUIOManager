@@ -132,10 +132,11 @@ class ElementWidget extends TUIOWidget {
           x: tuioTag.x,
           y: tuioTag.y,
           angle: tuioTag.angle,
-          scale: 1,
+
         },
       };
       this._lastTagsValues.angle = 0;
+      this._lastTagsValues.scale = 1;
     }
   }
 
