@@ -47,11 +47,10 @@ import ElementWidget from '../ElementWidget';
     onTagUpdate(tuioTag) {
       super.onTagUpdate(tuioTag);
       if (typeof (this._lastTagsValues[tuioTag.id]) !== 'undefined') {
-        if (tuioTag.id === this.idTagPlayPause) {
-          this._domElem.play();
-        } else if (tuioTag.id === this.idTagVolume) {
-          this._domElem.prop('volume', 0.5);
-          // $("video").prop("volume", 0.5);
+        if (String.tuioTag.id == this.idTagPlayPause) {
+          this._domElem[0].play();
+        // } else if (tuioTag.id === this.idTagVolume) {
+        //   this._domElem.prop('volume', 0.5);
         }
       }
     }

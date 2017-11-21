@@ -83,6 +83,7 @@ class ElementWidget extends TUIOWidget {
    */
   onTouchUpdate(tuioTouch) {
     if (typeof (this._lastTouchesValues[tuioTouch.id]) !== 'undefined') {
+      console.log(tuioTouch);
       const lastTouchValue = this._lastTouchesValues[tuioTouch.id];
       const diffX = tuioTouch.x - lastTouchValue.x;
       const diffY = tuioTouch.y - lastTouchValue.y;
@@ -165,7 +166,7 @@ class ElementWidget extends TUIOWidget {
       if (tuioTag.id === this.idTagDelete) {
         this._domElem.remove();
         this.deleteWidget();
-      } else {
+      } else if (tuioTag.id === this.idTagMove) {
         const lastTagValue = this._lastTagsValues[tuioTag.id];
         const diffX = tuioTag.x - lastTagValue.x;
         const diffY = tuioTag.y - lastTagValue.y;
