@@ -191,6 +191,7 @@ class ElementWidget extends TUIOWidget {
         console.log('angle = ' + tuioTag.angle);
         if (tuioTag.angle > this._lastTagsValues.angle) {
           var newscale = this._lastTagsValues.scale * 1.5;
+          console.log("this._lastTagsValues.scale = " + this._lastTagsValues.scale);
           console.log('Gettin bigger, new scale is ' + newscale );
 
           this._lastTagsValues.angle = tuioTag.angle;
@@ -199,6 +200,7 @@ class ElementWidget extends TUIOWidget {
         }
         else if (tuioTag.angle < this._lastTagsValues.angle) {
           var newscale = this._lastTagsValues.scale * 0.75;
+          console.log("this._lastTagsValues.scale = " + this._lastTagsValues.scale);          
           console.log('Gettin smaller, new scale = ' + newscale);
           this._lastTagsValues.angle = tuioTag.angle;
           this._domElem.css('transform', `scale(${newscale})`);
