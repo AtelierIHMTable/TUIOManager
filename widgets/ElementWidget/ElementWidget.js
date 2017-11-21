@@ -5,6 +5,7 @@
 
 
 import TUIOWidget from '../../core/TUIOWidget';
+import TUIOManager from '../../core/TUIOManager';
 import { WINDOW_WIDTH, WINDOW_HEIGHT } from '../../core/constants';
 import { radToDeg } from '../../core/helpers';
 
@@ -45,7 +46,7 @@ class ElementWidget extends TUIOWidget {
      */
   onTouchCreation(tuioTouch) {
     super.onTouchCreation(tuioTouch);
-    if (this.isTouched(tuioTouch.x, tuioTouch.y) && !ElementWidget.isAlreadyTouched) {
+    if (this.isTouched(tuioTouch.x, tuioTouch.y)) {
       ElementWidget.isAlreadyTouched = true;
       this._lastTouchesValues = {
         ...this._lastTouchesValues,
@@ -83,7 +84,10 @@ class ElementWidget extends TUIOWidget {
    */
   onTouchUpdate(tuioTouch) {
     if (typeof (this._lastTouchesValues[tuioTouch.id]) !== 'undefined') {
-      console.log(tuioTouch);
+      const touches = TUIOManager.getInstance().touches;
+      for (let i = 0; i < touches.length; ++i) {
+        console.log(touches[i]);
+      }
       const lastTouchValue = this._lastTouchesValues[tuioTouch.id];
       const diffX = tuioTouch.x - lastTouchValue.x;
       const diffY = tuioTouch.y - lastTouchValue.y;
