@@ -45,7 +45,8 @@ class ElementWidget extends TUIOWidget {
      */
   onTouchCreation(tuioTouch) {
     super.onTouchCreation(tuioTouch);
-    if (this.isTouched(tuioTouch.x, tuioTouch.y)) {
+    if (this.isTouched(tuioTouch.x, tuioTouch.y) && !ElementWidget.isAlreadyTouched) {
+      ElementWidget.isAlreadyTouched = true;
       this._lastTouchesValues = {
         ...this._lastTouchesValues,
         [tuioTouch.id]: {
@@ -116,6 +117,17 @@ class ElementWidget extends TUIOWidget {
     }
   }
 
+  /**
+   * Call after a TUIOTouch deletion.
+   *
+   * @method onTouchDeletion
+   * @param {number/string} tuioTouchId - TUIOTouch's id to delete.
+   */
+  onTouchDeletion(tuioTouchId) {
+    super.onTouchDeletion(tuioTouchId);
+    ElementWidget.isAlreadyTouched = false;
+  }
+
     /**
    * Call after a TUIOTag creation.
    *
@@ -125,7 +137,7 @@ class ElementWidget extends TUIOWidget {
   onTagCreation(tuioTag) {
     super.onTagCreation(tuioTag);
     console.log(tuioTag);
-    if (this.isTouched(tuioTag.x, tuioTag.y)) {
+    if (this.isTouched(tuioTag.x, tuioTag.y) && !ElementWidget.isAlreadyTouched) {
       this._lastTagsValues = {
         ...this._lastTagsValues,
         [tuioTag.id]: {
@@ -149,10 +161,10 @@ class ElementWidget extends TUIOWidget {
     console.log(this._lastTagsValues);
     if (typeof (this._lastTagsValues[tuioTag.id]) !== 'undefined') {
 
-      if(tuioTag.id == this.idTagDelete) {
+      if (tuioTag.id === this.idTagDelete) {
         this._domElem.remove();
-      }
-      else if (tuioTag.id == this.idTagMove){
+        this.deleteWidget();
+      } else {
         const lastTagValue = this._lastTagsValues[tuioTag.id];
         const diffX = tuioTag.x - lastTagValue.x;
         const diffY = tuioTag.y - lastTagValue.y;
@@ -207,7 +219,21 @@ class ElementWidget extends TUIOWidget {
       } //  else if
 
     }
+
+  }
+
+  /**
+   * Call after a TUIOTag deletion.
+   *
+   * @method onTagDeletion
+   * @param {number/string} tuioTagId - TUIOTag's id to delete.
+   */
+  onTagDeletion(tuioTagId) {
+    super.onTagDeletion(tuioTagId);
+    ElementWidget.isAlreadyTouched = false;
+    console.log('Tag Deleted');
   }
 }
 
+ElementWidget.isAlreadyTouched = true;
 export default ElementWidget;
