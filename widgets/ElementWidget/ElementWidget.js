@@ -23,7 +23,7 @@ class ElementWidget extends TUIOWidget {
     super(x, y, width, height);
     this.idTagMove = tagMove;
     this.idTagDelete = tagDelete;
-    this.idtagZoom = tagZoom;
+    this.idTagZoom = tagZoom;
     this.idTagInfo = tagInfo;
     this._lastTouchesValues = {};
     this._lastTagsValues = {};
@@ -150,7 +150,7 @@ class ElementWidget extends TUIOWidget {
       if(tuioTag.id == this.idTagDelete) {
         this._domElem.remove();
       }
-      else {
+      else if (tuioTag.id == this.idTagMove){
         const lastTagValue = this._lastTagsValues[tuioTag.id];
         const diffX = tuioTag.x - lastTagValue.x;
         const diffY = tuioTag.y - lastTagValue.y;
@@ -183,22 +183,23 @@ class ElementWidget extends TUIOWidget {
           },
         };
       }
-    }
-    else if (typeof (this._lastTagsValues[tuioTag.id]) !== 'undefined' && tuioTag.id === '38') {
-      if (tuioTag.angle > this._lastTagsValues.angle) {
-        console.log('Gettin bigger');
-        this._lastTagsValues.angle = tuioTag.angle;
-        this._domElem.css('transform', `scale(2)`);
-        console.log(`New angle  = , ${this._lastTagsValues.angle}`);
-      }
-      else if (tuioTag.angle < this._lastTagsValues.angle) {
-        console.log('Gettin smaller');
-        this._lastTagsValues.angle = tuioTag.angle;
-        this._domElem.css('transform', `scale(0.5)`);
+      else if (tuioTag.id == this.idTagZoom  ) {
+        if (tuioTag.angle > this._lastTagsValues.angle) {
+          console.log('Gettin bigger');
+          this._lastTagsValues.angle = tuioTag.angle;
+          this._domElem.css('transform', `scale(2)`);
+          console.log(`New angle  = , ${this._lastTagsValues.angle}`);
+        }
+        else if (tuioTag.angle < this._lastTagsValues.angle) {
+          console.log('Gettin smaller');
+          this._lastTagsValues.angle = tuioTag.angle;
+          this._domElem.css('transform', `scale(0.5)`);
 
-        console.log(`New angle  = , ${this._lastTagsValues.angle}`);
-      }
-    } //  else if
+          console.log(`New angle  = , ${this._lastTagsValues.angle}`);
+        }
+      } //  else if
+
+    }
   }
 }
 
