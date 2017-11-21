@@ -144,10 +144,11 @@ class ElementWidget extends TUIOWidget {
           x: tuioTag.x,
           y: tuioTag.y,
           angle: tuioTag.angle,
-          scale: 1,
+
         },
       };
       this._lastTagsValues.angle = 0;
+      this._lastTagsValues.scale = 1;
     }
   }
 
@@ -202,19 +203,24 @@ class ElementWidget extends TUIOWidget {
         console.log('angle = ' + tuioTag.angle);
         if (tuioTag.angle > this._lastTagsValues.angle) {
           var newscale = this._lastTagsValues.scale * 1.5;
+          console.log("this._lastTagsValues.scale = " + this._lastTagsValues.scale);
           console.log('Gettin bigger, new scale is ' + newscale );
 
           this._lastTagsValues.angle = tuioTag.angle;
           this._domElem.css('transform', `scale(${newscale})`);
+          this._lastTagsValues.scale = newscale;
           console.log(`New angle  = , ${this._lastTagsValues.angle}`);
         }
         else if (tuioTag.angle < this._lastTagsValues.angle) {
           var newscale = this._lastTagsValues.scale * 0.75;
+          console.log("this._lastTagsValues.scale = " + this._lastTagsValues.scale);
           console.log('Gettin smaller, new scale = ' + newscale);
           this._lastTagsValues.angle = tuioTag.angle;
           this._domElem.css('transform', `scale(${newscale})`);
 
           console.log(`New angle  = , ${this._lastTagsValues.angle}`);
+          this._lastTagsValues.scale = newscale;
+          
         }
       } //  else if
 
