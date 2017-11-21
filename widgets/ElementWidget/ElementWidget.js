@@ -69,7 +69,7 @@ class ElementWidget extends TUIOWidget {
       this._domElem.css('transform', `rotate(${angle}deg)`);
     }
   }
-  
+
   /**
    * Call after a TUIOTouch update.
    *
@@ -126,6 +126,7 @@ class ElementWidget extends TUIOWidget {
         [tuioTag.id]: {
           x: tuioTag.x,
           y: tuioTag.y,
+          angle: tuioTag.angle,
         },
       };
     }
@@ -139,7 +140,7 @@ class ElementWidget extends TUIOWidget {
    */
   onTagUpdate(tuioTag) {
     console.log(tuioTag);
-    if (typeof (this._lastTagsValues[tuioTag.id]) !== 'undefined' && tuioTag._id == "B3") {
+    if (typeof (this._lastTagsValues[tuioTag.id]) !== 'undefined' && tuioTag._id === 'B3') {
       const lastTagValue = this._lastTagsValues[tuioTag.id];
       const diffX = tuioTag.x - lastTagValue.x;
       const diffY = tuioTag.y - lastTagValue.y;
@@ -171,7 +172,23 @@ class ElementWidget extends TUIOWidget {
           y: tuioTag.y,
         },
       };
-    }
+    }// if
+
+    else if (typeof (this._lastTagsValues[tuioTag.id]) !== 'undefined' && tuioTag._id === '38') {
+      if (tuioTag.angle > this._lastTagsValues.angle) {
+        console.log('Gettin bigger');
+        this._lastTagsValues.angle = tuioTag.angle;
+        this._domElem.css('transform', `scale(2)`);
+        console.log(`New angle  = , ${this._lastTagsValues.angle}`);
+      }
+      else if (tuioTag.angle < this._lastTagsValues.angle) {
+        console.log('Gettin smaller');
+        this._lastTagsValues.angle = tuioTag.angle;
+        this._domElem.css('transform', `scale(0.5)`);
+
+        console.log(`New angle  = , ${this._lastTagsValues.angle}`);
+      }
+    } //  else if
   }
 }
 
