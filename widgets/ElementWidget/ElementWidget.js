@@ -47,7 +47,7 @@ class ElementWidget extends TUIOWidget {
   onTouchCreation(tuioTouch) {
     super.onTouchCreation(tuioTouch);
     if (this.isTouched(tuioTouch.x, tuioTouch.y)) {
-      ElementWidget.isAlreadyTouched = true;
+      //ElementWidget.isAlreadyTouched = true;
       this._lastTouchesValues = {
         ...this._lastTouchesValues,
         [tuioTouch.id]: {
@@ -55,6 +55,7 @@ class ElementWidget extends TUIOWidget {
           y: tuioTouch.y,
         },
       };
+      this._lastTouchesValues.pinchDistance = 0;
     }
   }
 
@@ -84,41 +85,56 @@ class ElementWidget extends TUIOWidget {
    */
   onTouchUpdate(tuioTouch) {
     if (typeof (this._lastTouchesValues[tuioTouch.id]) !== 'undefined') {
-      const touches = TUIOManager.getInstance().touches;
-      for (let i = 0; i < touches.length; ++i) {
-        console.log(touches[i]);
+      // console.log(this.touches);
+      const touchesWidgets = [];
+      Object.keys(this.touches).forEach(function (key) {
+        console.log(key, this.touches[key]);
+        touchesWidgets.push(this.touches[key]);
+      });
+
+      if (touchesWidgets.length === 1) {
+        const lastTouchValue = this._lastTouchesValues[tuioTouch.id];
+        const diffX = tuioTouch.x - lastTouchValue.x;
+        const diffY = tuioTouch.y - lastTouchValue.y;
+
+        let newX = this.x + diffX;
+        let newY = this.y + diffY;
+
+        if (newX < 0) {
+          newX = 0;
+        }
+
+        if (newX > (WINDOW_WIDTH - this.width)) {
+          newX = WINDOW_WIDTH - this.width;
+        }
+
+        if (newY < 0) {
+          newY = 0;
+        }
+
+        if (newY > (WINDOW_HEIGHT - this.height)) {
+          newY = WINDOW_HEIGHT - this.height;
+        }
+
+        this.moveTo(newX, newY);
+        this._lastTouchesValues = {
+          ...this._lastTouchesValues,
+          [tuioTouch.id]: {
+            x: tuioTouch.x,
+            y: tuioTouch.y,
+          },
+        };
+      } else if (touchesWidgets.length === 2) {
+        const a = touchesWidgets[0].x - touchesWidgets[1].x;
+        const b = touchesWidgets[0].y - touchesWidgets[1].y;
+        const c = Math.sqrt((a * a) + (b * b));
+        if (c > this._lastTouchesValues.pinchDistance) {
+          console.log('ZOOM');
+        } else {
+          console.log('DEZOOM');
+        }
+        this._lastTouchesValues.pinchDistance = c;
       }
-      const lastTouchValue = this._lastTouchesValues[tuioTouch.id];
-      const diffX = tuioTouch.x - lastTouchValue.x;
-      const diffY = tuioTouch.y - lastTouchValue.y;
-
-      let newX = this.x + diffX;
-      let newY = this.y + diffY;
-
-      if (newX < 0) {
-        newX = 0;
-      }
-
-      if (newX > (WINDOW_WIDTH - this.width)) {
-        newX = WINDOW_WIDTH - this.width;
-      }
-
-      if (newY < 0) {
-        newY = 0;
-      }
-
-      if (newY > (WINDOW_HEIGHT - this.height)) {
-        newY = WINDOW_HEIGHT - this.height;
-      }
-
-      this.moveTo(newX, newY);
-      this._lastTouchesValues = {
-        ...this._lastTouchesValues,
-        [tuioTouch.id]: {
-          x: tuioTouch.x,
-          y: tuioTouch.y,
-        },
-      };
     }
   }
 
