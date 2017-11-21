@@ -153,7 +153,9 @@ class ElementWidget extends TUIOWidget {
         },
       };
       this._lastTagsValues.angle = 0;
-      this._lastTagsValues.scale = 1;
+      if(this._lastTagsValues.scale == null){
+        this._lastTagsValues.scale = 1;        
+      }
     }
   }
 
@@ -225,7 +227,7 @@ class ElementWidget extends TUIOWidget {
 
           console.log(`New angle  = , ${this._lastTagsValues.angle}`);
           this._lastTagsValues.scale = newscale;
-          
+
         }
       } //  else if
 
