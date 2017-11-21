@@ -134,6 +134,7 @@ class ElementWidget extends TUIOWidget {
           angle: tuioTag.angle,
         },
       };
+      this._lastTagsValues.angle = 0;
     }
   }
 
