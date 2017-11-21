@@ -24,8 +24,8 @@ import ElementWidget from '../ElementWidget';
      * @param {number} width - ImageElementWidget's width.
      * @param {number} height - ImageElementWidget's height.
      */
-    constructor(x, y, width, height, src) {
-      super(x, y, width, height);
+    constructor(x, y, width, height, src, tagMove, tagDelete, tagZoom, tagInfo) {
+      super(x, y, width, height, tagMove, tagDelete, tagZoom, tagInfo);
       this._domElem = $('<video>');
       this._domElem.attr('src', src);
       this._domElem.attr('controls', true);

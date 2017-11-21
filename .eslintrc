@@ -12,6 +12,7 @@
   },
   "rules": {
     "max-len": [1, 200],
-    "no-underscore-dangle": [2, { "allowAfterThis": true }]
+    "no-underscore-dangle": [2, { "allowAfterThis": true }],
+    "linebreak-style": [0, "windows"]
   }
 }
