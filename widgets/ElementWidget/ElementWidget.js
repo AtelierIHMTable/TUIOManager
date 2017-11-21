@@ -16,11 +16,15 @@ import { radToDeg } from '../../core/helpers';
  */
 class ElementWidget extends TUIOWidget {
 
-  constructor(x, y, width, height) {
+  constructor(x, y, width, height, tagMove, tagDelete, tagZoom, tagInfo) {
     if (new.target === ElementWidget) {
       throw new TypeError('ElementWidget is an abstract class. It cannot be instanciated');
     }
     super(x, y, width, height);
+    this.idTagMove = tagMove;
+    this.idTagDelete = tagDelete;
+    this.idtagZoom = tagZoom;
+    this.idTagInfo = tagInfo;
     this._lastTouchesValues = {};
     this._lastTagsValues = {};
   }// constructor
@@ -120,6 +124,7 @@ class ElementWidget extends TUIOWidget {
    */
   onTagCreation(tuioTag) {
     super.onTagCreation(tuioTag);
+    console.log(tuioTag);
     if (this.isTouched(tuioTag.x, tuioTag.y)) {
       this._lastTagsValues = {
         ...this._lastTagsValues,
@@ -139,41 +144,45 @@ class ElementWidget extends TUIOWidget {
    * @param {TUIOTag} tuioTag - A TUIOTag instance.
    */
   onTagUpdate(tuioTag) {
-    console.log(tuioTag);
-    if (typeof (this._lastTagsValues[tuioTag.id]) !== 'undefined' && tuioTag._id === 'B3') {
-      const lastTagValue = this._lastTagsValues[tuioTag.id];
-      const diffX = tuioTag.x - lastTagValue.x;
-      const diffY = tuioTag.y - lastTagValue.y;
-
-      let newX = this.x + diffX;
-      let newY = this.y + diffY;
-
-      if (newX < 0) {
-        newX = 0;
+    console.log(this._lastTagsValues);
+    if (typeof (this._lastTagsValues[tuioTag.id]) !== 'undefined') {
+      
+      if(tuioTag.id == this.idTagDelete) {
+        this._domElem.remove();
       }
-
-      if (newX > (WINDOW_WIDTH - this.width)) {
-        newX = WINDOW_WIDTH - this.width;
+      else {
+        const lastTagValue = this._lastTagsValues[tuioTag.id];
+        const diffX = tuioTag.x - lastTagValue.x;
+        const diffY = tuioTag.y - lastTagValue.y;
+  
+        let newX = this.x + diffX;
+        let newY = this.y + diffY;
+  
+        if (newX < 0) {
+          newX = 0;
+        }
+  
+        if (newX > (WINDOW_WIDTH - this.width)) {
+          newX = WINDOW_WIDTH - this.width;
+        }
+  
+        if (newY < 0) {
+          newY = 0;
+        }
+  
+        if (newY > (WINDOW_HEIGHT - this.height)) {
+          newY = WINDOW_HEIGHT - this.height;
+        }
+  
+        this.moveTo(newX, newY, radToDeg(tuioTag.angle));
+        this._lastTagsValues = {
+          ...this._lastTagsValues,
+          [tuioTag.id]: {
+            x: tuioTag.x,
+            y: tuioTag.y,
+          },
+        };
       }
-
-      if (newY < 0) {
-        newY = 0;
-      }
-
-      if (newY > (WINDOW_HEIGHT - this.height)) {
-        newY = WINDOW_HEIGHT - this.height;
-      }
-
-      this.moveTo(newX, newY, radToDeg(tuioTag.angle));
-      this._lastTagsValues = {
-        ...this._lastTagsValues,
-        [tuioTag.id]: {
-          x: tuioTag.x,
-          y: tuioTag.y,
-        },
-      };
-    }// if
-
     else if (typeof (this._lastTagsValues[tuioTag.id]) !== 'undefined' && tuioTag._id === '38') {
       if (tuioTag.angle > this._lastTagsValues.angle) {
         console.log('Gettin bigger');
