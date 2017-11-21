@@ -148,9 +148,11 @@ class ElementWidget extends TUIOWidget {
 
         },
       };
+      //This will be used to save the last angle recorded and make a comparison in onTagUpdate
       this._lastTagsValues.angle = 0;
+      //Setting the scale only at the start
       if(this._lastTagsValues.scale == null){
-        this._lastTagsValues.scale = 1;        
+        this._lastTagsValues.scale = 1;
       }
     }
   }
@@ -202,26 +204,26 @@ class ElementWidget extends TUIOWidget {
         };
       }
       else if (tuioTag.id == this.idTagZoom  ) {
-        console.log('Recognized TagZoom');
-        console.log('angle = ' + tuioTag.angle);
+        //console.log('Recognized TagZoom');
+        //console.log('angle = ' + tuioTag.angle);
         if (tuioTag.angle > this._lastTagsValues.angle) {
           var newscale = this._lastTagsValues.scale * 1.5;
-          console.log("this._lastTagsValues.scale = " + this._lastTagsValues.scale);
-          console.log('Gettin bigger, new scale is ' + newscale );
+          //console.log("this._lastTagsValues.scale = " + this._lastTagsValues.scale);
+          //console.log('Gettin bigger, new scale is ' + newscale );
 
           this._lastTagsValues.angle = tuioTag.angle;
           this._domElem.css('transform', `scale(${newscale})`);
           this._lastTagsValues.scale = newscale;
-          console.log(`New angle  = , ${this._lastTagsValues.angle}`);
+          //console.log(`New angle  = , ${this._lastTagsValues.angle}`);
         }
         else if (tuioTag.angle < this._lastTagsValues.angle) {
           var newscale = this._lastTagsValues.scale * 0.75;
-          console.log("this._lastTagsValues.scale = " + this._lastTagsValues.scale);
-          console.log('Gettin smaller, new scale = ' + newscale);
+          //console.log("this._lastTagsValues.scale = " + this._lastTagsValues.scale);
+          //console.log('Gettin smaller, new scale = ' + newscale);
           this._lastTagsValues.angle = tuioTag.angle;
           this._domElem.css('transform', `scale(${newscale})`);
 
-          console.log(`New angle  = , ${this._lastTagsValues.angle}`);
+          //console.log(`New angle  = , ${this._lastTagsValues.angle}`);
           this._lastTagsValues.scale = newscale;
 
         }
