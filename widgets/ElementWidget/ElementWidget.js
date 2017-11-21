@@ -152,10 +152,10 @@ class ElementWidget extends TUIOWidget {
 
         },
       };
-      //This will be used to save the last angle recorded and make a comparison in onTagUpdate
+      //  This will be used to save the last angle recorded and make a comparison in onTagUpdate
       this._lastTagsValues.angle = 0;
-      //Setting the scale only at the start
-      if(this._lastTagsValues.scale == null){
+      //  Setting the scale only at the start
+      if (this._lastTagsValues.scale == null) {
         this._lastTagsValues.scale = 1;
       }
     }
@@ -170,7 +170,6 @@ class ElementWidget extends TUIOWidget {
   onTagUpdate(tuioTag) {
     console.log(this._lastTagsValues);
     if (typeof (this._lastTagsValues[tuioTag.id]) !== 'undefined') {
-
       if (tuioTag.id === this.idTagDelete) {
         this._domElem.remove();
         this.deleteWidget();
@@ -207,34 +206,22 @@ class ElementWidget extends TUIOWidget {
           },
         };
       }
-      else if (tuioTag.id == this.idTagZoom  ) {
-        //console.log('Recognized TagZoom');
-        //console.log('angle = ' + tuioTag.angle);
-        if (tuioTag.angle > this._lastTagsValues.angle) {
-          var newscale = this._lastTagsValues.scale * 1.5;
-          //console.log("this._lastTagsValues.scale = " + this._lastTagsValues.scale);
-          //console.log('Gettin bigger, new scale is ' + newscale );
-
-          this._lastTagsValues.angle = tuioTag.angle;
-          this._domElem.css('transform', `scale(${newscale})`);
-          this._lastTagsValues.scale = newscale;
-          //console.log(`New angle  = , ${this._lastTagsValues.angle}`);
+      else if (tuioTag.id === this.idTagZoom) { //  When the zoom tag is recognized
+        let newscale;
+        if (tuioTag.angle > this._lastTagsValues.angle) { // Increasing angle superior to last saved angle (clockwise)
+          newscale = this._lastTagsValues.scale * 1.5; // new scale is 1.5 times the old scale
+          this._lastTagsValues.angle = tuioTag.angle;// We save the new angle
+          this._domElem.css('transform', `scale(${newscale})`); // We set the dom element scale
+          this._lastTagsValues.scale = newscale; //  We save the scale
         }
-        else if (tuioTag.angle < this._lastTagsValues.angle) {
-          var newscale = this._lastTagsValues.scale * 0.75;
-          //console.log("this._lastTagsValues.scale = " + this._lastTagsValues.scale);
-          //console.log('Gettin smaller, new scale = ' + newscale);
-          this._lastTagsValues.angle = tuioTag.angle;
-          this._domElem.css('transform', `scale(${newscale})`);
-
-          //console.log(`New angle  = , ${this._lastTagsValues.angle}`);
-          this._lastTagsValues.scale = newscale;
-
+        else if (tuioTag.angle < this._lastTagsValues.angle) { //  Decreasing angle inferior to the last saved angle(counterclockwise)
+          newscale = this._lastTagsValues.scale * 0.75;// new scale is 0.75 times the old scale
+          this._lastTagsValues.angle = tuioTag.angle;// We save the new angle
+          this._domElem.css('transform', `scale(${newscale})`); // We set the dom element scale
+          this._lastTagsValues.scale = newscale;// We save the scale
         }
       } //  else if
-
     }
-
   }
 
   /**
