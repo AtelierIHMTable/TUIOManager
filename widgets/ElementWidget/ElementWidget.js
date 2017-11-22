@@ -5,9 +5,9 @@
 
 
 import TUIOWidget from '../../core/TUIOWidget';
-import TUIOManager from '../../core/TUIOManager';
 import { WINDOW_WIDTH, WINDOW_HEIGHT } from '../../core/constants';
 import { radToDeg } from '../../core/helpers';
+import Point from '../../src/utils/Point';
 
 /**
  * Abstract class to manage ImageElementWidget.
@@ -26,6 +26,7 @@ class ElementWidget extends TUIOWidget {
     this.idTagDelete = tagDelete;
     this.idTagZoom = tagZoom;
     this.idTagInfo = tagInfo;
+    this._currentAngle = 0;
     this._lastTouchesValues = {};
     this._lastTagsValues = {};
   }// constructor
@@ -46,8 +47,7 @@ class ElementWidget extends TUIOWidget {
      */
   onTouchCreation(tuioTouch) {
     super.onTouchCreation(tuioTouch);
-	console.log(ElementWidget.isAlreadyTouched);
-    if (this.isTouched(tuioTouch.x, tuioTouch.y) && !ElementWidget.isAlreadyTouched) {
+    if (this.isTouched(tuioTouch.x, tuioTouch.y)) {
       ElementWidget.isAlreadyTouched = true;
       this._lastTouchesValues = {
         ...this._lastTouchesValues,
@@ -57,7 +57,7 @@ class ElementWidget extends TUIOWidget {
         },
       };
       this._lastTouchesValues.pinchDistance = 0;
-	  if (this._lastTouchesValues.scale == null) {
+	    if (this._lastTouchesValues.scale == null) {
         this._lastTouchesValues.scale = 1;
       }
     }
@@ -90,9 +90,8 @@ class ElementWidget extends TUIOWidget {
   onTouchUpdate(tuioTouch) {
     if (typeof (this._lastTouchesValues[tuioTouch.id]) !== 'undefined') {
       const touchesWidgets = [];
-	  const currentTouches = this.touches;
+	    const currentTouches = this.touches;
       Object.keys(this.touches).forEach(function (key) {
-        // console.log(key, currentTouches[key]);
         touchesWidgets.push(currentTouches[key]);
       });
 
@@ -129,20 +128,45 @@ class ElementWidget extends TUIOWidget {
           },
         };
       } else if (touchesWidgets.length === 2) {
-        const a = touchesWidgets[0].x - touchesWidgets[1].x;
-        const b = touchesWidgets[0].y - touchesWidgets[1].y;
-        const c = Math.sqrt((a * a) + (b * b));
-		let newscale;
+        // Resize d'une image
+        let p1 = new Point(this.x, this.y);
+        let p2 = new Point(this.x+this.width, this.y+this.height);
+        let touch1 = new Point(touchesWidgets[0].x, touchesWidgets[0].y);
+        let touch2 = new Point(touchesWidgets[1].x, touchesWidgets[1].y);
+        const c = touch1.distanceTo(touch2);
+		    let newscale;
         if (c > this._lastTouchesValues.pinchDistance) {
-          newscale = this._lastTouchesValues.scale * 1.1; // new scale is 1.5 times the old scale
-          this._domElem.css('transform', `scale(${newscale})`); // We set the dom element scale
+          newscale = this._lastTouchesValues.scale * 1.018; // new scale is 1.5 times the old scale
+          // this._domElem.css('transform', `scale(${newscale})`); // We set the dom element scale
           this._lastTouchesValues.scale = newscale; //  We save the scale
+          //this.width *= 1.018;
+          //this.width *= 1.018;
+          // Modifier valeur de la widget de x, y, hauteur, largeur
         } else {
-          newscale = this._lastTouchesValues.scale * 0.9; // new scale is 1.5 times the old scale
-          this._domElem.css('transform', `scale(${newscale})`); // We set the dom element scale
+          newscale = this._lastTouchesValues.scale * 0.985; // new scale is 1.5 times the old scale
+          // this._domElem.css('transform', `scale(${newscale})`); // We set the dom element scale
           this._lastTouchesValues.scale = newscale; //  We save the scale
+          // this.width *= newscale;
+          // this.height *= newscale;
+          // Modifier valeur de la widget de x, y, hauteur, largeur
         }
         this._lastTouchesValues.pinchDistance = c;
+        
+        // Rotation d'une image
+        if(!this.lastAngle){
+          this.lastAngle = touch1.angleWith(touch2);
+        } else {
+          if(this.lastAngle < touch1.angleWith(touch2)) {
+            ++this._currentAngle;
+          } else {
+            --this._currentAngle;
+          }
+          this.lastAngle = touch1.angleWith(touch2);
+          this._domElem.css('transform', `rotate(${this._currentAngle}deg) scale(${newscale})`);
+        }
+      } else if(touchesWidgets.length === 3) {
+          this._domElem.remove();
+          this.deleteWidget();
       }
     }
   }
@@ -156,6 +180,7 @@ class ElementWidget extends TUIOWidget {
   onTouchDeletion(tuioTouchId) {
     super.onTouchDeletion(tuioTouchId);
     ElementWidget.isAlreadyTouched = false;
+    this.lastAngle = null;
   }
 
     /**
@@ -193,7 +218,6 @@ class ElementWidget extends TUIOWidget {
    * @param {TUIOTag} tuioTag - A TUIOTag instance.
    */
   onTagUpdate(tuioTag) {
-    console.log(this._lastTagsValues);
     if (typeof (this._lastTagsValues[tuioTag.id]) !== 'undefined') {
       if (tuioTag.id === this.idTagDelete) {
         this._domElem.remove();
