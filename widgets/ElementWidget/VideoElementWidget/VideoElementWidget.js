@@ -30,7 +30,6 @@ class VideoElementWidget extends ElementWidget {
     this._domElem.attr('src', src);
     this._domElem.css('width', `${width}px`);
     this._domElem.css('height', `${height}px`);
-    this._domElem.css('background-color', '#000');
     this._domElem.css('position', 'absolute');
     this._domElem.css('left', `${x}px`);
     this._domElem.css('top', `${y}px`);
@@ -47,11 +46,11 @@ class VideoElementWidget extends ElementWidget {
   onTagUpdate(tuioTag) {
     super.onTagUpdate(tuioTag);
     if (typeof (this._lastTagsValues[tuioTag.id]) !== 'undefined') {
-      if (String.tuioTag.id == this.idTagPlayPause) {
-        this._domElem[0].play();
-      // } else if (tuioTag.id === this.idTagVolume) {
-      //   this._domElem.prop('volume', 0.5);
-      }
+//      if (String.tuioTag.id == this.idTagPlayPause) {
+//        this._domElem[0].play();
+//      // } else if (tuioTag.id === this.idTagVolume) {
+//      //   this._domElem.prop('volume', 0.5);
+//      }
     }
   }
 } // class ImageElementWidget

@@ -29,8 +29,11 @@ class ElementWidget extends TUIOWidget {
     this._currentAngle = 0;
     this._lastTouchesValues = {};
     this._lastTagsValues = {};
+    this.internX = x;
+    this.internY = y;
+    this.internWidth = width;
+    this.internHeight = height;
   }// constructor
-
 
     /**
      * ImageWidget's domElem.
@@ -39,6 +42,21 @@ class ElementWidget extends TUIOWidget {
      */
   get domElem() { return this._domElem; }
 
+  /**
+   * Check if TUIOWidget is touched.
+   *
+   * @method isTouched
+   * @param {number} x - Point's abscissa to test.
+   * @param {number} y - Point's ordinate to test.
+   */
+  isTouched(x, y) {
+    console.log("X : " + x + " , Y : " + y);
+    console.log("InternX : " + this.internX + ", InternY : " + this.internY);
+    console.log("InternWidth : " + this.internWidth + ", InternHeight : " + this.internHeight);
+    console.log("InternMaxX : " + (this.internX + this.internWidth) + ", InternMaxY : " + (this.internY + this.internHeight));
+    return (x >= this.internX && x <= this.internX + this.internWidth && y >= this.internY && y <= this.internY + this.internHeight);
+  }
+  
     /**
      * Call after a TUIOTouch creation.
      *
@@ -47,6 +65,7 @@ class ElementWidget extends TUIOWidget {
      */
   onTouchCreation(tuioTouch) {
     super.onTouchCreation(tuioTouch);
+    console.log(tuioTouch.x, tuioTouch.y);
     if (this.isTouched(tuioTouch.x, tuioTouch.y)) {
       ElementWidget.isAlreadyTouched = true;
       this._lastTouchesValues = {
@@ -74,6 +93,8 @@ class ElementWidget extends TUIOWidget {
   moveTo(x, y, angle = null) {
     this._x = x;
     this._y = y;
+    this.internX = x;
+    this.internY = y;
     this._domElem.css('left', `${x}px`);
     this._domElem.css('top', `${y}px`);
     if (angle !== null) {
@@ -139,16 +160,10 @@ class ElementWidget extends TUIOWidget {
           newscale = this._lastTouchesValues.scale * 1.018; // new scale is 1.5 times the old scale
           // this._domElem.css('transform', `scale(${newscale})`); // We set the dom element scale
           this._lastTouchesValues.scale = newscale; //  We save the scale
-          //this.width *= 1.018;
-          //this.width *= 1.018;
-          // Modifier valeur de la widget de x, y, hauteur, largeur
-        } else {
+        } else if (c < this._lastTouchesValues.pinchDistance) {
           newscale = this._lastTouchesValues.scale * 0.985; // new scale is 1.5 times the old scale
           // this._domElem.css('transform', `scale(${newscale})`); // We set the dom element scale
           this._lastTouchesValues.scale = newscale; //  We save the scale
-          // this.width *= newscale;
-          // this.height *= newscale;
-          // Modifier valeur de la widget de x, y, hauteur, largeur
         }
         this._lastTouchesValues.pinchDistance = c;
         
@@ -157,16 +172,23 @@ class ElementWidget extends TUIOWidget {
           this.lastAngle = touch1.angleWith(touch2);
         } else {
           if(this.lastAngle < touch1.angleWith(touch2)) {
-            ++this._currentAngle;
+            this._currentAngle += touch1.angleWith(touch2) - this.lastAngle;
           } else {
-            --this._currentAngle;
+            this._currentAngle -= this.lastAngle - touch1.angleWith(touch2);
           }
+          this._currentAngle = this._currentAngle % 360;
           this.lastAngle = touch1.angleWith(touch2);
           this._domElem.css('transform', `rotate(${this._currentAngle}deg) scale(${newscale})`);
+          console.log('New x : '+ this._domElem.position().left + ', New y : ' + this._domElem.position().top);
+          console.log('New Width : ' + this._domElem.width() + 'New Height : ' + this._domElem.height());
+          this.internX = this._domElem.position().left;
+          this.internY = this._domElem.position().top;
+          this.internWidth = this._domElem.width();
+          this.internHeight = this._domElem.height();
         }
-      } else if(touchesWidgets.length === 3) {
-          this._domElem.remove();
-          this.deleteWidget();
+      // } else if(touchesWidgets.length === 3) {
+      //     this._domElem.remove();
+      //     this.deleteWidget();
       }
     }
   }
@@ -192,7 +214,7 @@ class ElementWidget extends TUIOWidget {
   onTagCreation(tuioTag) {
     super.onTagCreation(tuioTag);
     console.log(tuioTag);
-    if (this.isTouched(tuioTag.x, tuioTag.y) && !ElementWidget.isAlreadyTouched) {
+    if (this.isTouched(tuioTag.x, tuioTag.y)) {
       this._lastTagsValues = {
         ...this._lastTagsValues,
         [tuioTag.id]: {
@@ -219,7 +241,7 @@ class ElementWidget extends TUIOWidget {
    */
   onTagUpdate(tuioTag) {
     if (typeof (this._lastTagsValues[tuioTag.id]) !== 'undefined') {
-      if (tuioTag.id === this.idTagDelete) {
+      if (tuioTag.id == this.idTagDelete) {
         this._domElem.remove();
         this.deleteWidget();
       } else if (tuioTag.id === this.idTagMove) {
@@ -246,6 +268,7 @@ class ElementWidget extends TUIOWidget {
           newY = WINDOW_HEIGHT - this.height;
         }
 
+        this._currentAngle = radToDeg(tuioTag.angle);
         this.moveTo(newX, newY, radToDeg(tuioTag.angle));
         this._lastTagsValues = {
           ...this._lastTagsValues,

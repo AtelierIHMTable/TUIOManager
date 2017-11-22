@@ -36,7 +36,7 @@ class TUIOObject {
   addWidget(widget) {
     if (typeof (this._widgets[widget.id]) === 'undefined') {
       this._widgets = {
-        ...this._widgets,
+        // ...this._widgets,
         [widget.id]: widget,
       };
     }

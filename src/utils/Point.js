@@ -44,6 +44,24 @@ class Point {
   angleWith(p2) {
     return (Math.atan2(p2.y - this.y, p2.x - this.x)) * (180 / Math.PI);
   }
+  
+  /**
+   * Rotate Point through an origin
+   *
+   * @method angleWith
+   * @param {Point} cx - X of origin
+   * @param {Point} cy - Y of origin
+   * @param {Point} angle - angle in degrees.
+   */
+  rotate(cx, cy, angle) {
+    var radians = (Math.PI / 180) * angle,
+        cos = Math.cos(radians),
+        sin = Math.sin(radians),
+        nx = (cos * (x - cx)) + (sin * (y - cy)) + cx,
+        ny = (cos * (y - cy)) - (sin * (x - cx)) + cy;
+    this._x = nx;
+    this._y = ny;
+  }
 }
 
 export default Point;
