@@ -26,8 +26,16 @@ class VideoElementWidget extends ElementWidget {
    */
   constructor(x, y, width, height, src, tagMove, tagDelete, tagZoom, tagInfo, tagPlayPause, tagVolume) {
     super(x, y, width, height, tagMove, tagDelete, tagZoom, tagInfo);
-    this._domElem = $('<video>');
-    this._domElem.attr('src', src);
+    this._domElem = $('<div>');
+    this._domElem.append(
+      $('<video>').attr('src', src)
+                  .css('width', '100%')
+                  .css('position', 'absolute'),
+      $('<div>').css('width', '100%')
+                .css('height', '128px')
+                .css('id', 'playbutton')
+                .css('position', 'absolute')
+                .css('background', 'url(\'http://cdn1.iconfinder.com/data/icons/iconslandplayer/PNG/64x64/CircleBlue/Play1Pressed.png\') center center no-repeat'));
     this._domElem.css('width', `${width}px`);
     this._domElem.css('height', `${height}px`);
     this._domElem.css('position', 'absolute');
@@ -35,22 +43,31 @@ class VideoElementWidget extends ElementWidget {
     this._domElem.css('top', `${y}px`);
     this.idTagPlayPause = tagPlayPause;
     this.idTagVolume = tagVolume;
+    this.isPlaying = false;
   } // constructor
 
   /**
-   * Call after a TUIOTag update.
+   * Call after a TUIOTag creation.
    *
-   * @method onTagUpdate
+   * @method onTagCreation
    * @param {TUIOTag} tuioTag - A TUIOTag instance.
    */
-  onTagUpdate(tuioTag) {
-    super.onTagUpdate(tuioTag);
-    if (typeof (this._lastTagsValues[tuioTag.id]) !== 'undefined') {
-//      if (String.tuioTag.id == this.idTagPlayPause) {
-//        this._domElem[0].play();
-//      // } else if (tuioTag.id === this.idTagVolume) {
-//      //   this._domElem.prop('volume', 0.5);
-//      }
+  onTagCreation(tuioTag) {
+    super.onTagCreation(tuioTag);
+    if (this.isTouched(tuioTag.x, tuioTag.y)) {
+      if (tuioTag.id === this.idTagPlayPause) {
+        if (this.isPlaying) {
+          this._domElem.children().first()[0].pause();
+          this._domElem.children().eq(1).show();
+          this.isPlaying = false;
+        } else {
+          this._domElem.children().first()[0].play();
+          this._domElem.children().eq(1).hide();
+          this.isPlaying = true;
+        }
+        // } else if (tuioTag.id === this.idTagVolume) {
+        //   this._domElem.prop('volume', 0.5);
+      }
     }
   }
 } // class ImageElementWidget
