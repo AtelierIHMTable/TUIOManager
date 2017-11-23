@@ -50,13 +50,9 @@ class ElementWidget extends TUIOWidget {
    * @param {number} y - Point's ordinate to test.
    */
   isTouched(x, y) {
-    console.log("X : " + x + " , Y : " + y);
-    console.log("InternX : " + this.internX + ", InternY : " + this.internY);
-    console.log("InternWidth : " + this.internWidth + ", InternHeight : " + this.internHeight);
-    console.log("InternMaxX : " + (this.internX + this.internWidth) + ", InternMaxY : " + (this.internY + this.internHeight));
     return (x >= this.internX && x <= this.internX + this.internWidth && y >= this.internY && y <= this.internY + this.internHeight);
   }
-  
+
     /**
      * Call after a TUIOTouch creation.
      *
@@ -65,7 +61,6 @@ class ElementWidget extends TUIOWidget {
      */
   onTouchCreation(tuioTouch) {
     super.onTouchCreation(tuioTouch);
-    console.log(tuioTouch.x, tuioTouch.y);
     if (this.isTouched(tuioTouch.x, tuioTouch.y)) {
       ElementWidget.isAlreadyTouched = true;
       this._lastTouchesValues = {
@@ -76,7 +71,7 @@ class ElementWidget extends TUIOWidget {
         },
       };
       this._lastTouchesValues.pinchDistance = 0;
-	    if (this._lastTouchesValues.scale == null) {
+      if (this._lastTouchesValues.scale == null) {
         this._lastTouchesValues.scale = 1;
       }
     }
@@ -93,8 +88,6 @@ class ElementWidget extends TUIOWidget {
   moveTo(x, y, angle = null) {
     this._x = x;
     this._y = y;
-    this.internX = x;
-    this.internY = y;
     this._domElem.css('left', `${x}px`);
     this._domElem.css('top', `${y}px`);
     if (angle !== null) {
@@ -111,8 +104,8 @@ class ElementWidget extends TUIOWidget {
   onTouchUpdate(tuioTouch) {
     if (typeof (this._lastTouchesValues[tuioTouch.id]) !== 'undefined') {
       const touchesWidgets = [];
-	    const currentTouches = this.touches;
-      Object.keys(this.touches).forEach(function (key) {
+      const currentTouches = this.touches;
+      Object.keys(this.touches).forEach((key) => {
         touchesWidgets.push(currentTouches[key]);
       });
 
@@ -123,6 +116,8 @@ class ElementWidget extends TUIOWidget {
 
         let newX = this.x + diffX;
         let newY = this.y + diffY;
+        this.internX = this.internX + diffX;
+        this.internY = this.internY + diffY;
 
         if (newX < 0) {
           newX = 0;
@@ -150,12 +145,10 @@ class ElementWidget extends TUIOWidget {
         };
       } else if (touchesWidgets.length === 2) {
         // Resize d'une image
-        let p1 = new Point(this.x, this.y);
-        let p2 = new Point(this.x+this.width, this.y+this.height);
-        let touch1 = new Point(touchesWidgets[0].x, touchesWidgets[0].y);
-        let touch2 = new Point(touchesWidgets[1].x, touchesWidgets[1].y);
+        const touch1 = new Point(touchesWidgets[0].x, touchesWidgets[0].y);
+        const touch2 = new Point(touchesWidgets[1].x, touchesWidgets[1].y);
         const c = touch1.distanceTo(touch2);
-		    let newscale;
+        let newscale;
         if (c > this._lastTouchesValues.pinchDistance) {
           newscale = this._lastTouchesValues.scale * 1.018; // new scale is 1.5 times the old scale
           // this._domElem.css('transform', `scale(${newscale})`); // We set the dom element scale
@@ -166,12 +159,12 @@ class ElementWidget extends TUIOWidget {
           this._lastTouchesValues.scale = newscale; //  We save the scale
         }
         this._lastTouchesValues.pinchDistance = c;
-        
+
         // Rotation d'une image
-        if(!this.lastAngle){
+        if (!this.lastAngle) {
           this.lastAngle = touch1.angleWith(touch2);
         } else {
-          if(this.lastAngle < touch1.angleWith(touch2)) {
+          if (this.lastAngle < touch1.angleWith(touch2)) {
             this._currentAngle += touch1.angleWith(touch2) - this.lastAngle;
           } else {
             this._currentAngle -= this.lastAngle - touch1.angleWith(touch2);
@@ -179,8 +172,6 @@ class ElementWidget extends TUIOWidget {
           this._currentAngle = this._currentAngle % 360;
           this.lastAngle = touch1.angleWith(touch2);
           this._domElem.css('transform', `rotate(${this._currentAngle}deg) scale(${newscale})`);
-          console.log('New x : '+ this._domElem.position().left + ', New y : ' + this._domElem.position().top);
-          console.log('New Width : ' + this._domElem.width() + 'New Height : ' + this._domElem.height());
           this.internX = this._domElem.position().left;
           this.internY = this._domElem.position().top;
           this.internWidth = this._domElem.width();
@@ -213,7 +204,7 @@ class ElementWidget extends TUIOWidget {
    */
   onTagCreation(tuioTag) {
     super.onTagCreation(tuioTag);
-    console.log(tuioTag);
+
     if (this.isTouched(tuioTag.x, tuioTag.y)) {
       this._lastTagsValues = {
         ...this._lastTagsValues,
@@ -241,7 +232,7 @@ class ElementWidget extends TUIOWidget {
    */
   onTagUpdate(tuioTag) {
     if (typeof (this._lastTagsValues[tuioTag.id]) !== 'undefined') {
-      if (tuioTag.id == this.idTagDelete) {
+      if (tuioTag.id === this.idTagDelete) {
         this._domElem.remove();
         this.deleteWidget();
       } else if (tuioTag.id === this.idTagMove) {
@@ -249,6 +240,8 @@ class ElementWidget extends TUIOWidget {
         const diffX = tuioTag.x - lastTagValue.x;
         const diffY = tuioTag.y - lastTagValue.y;
 
+        this.internX = this.internX + diffX;
+        this.internY = this.internY + diffY;
         let newX = this.x + diffX;
         let newY = this.y + diffY;
 
@@ -277,22 +270,24 @@ class ElementWidget extends TUIOWidget {
             y: tuioTag.y,
           },
         };
-      }
-      else if (tuioTag.id === this.idTagZoom) { //  When the zoom tag is recognized
+      } else if (tuioTag.id === this.idTagZoom) { //  When the zoom tag is recognized
         let newscale;
         if (tuioTag.angle > this._lastTagsValues.angle) { // Increasing angle superior to last saved angle (clockwise)
           newscale = this._lastTagsValues.scale * 1.5; // new scale is 1.5 times the old scale
           this._lastTagsValues.angle = tuioTag.angle;// We save the new angle
           this._domElem.css('transform', `scale(${newscale})`); // We set the dom element scale
           this._lastTagsValues.scale = newscale; //  We save the scale
-        }
-        else if (tuioTag.angle < this._lastTagsValues.angle) { //  Decreasing angle inferior to the last saved angle(counterclockwise)
+        } else if (tuioTag.angle < this._lastTagsValues.angle) { //  Decreasing angle inferior to the last saved angle(counterclockwise)
           newscale = this._lastTagsValues.scale * 0.75;// new scale is 0.75 times the old scale
           this._lastTagsValues.angle = tuioTag.angle;// We save the new angle
           this._domElem.css('transform', `scale(${newscale})`); // We set the dom element scale
           this._lastTagsValues.scale = newscale;// We save the scale
         }
       } //  else if
+      this.internX = this._domElem.position().left;
+      this.internY = this._domElem.position().top;
+      this.internWidth = this._domElem.width();
+      this.internHeight = this._domElem.height();
     }
   }
 
@@ -304,10 +299,7 @@ class ElementWidget extends TUIOWidget {
    */
   onTagDeletion(tuioTagId) {
     super.onTagDeletion(tuioTagId);
-    ElementWidget.isAlreadyTouched = false;
-    console.log('Tag Deleted');
   }
 }
 
-ElementWidget.isAlreadyTouched = true;
 export default ElementWidget;

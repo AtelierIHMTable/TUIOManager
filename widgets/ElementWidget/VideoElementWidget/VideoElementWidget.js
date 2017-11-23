@@ -55,4 +55,4 @@ class VideoElementWidget extends ElementWidget {
   }
 } // class ImageElementWidget
 
-  export default VideoElementWidget;
+export default VideoElementWidget;
