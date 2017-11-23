@@ -32,10 +32,15 @@ class VideoElementWidget extends ElementWidget {
                   .css('width', '100%')
                   .css('position', 'absolute'),
       $('<div>').css('width', '100%')
-                .css('height', '128px')
+                .css('height', '64px')
                 .css('id', 'playbutton')
                 .css('position', 'absolute')
-                .css('background', 'url(\'http://cdn1.iconfinder.com/data/icons/iconslandplayer/PNG/64x64/CircleBlue/Play1Pressed.png\') center center no-repeat'));
+                .css('top', '0')
+                .css('bottom', '0')
+                .css('right', '0')
+                .css('left', '0')
+                .css('margin', 'auto')
+                .css('background', 'url(\'https://remykaloustian.com/pfe/playbutton.png\') center center no-repeat'));
     this._domElem.css('width', `${width}px`);
     this._domElem.css('height', `${height}px`);
     this._domElem.css('position', 'absolute');
