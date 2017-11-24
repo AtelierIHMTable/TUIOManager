@@ -24,8 +24,8 @@ class VideoElementWidget extends ElementWidget {
    * @param {number} width - ImageElementWidget's width.
    * @param {number} height - ImageElementWidget's height.
    */
-  constructor(x, y, width, height, src, tagMove, tagDelete, tagZoom, tagInfo, tagPlayPause, tagVolume) {
-    super(x, y, width, height, tagMove, tagDelete, tagZoom, tagInfo);
+  constructor(x, y, width, height, initialRotation, src, tagMove, tagDelete, tagZoom, tagPlayPause, tagVolume) {
+    super(x, y, width, height, initialRotation, tagMove, tagDelete, tagZoom);
     this._domElem = $('<div>');
     this._domElem.append(
       $('<video>').attr('src', src)
@@ -46,6 +46,7 @@ class VideoElementWidget extends ElementWidget {
     this._domElem.css('position', 'absolute');
     this._domElem.css('left', `${x}px`);
     this._domElem.css('top', `${y}px`);
+    this._domElem.css('transform', `rotate(${initialRotation}deg)`);
     this.idTagPlayPause = tagPlayPause;
     this.idTagVolume = tagVolume;
     this.isPlaying = false;

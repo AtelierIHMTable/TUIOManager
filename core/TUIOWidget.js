@@ -180,7 +180,7 @@ class TUIOWidget {
    * @method deleteWidget
    */
   deleteWidget() {
-    TUIOManager.getInstance().deleteWidget(this);
+    TUIOManager.getInstance().removeWidget(this);
   }
 
 /* eslint-enable no-unused-vars,class-methods-use-this */
