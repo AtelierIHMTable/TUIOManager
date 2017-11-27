@@ -174,6 +174,15 @@ class TUIOWidget {
     // To override if needed.
   }
 
+  /**
+   * Call to delete a widget
+   *
+   * @method deleteWidget
+   */
+  deleteWidget() {
+    TUIOManager.getInstance().removeWidget(this);
+  }
+
 /* eslint-enable no-unused-vars,class-methods-use-this */
 }
 

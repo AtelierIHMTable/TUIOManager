@@ -35,10 +35,17 @@ class TUIOObject {
    */
   addWidget(widget) {
     if (typeof (this._widgets[widget.id]) === 'undefined') {
-      this._widgets = {
-        ...this._widgets,
-        [widget.id]: widget,
-      };
+      if (Object.keys(this._widgets).length === 0) {
+        this._widgets = {
+          // ...this._widgets,
+          [widget.id]: widget,
+        };
+      } else if (this._widgets[Object.keys(this._widgets)[0]].zIndex < widget.zIndex) {
+        this._widgets = {
+          // ...this._widgets,
+          [widget.id]: widget,
+        };
+      }
     }
   }
 
