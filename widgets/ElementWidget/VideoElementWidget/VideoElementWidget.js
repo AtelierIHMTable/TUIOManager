@@ -62,6 +62,9 @@ class VideoElementWidget extends ElementWidget {
     super.onTagCreation(tuioTag);
     if (this.isTouched(tuioTag.x, tuioTag.y)) {
       if (tuioTag.id === this.idTagPlayPause) {
+        this._domElem.children().first().on('ended', () => {
+          this._domElem.children().eq(1).show();
+        });
         if (this.isPlaying) {
           this._domElem.children().first()[0].pause();
           this._domElem.children().eq(1).show();
@@ -71,6 +74,7 @@ class VideoElementWidget extends ElementWidget {
           this._domElem.children().eq(1).hide();
           this.isPlaying = true;
         }
+        
         // } else if (tuioTag.id === this.idTagVolume) {
         //   this._domElem.prop('volume', 0.5);
       }
