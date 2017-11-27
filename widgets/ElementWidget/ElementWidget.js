@@ -384,7 +384,12 @@ class ElementWidget extends TUIOWidget {
     this.isDisabled = isDisabled;
   }
 
-
+  // Hide
+  // Show
+  // Delete
+  // MoveTo
+  // Rotate
+  // Resize
   // Activer/Desactiver tangible/tactile
 }
 
