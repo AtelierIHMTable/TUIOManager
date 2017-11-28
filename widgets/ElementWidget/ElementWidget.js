@@ -17,7 +17,7 @@ import Point from '../../src/utils/Point';
  */
 class ElementWidget extends TUIOWidget {
   // constructor (x, y, width, height, initialRotation, tagMove, tagDelete, tagZoom, )
-  constructor(x, y, width, height, initialRotation, tagMove, tagDelete, tagZoom) {
+  constructor(x, y, width, height, initialRotation, initialScale, tagMove, tagDelete, tagZoom) {
     if (new.target === ElementWidget) {
       throw new TypeError('ElementWidget is an abstract class. It cannot be instanciated');
     }
@@ -26,6 +26,7 @@ class ElementWidget extends TUIOWidget {
     this.idTagDelete = tagDelete;
     this.idTagZoom = tagZoom;
     this._currentAngle = initialRotation;
+    this.scale = initialScale;
     this._lastTouchesValues = {};
     this._lastTagsValues = {};
     this.internX = x;
@@ -84,7 +85,7 @@ class ElementWidget extends TUIOWidget {
       };
       this._lastTouchesValues.pinchDistance = 0;
       if (this._lastTouchesValues.scale == null) {
-        this._lastTouchesValues.scale = 1;
+        this._lastTouchesValues.scale = this.scale;
       }
     }
   }
@@ -236,7 +237,7 @@ class ElementWidget extends TUIOWidget {
       this._lastTagsValues.angle = 0;
       //  Setting the scale only at the start
       if (this._lastTagsValues.scale == null) {
-        this._lastTagsValues.scale = 1;
+        this._lastTagsValues.scale = this.scale;
       }
     }
   }

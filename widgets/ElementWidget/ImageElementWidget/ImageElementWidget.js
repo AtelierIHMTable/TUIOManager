@@ -25,8 +25,8 @@ class ImageElementWidget extends ElementWidget {
   * @param {number} width - ImageElementWidget's width.
   * @param {number} height - ImageElementWidget's height.
   */
-  constructor(x, y, width, height, initialRotation, src, tagMove, tagDelete, tagZoom) {
-    super(x, y, width, height, initialRotation, tagMove, tagDelete, tagZoom);
+  constructor(x, y, width, height, initialRotation, initialScale, src, tagMove, tagDelete, tagZoom) {
+    super(x, y, width, height, initialRotation, initialScale, tagMove, tagDelete, tagZoom);
     this._domElem = $('<img>');
     this._domElem.attr('src', src);
     this._domElem.css('width', `${width}px`);
@@ -34,7 +34,7 @@ class ImageElementWidget extends ElementWidget {
     this._domElem.css('position', 'absolute');
     this._domElem.css('left', `${x}px`);
     this._domElem.css('top', `${y}px`);
-    this._domElem.css('transform', `rotate(${initialRotation}deg)`);
+    this._domElem.css('transform', `rotate(${initialRotation}deg) scale(${initialScale})`);
   } // constructor
 
 } // class ImageElementWidget

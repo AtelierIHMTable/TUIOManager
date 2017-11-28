@@ -49,6 +49,7 @@ class TUIOObject {
     }
   }
 
+
   /**
    * Remove TUIOWidget in param from TUIOObject's observers.
    *
