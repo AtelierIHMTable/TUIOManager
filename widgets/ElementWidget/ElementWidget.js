@@ -254,8 +254,10 @@ class ElementWidget extends TUIOWidget {
         this._domElem.remove();
         this.deleteWidget();
       } else if (tuioTag.id === this.idTagMove && this.canMoveTangible) {
-        ElementWidget.zIndexGlobal += 1;
-        this.zIndex = ElementWidget.zIndexGlobal;
+        if (this.zIndex !== ElementWidget.zIndexGlobal) {
+          ElementWidget.zIndexGlobal += 1;
+          this.zIndex = ElementWidget.zIndexGlobal;
+        }
         this._domElem.css('z-index', this.zIndex);
         const lastTagValue = this._lastTagsValues[tuioTag.id];
         const diffX = tuioTag.x - lastTagValue.x;

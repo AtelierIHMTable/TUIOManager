@@ -5,7 +5,6 @@
 
 import $ from 'jquery/dist/jquery.min';
 import TUIOWidget from '../../core/TUIOWidget';
-import { WINDOW_WIDTH, WINDOW_HEIGHT } from '../../core/constants';
 import { radToDeg } from '../../core/helpers';
 
 /**
@@ -15,14 +14,15 @@ import { radToDeg } from '../../core/helpers';
  * @extends TUIOWidget
  */
 class CircularMenu extends TUIOWidget {
-  constructor(tagMenu) {
+  constructor(tagMenu, size) {
     super(0, 0, 300, 300);
 
     this.idTagMenu = tagMenu;
     this.isHide = true;
-
+    this.size = size;
     this._lastTagsValues = {};
     this.menuItemCoord = [];
+    this.itemsCallBack = [];
     this.nbItems = 0;
     this._domElem = $('<div>').attr('class', 'selector');
     this._domElem.append(
@@ -30,13 +30,10 @@ class CircularMenu extends TUIOWidget {
     ).css('z-index', 2147483647);
     this.zIndex = 2147483647;
     this.angleStart = -360;
-
-    this.evt = document.createEvent('Event');
-    this.evt.initEvent('onMenuClick', true, false);
   }
 
   startMenu() {
-    this.toggleOptions('.selector');
+    this.toggleOptions(this.domElem);
     this._domElem.hide();
   }
 
@@ -60,37 +57,47 @@ class CircularMenu extends TUIOWidget {
     }
   }
 
-  addMenuItemText(itemName, textColor, backgroundColor) {
-    this.nbItems += 1;
-    this._domElem.find('ul').append(
-      $('<li>').append(
-        $('<input>').attr('id', `c ${this.nbItems}`).attr('type', 'checkbox'),
-        $('<label>')
-          .attr('for', `c ${this.nbItems}`)
-          .text(itemName)
-          .css('color', textColor)
-          .css('background-color', backgroundColor),
-      ),
-    );
-    this.startMenu();
+  addMenuItemText(itemName, textColor, backgroundColor, callback) {
+    if (this.nbItems < this.size) {
+      this.domElem.find('ul').append(
+        $('<li>').append(
+          $('<input>').attr('id', `c ${this.nbItems}`).attr('type', 'checkbox'),
+          $('<label>')
+            .attr('for', `c ${this.nbItems}`)
+            .text(itemName)
+            .css('color', textColor)
+            .css('background-color', backgroundColor),
+        ),
+      );
+      this.nbItems += 1;
+      this.itemsCallBack.push(callback);
+      if (this.nbItems === this.size) {
+        this.startMenu();
+      }
+    }
   }
 
-  addMenuItemIcon(iconName, iconColor, backgroundColor) {
-    this.nbItems += 1;
-    this._domElem.find('ul').append(
-      $('<li>').append(
-        $('<input>').attr('id', `c ${this.nbItems}`).attr('type', 'checkbox'),
-        $('<label>')
-          .attr('for', `c ${this.nbItems}`)
-          .append(
-            $('<i>')
-              .attr('class', iconName),
-          )
-          .css('color', iconColor)
-          .css('background-color', backgroundColor),
-      ),
-    );
-    this.startMenu();
+  addMenuItemIcon(iconName, iconColor, backgroundColor, callback) {
+    if (this.nbItems < this.size) {
+      this.domElem.find('ul').append(
+        $('<li>').append(
+          $('<input>').attr('id', `c ${this.nbItems}`).attr('type', 'checkbox'),
+          $('<label>')
+            .attr('for', `c ${this.nbItems}`)
+            .append(
+              $('<i>')
+                .attr('class', iconName),
+            )
+            .css('color', iconColor)
+            .css('background-color', backgroundColor),
+        ),
+      );
+      this.itemsCallBack.push(callback);
+      this.nbItems += 1;
+      if (this.nbItems === this.size) {
+        this.startMenu();
+      }
+    }
   }
 
   /**
@@ -122,8 +129,7 @@ class CircularMenu extends TUIOWidget {
     if (this.isTouched(tuioTouch.x, tuioTouch.y)) {
       for (let i = 0; i < this.menuItemCoord.length; i += 1) {
         if (tuioTouch.x >= this.menuItemCoord[i].xmin && tuioTouch.x <= this.menuItemCoord[i].xmax && tuioTouch.y >= this.menuItemCoord[i].ymin && tuioTouch.y <= this.menuItemCoord[i].ymax) {
-          this.evt.indexItem = i;
-          window.dispatchEvent(this.evt);
+          this.itemsCallBack[i]();
           break;
         }
       }
@@ -151,15 +157,15 @@ class CircularMenu extends TUIOWidget {
       },
     };
     if (tuioTag.id === this.idTagMenu) {
-      this._x = tuioTag.x - $('.selector').width()/2 - 80;
-      this._y = tuioTag.y - $('.selector').height()/2 - 80;
-      this.topSelector = tuioTag.y - ($('.selector').height() / 2);
-      this.leftSelector = tuioTag.x - ($('.selector').width() / 2);
-      $('.selector').css('top', this.topSelector);
-      $('.selector').css('left', this.leftSelector);
+      this._x = tuioTag.x - (this.domElem.width() / 2) - 80;
+      this._y = tuioTag.y - (this.domElem.height() / 2) - 80;
+      this.topSelector = tuioTag.y - (this.domElem.height() / 2);
+      this.leftSelector = tuioTag.x - (this.domElem.width() / 2);
+      this.domElem.css('top', this.topSelector);
+      this.domElem.css('left', this.leftSelector);
       this._domElem.show();
       this.isHide = false;
-      const li = $('.selector').find('li');
+      const li = this.domElem.find('li');
       this.menuItemCoord = [];
       for (let i = 0; i < li.length; i += 1) {
         const x = $(li[i]).find('label')[0].getBoundingClientRect().left;
@@ -188,10 +194,10 @@ class CircularMenu extends TUIOWidget {
         this._y = this.y + diffY;
         this.topSelector = this.topSelector + diffY;
         this.leftSelector = this.leftSelector + diffX;
-        $('.selector').css('top', this.topSelector);
-        $('.selector').css('left', this.leftSelector);
+        this.domElem.css('top', this.topSelector);
+        this.domElem.css('left', this.leftSelector);
         this._domElem.css('transform', `rotate(${radToDeg(tuioTag.angle)}deg)`);
-        const li = $('.selector').find('li');
+        const li = this.domElem.find('li');
 
         this.menuItemCoord = [];
         for (let i = 0; i < li.length; i += 1) {

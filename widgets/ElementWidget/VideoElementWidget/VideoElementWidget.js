@@ -40,7 +40,7 @@ class VideoElementWidget extends ElementWidget {
                 .css('right', '0')
                 .css('left', '0')
                 .css('margin', 'auto')
-                .css('background', 'url(\'https://remykaloustian.com/pfe/playbutton.png\') center center no-repeat'));
+                .css('background', 'url(\'play-button.svg\') center center no-repeat'));
     this._domElem.css('width', `${width}px`);
     this._domElem.css('height', `${height}px`);
     this._domElem.css('position', 'absolute');
