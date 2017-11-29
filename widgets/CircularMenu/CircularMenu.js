@@ -8,9 +8,9 @@ import TUIOWidget from '../../core/TUIOWidget';
 import { radToDeg } from '../../core/helpers';
 
 /**
- * Abstract class to manage ImageElementWidget.
+ * Class for a circular menu.
  *
- * @class ElementWidget
+ * @class CircularMenu
  * @extends TUIOWidget
  */
 class CircularMenu extends TUIOWidget {
@@ -32,11 +32,21 @@ class CircularMenu extends TUIOWidget {
     this.angleStart = -360;
   }
 
+  /**
+   * Construct the final representation of the menu
+   */
   startMenu() {
     this.toggleOptions(this.domElem);
     this._domElem.hide();
   }
 
+  /**
+   * Rotate an item of the menu through an angle.
+   *
+   * @method rotate
+   * @param {HTML Dom element} li - item of the menu.
+   * @param {number} angle - Angle in degrees.
+   */
   rotate(li, d) {
     $({ d: this.angleStart }).animate({ d: d }, {
       step: (now) => {
@@ -46,7 +56,12 @@ class CircularMenu extends TUIOWidget {
     });
   }
 
-  // show / hide the options
+  /**
+   * Rotate an item of the menu through an angle.
+   *
+   * @method toggleOptions
+   * @param {DOM} s - Root of the Dom of the menu.
+   */
   toggleOptions(s) {
     $(s).toggleClass('open');
     const li = $(s).find('li');
@@ -57,6 +72,15 @@ class CircularMenu extends TUIOWidget {
     }
   }
 
+  /**
+   * Rotate an item of the menu through an angle.
+   *
+   * @method addMenuItemText
+   * @param {string} itemName - Name of the menu item.
+   * @param {string} textColor - Color of the text in Hexadecimal.
+   * @param {string} backgroundColor - Color of the background of the item in Hexadecimal.
+   * @param {function} callback - Function called when item is touched.
+   */
   addMenuItemText(itemName, textColor, backgroundColor, callback) {
     if (this.nbItems < this.size) {
       this.domElem.find('ul').append(
@@ -77,6 +101,15 @@ class CircularMenu extends TUIOWidget {
     }
   }
 
+  /**
+   * Rotate an item of the menu through an angle.
+   *
+   * @method addMenuItemIcon
+   * @param {string} iconName - Icon of the item (class attribut like font-awesome, bootstrap, material, ...)
+   * @param {string} iconColor - Color of the icon in Hexadecimal.
+   * @param {string} backgroundColor - Color of the background of the item in Hexadecimal.
+   * @param {function} callback - Function called when item is touched.
+   */
   addMenuItemIcon(iconName, iconColor, backgroundColor, callback) {
     if (this.nbItems < this.size) {
       this.domElem.find('ul').append(
