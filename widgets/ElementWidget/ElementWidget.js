@@ -22,17 +22,19 @@ class ElementWidget extends TUIOWidget {
       throw new TypeError('ElementWidget is an abstract class. It cannot be instanciated');
     }
     super(x, y, width, height);
+    this._width *= initialScale;
+    this._height *= initialScale;
     this.idTagMove = tagMove;
     this.idTagDelete = tagDelete;
     this.idTagZoom = tagZoom;
     this._currentAngle = initialRotation;
-    this.scale = initialScale;
     this._lastTouchesValues = {};
     this._lastTagsValues = {};
     this.internX = x;
     this.internY = y;
-    this.internWidth = width;
-    this.internHeight = height;
+    this.internWidth = this.width;
+    this.internHeight = this.height;
+
     ElementWidget.zIndexGlobal += 1;
     this.zIndex = ElementWidget.zIndexGlobal;
 
@@ -64,7 +66,7 @@ class ElementWidget extends TUIOWidget {
    * @param {number} y - Point's ordinate to test.
    */
   isTouched(x, y) {
-    return (x >= this.internX && x <= this.internX + this.internWidth && y >= this.internY && y <= this.internY + this.internHeight) && !this.isDisabled;
+    return (x >= this.x && x <= this.x + this.width && y >= this.y && y <= this.y + this.height) && !this.isDisabled;
   }
 
   /**
@@ -85,7 +87,7 @@ class ElementWidget extends TUIOWidget {
       };
       this._lastTouchesValues.pinchDistance = 0;
       if (this._lastTouchesValues.scale == null) {
-        this._lastTouchesValues.scale = this.scale;
+        this._lastTouchesValues.scale = 1;
       }
     }
   }
@@ -99,8 +101,8 @@ class ElementWidget extends TUIOWidget {
    * @param {number} angle - New ImageWidget's angle.
    */
   moveTo(x, y, angle = null) {
-    this._x = x;
-    this._y = y;
+    this.internX = x;
+    this.internY = y;
     this._domElem.css('left', `${x}px`);
     this._domElem.css('top', `${y}px`);
     if (angle !== null) {
@@ -130,10 +132,10 @@ class ElementWidget extends TUIOWidget {
         const diffX = tuioTouch.x - lastTouchValue.x;
         const diffY = tuioTouch.y - lastTouchValue.y;
 
-        let newX = this.x + diffX;
-        let newY = this.y + diffY;
-        this.internX = this.internX + diffX;
-        this.internY = this.internY + diffY;
+        let newX = this.internX + diffX;
+        let newY = this.internY + diffY;
+        this._x = this.x + diffX;
+        this._y = this.y + diffY;
 
         if (newX < 0) {
           newX = 0;
@@ -191,13 +193,13 @@ class ElementWidget extends TUIOWidget {
           }
         }
         this._domElem.css('transform', `rotate(${this._currentAngle}deg) scale(${newscale})`);
-        this.internX = this._domElem.position().left;
-        this.internY = this._domElem.position().top;
-        this.internWidth = this._domElem.width();
-        this.internHeight = this._domElem.height();
-      } else if (touchesWidgets.length === 3 && this.canDeleteTactile) {
-        this._domElem.remove();
-        this.deleteWidget();
+        this._x = this._domElem.position().left;
+        this._y = this._domElem.position().top;
+        this._width = this._domElem.width();
+        this._height = this._domElem.height();
+      // } else if (touchesWidgets.length === 3 && this.canDeleteTactile) {
+      //   this._domElem.remove();
+      //   this.deleteWidget();
       }
     }
   }
@@ -237,7 +239,7 @@ class ElementWidget extends TUIOWidget {
       this._lastTagsValues.angle = 0;
       //  Setting the scale only at the start
       if (this._lastTagsValues.scale == null) {
-        this._lastTagsValues.scale = this.scale;
+        this._lastTagsValues.scale = 1;
       }
     }
   }
@@ -263,10 +265,10 @@ class ElementWidget extends TUIOWidget {
         const diffX = tuioTag.x - lastTagValue.x;
         const diffY = tuioTag.y - lastTagValue.y;
 
-        this.internX = this.internX + diffX;
-        this.internY = this.internY + diffY;
-        let newX = this.x + diffX;
-        let newY = this.y + diffY;
+        this._x = this.x + diffX;
+        this._y = this.y + diffY;
+        let newX = this.internX + diffX;
+        let newY = this.internY + diffY;
 
         if (newX < 0) {
           newX = 0;
@@ -312,10 +314,10 @@ class ElementWidget extends TUIOWidget {
           this._lastTagsValues.scale = newscale;// We save the scale
         }
       } //  else if
-      this.internX = this._domElem.position().left;
-      this.internY = this._domElem.position().top;
-      this.internWidth = this._domElem.width();
-      this.internHeight = this._domElem.height();
+      this._x = this._domElem.position().left;
+      this._x = this._domElem.position().top;
+      this._width = this._domElem.width();
+      this._height = this._domElem.height();
     }
   }
 

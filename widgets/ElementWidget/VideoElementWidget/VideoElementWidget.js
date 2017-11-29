@@ -40,13 +40,14 @@ class VideoElementWidget extends ElementWidget {
                 .css('right', '0')
                 .css('left', '0')
                 .css('margin', 'auto')
-                .css('background', 'url(\'play-button.svg\') center center no-repeat'));
-    this._domElem.css('width', `${width}px`);
-    this._domElem.css('height', `${height}px`);
+                .css('background', 'url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pg0KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDE5LjAuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPg0KPHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJMYXllcl8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCINCgkgdmlld0JveD0iMCAwIDQ5Ni4xNTggNDk2LjE1OCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDk2LjE1OCA0OTYuMTU4OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+DQo8cGF0aCBzdHlsZT0iZmlsbDojMzJCRUE2OyIgZD0iTTQ5Ni4xNTgsMjQ4LjA4NWMwLTEzNy4wMjEtMTExLjA3LTI0OC4wODItMjQ4LjA3Ni0yNDguMDgyQzExMS4wNywwLjAwMiwwLDExMS4wNjIsMCwyNDguMDg1DQoJYzAsMTM3LjAwMiwxMTEuMDcsMjQ4LjA3MSwyNDguMDgzLDI0OC4wNzFDMzg1LjA4OCw0OTYuMTU1LDQ5Ni4xNTgsMzg1LjA4Niw0OTYuMTU4LDI0OC4wODV6Ii8+DQo8cGF0aCBzdHlsZT0iZmlsbDojRkZGRkZGOyIgZD0iTTM3MC44MDUsMjM1LjI0MkwxOTUuODU2LDEyNy44MThjLTQuNzc2LTIuOTM0LTExLjA2MS0zLjA2MS0xNS45NTEtMC4zMjINCgljLTQuOTc5LDIuNzg1LTguMDcxLDguMDU5LTguMDcxLDEzLjc2MnYyMTRjMCw1LjY5MywzLjA4MywxMC45NjMsOC4wNDYsMTMuNzUyYzIuMzUzLDEuMzIsNS4wMjQsMi4wMiw3LjcyNSwyLjAyDQoJYzIuODk3LDAsNS43MzQtMC43OTcsOC4yMDUtMi4zMDNsMTc0Ljk0Ny0xMDYuNTc2YzQuNjU3LTIuODM2LDcuNTU2LTcuOTg2LDcuNTY1LTEzLjQ0DQoJQzM3OC4zMzIsMjQzLjI1OCwzNzUuNDUyLDIzOC4wOTYsMzcwLjgwNSwyMzUuMjQyeiIvPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPC9zdmc+DQo=") center center no-repeat'));
+    this._domElem.css('width', `${this.width}px`);
+    this._domElem.css('height', `${this.height}px`);
     this._domElem.css('position', 'absolute');
     this._domElem.css('left', `${x}px`);
     this._domElem.css('top', `${y}px`);
-    this._domElem.css('transform', `rotate(${initialRotation}deg) scale(${initialScale})`);
+    this._domElem.css('transform', `rotate(${initialRotation}deg)`);
+    this._domElem.css('transform-origin', `scale(${initialScale})`);
     this.idTagPlayPause = tagPlayPause;
     this.isPlaying = false;
   } // constructor
@@ -73,9 +74,6 @@ class VideoElementWidget extends ElementWidget {
           this._domElem.children().eq(1).hide();
           this.isPlaying = true;
         }
-        
-        // } else if (tuioTag.id === this.idTagVolume) {
-        //   this._domElem.prop('volume', 0.5);
       }
     }
   }
