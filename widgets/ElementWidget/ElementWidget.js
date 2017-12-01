@@ -5,7 +5,6 @@
 
 
 import TUIOWidget from '../../core/TUIOWidget';
-import { WINDOW_WIDTH, WINDOW_HEIGHT } from '../../core/constants';
 import { radToDeg } from '../../core/helpers';
 import Point from '../../src/utils/Point';
 
@@ -118,8 +117,10 @@ class ElementWidget extends TUIOWidget {
    */
   onTouchUpdate(tuioTouch) {
     if (typeof (this._lastTouchesValues[tuioTouch.id]) !== 'undefined') {
-      ElementWidget.zIndexGlobal += 1;
-      this.zIndex = ElementWidget.zIndexGlobal;
+      if (this.zIndex !== ElementWidget.zIndexGlobal) {
+        ElementWidget.zIndexGlobal += 1;
+        this.zIndex = ElementWidget.zIndexGlobal;
+      }
       this._domElem.css('z-index', this.zIndex);
       const touchesWidgets = [];
       const currentTouches = this.touches;
@@ -132,26 +133,10 @@ class ElementWidget extends TUIOWidget {
         const diffX = tuioTouch.x - lastTouchValue.x;
         const diffY = tuioTouch.y - lastTouchValue.y;
 
-        let newX = this.internX + diffX;
-        let newY = this.internY + diffY;
+        const newX = this.internX + diffX;
+        const newY = this.internY + diffY;
         this._x = this.x + diffX;
         this._y = this.y + diffY;
-
-        if (newX < 0) {
-          newX = 0;
-        }
-
-        if (newX > (WINDOW_WIDTH - this.width)) {
-          newX = WINDOW_WIDTH - this.width;
-        }
-
-        if (newY < 0) {
-          newY = 0;
-        }
-
-        if (newY > (WINDOW_HEIGHT - this.height)) {
-          newY = WINDOW_HEIGHT - this.height;
-        }
 
         this.moveTo(newX, newY);
         this._lastTouchesValues = {
@@ -193,8 +178,10 @@ class ElementWidget extends TUIOWidget {
           }
         }
         this._domElem.css('transform', `rotate(${this._currentAngle}deg) scale(${newscale})`);
-        this._x = this._domElem.position().left;
-        this._y = this._domElem.position().top;
+        const newX = this._domElem.position().left;
+        const newY = this._domElem.position().top;
+        this._x = newX;
+        this._y = newY;
         this._width = this._domElem.width();
         this._height = this._domElem.height();
       // } else if (touchesWidgets.length === 3 && this.canDeleteTactile) {
@@ -265,26 +252,8 @@ class ElementWidget extends TUIOWidget {
         const diffX = tuioTag.x - lastTagValue.x;
         const diffY = tuioTag.y - lastTagValue.y;
 
-        this._x = this.x + diffX;
-        this._y = this.y + diffY;
-        let newX = this.internX + diffX;
-        let newY = this.internY + diffY;
-
-        if (newX < 0) {
-          newX = 0;
-        }
-
-        if (newX > (WINDOW_WIDTH - this.width)) {
-          newX = WINDOW_WIDTH - this.width;
-        }
-
-        if (newY < 0) {
-          newY = 0;
-        }
-
-        if (newY > (WINDOW_HEIGHT - this.height)) {
-          newY = WINDOW_HEIGHT - this.height;
-        }
+        const newX = this.internX + diffX;
+        const newY = this.internY + diffY;
 
         this._currentAngle = radToDeg(tuioTag.angle);
         if (this.canRotateTangible) {
@@ -300,6 +269,10 @@ class ElementWidget extends TUIOWidget {
             y: tuioTag.y,
           },
         };
+        this._x = this._domElem.position().left;
+        this._y = this._domElem.position().top;
+        this._width = this._domElem.width();
+        this._height = this._domElem.height();
       } else if (tuioTag.id === this.idTagZoom && this.canZoomTangible) { //  When the zoom tag is recognized
         let newscale;
         if (tuioTag.angle > this._lastTagsValues.angle) { // Increasing angle superior to last saved angle (clockwise)
@@ -313,11 +286,11 @@ class ElementWidget extends TUIOWidget {
           this._domElem.css('transform', `scale(${newscale})`); // We set the dom element scale
           this._lastTagsValues.scale = newscale;// We save the scale
         }
+        this._x = this._domElem.position().left;
+        this._y = this._domElem.position().top;
+        this._width = this._domElem.width();
+        this._height = this._domElem.height();
       } //  else if
-      this._x = this._domElem.position().left;
-      this._x = this._domElem.position().top;
-      this._width = this._domElem.width();
-      this._height = this._domElem.height();
     }
   }
 
@@ -329,6 +302,7 @@ class ElementWidget extends TUIOWidget {
    */
   onTagDeletion(tuioTagId) {
     super.onTagDeletion(tuioTagId);
+    console.log('TAG DELETED');
   }
 
   /**
@@ -388,14 +362,6 @@ class ElementWidget extends TUIOWidget {
   disable(isDisabled) {
     this.isDisabled = isDisabled;
   }
-
-  // Hide
-  // Show
-  // Delete
-  // MoveTo
-  // Rotate
-  // Resize
-  // Activer/Desactiver tangible/tactile
 }
 
 ElementWidget.zIndexGlobal = 0;
