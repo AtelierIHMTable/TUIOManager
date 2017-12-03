@@ -11,7 +11,7 @@
  */
 class MenuItem {
   constructor(item, backgroundcolor, color, isIcon) {
-    // this.isIcon = isIcon;
+    this._isIcon = isIcon;
     if (isIcon) {
       this._icon = item;
     } else {
@@ -32,6 +32,9 @@ class MenuItem {
     return this._name;
   }
 
+  get isIcon() {
+    return this._isIcon;
+  }
   get icon() {
     return this._icon;
   }

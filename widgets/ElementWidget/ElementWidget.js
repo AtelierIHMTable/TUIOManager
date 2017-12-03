@@ -184,9 +184,9 @@ class ElementWidget extends TUIOWidget {
         this._y = newY;
         this._width = this._domElem.width();
         this._height = this._domElem.height();
-      // } else if (touchesWidgets.length === 3 && this.canDeleteTactile) {
-      //   this._domElem.remove();
-      //   this.deleteWidget();
+      } else if (touchesWidgets.length === 5 && this.canDeleteTactile) {
+        this._domElem.remove();
+        this.deleteWidget();
       }
     }
   }

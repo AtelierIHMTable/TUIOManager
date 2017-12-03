@@ -71,7 +71,7 @@ class CircularMenu extends TUIOWidget {
       step: (now) => {
         $(li).css({ transform: `rotate( ${now}deg)` });
       },
-      duration: 0,
+      duration: 1,
     });
   }
 
@@ -161,7 +161,8 @@ class CircularMenu extends TUIOWidget {
             .css('display', 'table-cell')
             .css('vertical-align', 'middle')
             .css('color', textColor)
-            .css('background-color', backgroundColor),
+            .css('background-color', backgroundColor)
+            .css('max-width', '80px'),
           )
           .css('display', 'table'),
       ),
@@ -180,6 +181,7 @@ class CircularMenu extends TUIOWidget {
               .attr('class', iconClass),
           )
           .css('color', iconColor)
+          .css('line-height', '80px')
           .css('background-color', backgroundColor),
       ),
     );
@@ -221,8 +223,11 @@ class CircularMenu extends TUIOWidget {
       this.addBackItem();
     }
     for (let i = 0; i < this.tree.childs.length; i += 1) {
-      console.log(this.tree.childs[i].backgroundcolor);
-      this.addTextItem(this.tree.childs[i].name, this.tree.childs[i].color, this.tree.childs[i].backgroundcolor);
+      if (this.tree.childs[i].isIcon) {
+        this.addIconItem(this.tree.childs[i].icon, this.tree.childs[i].color, this.tree.childs[i].backgroundcolor);
+      } else {
+        this.addTextItem(this.tree.childs[i].name, this.tree.childs[i].color, this.tree.childs[i].backgroundcolor);
+      }
     }
     this.toggleOptions(this.domElem);
     const li = this.domElem.find('li');

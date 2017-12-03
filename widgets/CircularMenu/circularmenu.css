@@ -36,6 +36,8 @@
   text-align: center;
   display: inline-block;
   overflow: hidden;
+  width: 80px;
+  height: 80px;
 }
 
 .selector.open .limenu input + label {
@@ -44,6 +46,7 @@
   /*line-height: 80px;*/
   margin-left: -40px;
   font-size: 14px;
+  word-wrap: break-word;
   display: table-cell;
   vertical-align: middle;
 
