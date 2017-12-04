@@ -6,11 +6,12 @@ FAIRE ATTENTION A ETRE EN FULLSCREEN NAVIGATEUR
 
 ElementWidget est une widget abstraite fournissant un ensemble d'interactions tactiles et tangibles. Cette widget est de forme rectangulaire, et la nature de son contenu (image, vidéo, texte, ...) doit être définit dans une classe héritant d'ElementWidget. Le type de contenu compatible ne se limite uniquement à sa possibilité d'implementation en HTML.
 
-Nombre de doigts | Effet
-- |:-: | -:
-1 doigt | Mouvement de la widget 
-2 doigts | Rotation + Resize 
-5 doigts | Suppression
+
+| Nombre de doigts         | Effet           |
+| ------------- |:-------------:|
+| 1 doigt      | Mouvement de la widget  |
+| 2 doigts      | Rotation + Resize    |
+| 5 doigts | Suppression      |
 
 
 Concernant les interactions tangibles, ce sont les mêmes que celles disponibles en tactiles. L'association du tag et de l'interaction se fait via le constructeur de la widget.
