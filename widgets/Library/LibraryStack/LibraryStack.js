@@ -93,6 +93,11 @@ class LibraryStack extends TUIOWidget {
       let newX = this.x + diffX;
       let newY = this.y + diffY;
 
+      for (var i = 0; i < this._stackList.length; i++) {
+        this._stackList[i].x = newX;
+        this._stackList[i].y = newY;
+      }
+
       if (newX < 0) {
         newX = 0;
       }
@@ -200,6 +205,8 @@ class LibraryStack extends TUIOWidget {
   }//moveTo()
 
   addElementWidget(elementWidget) {
+    elementWidget.x = this.x;
+    elementWidget.y = this.y;
     elementWidget._isInStack = true;
     elementWidget.canMove(false, false);
     elementWidget.canZoom(false, false);
