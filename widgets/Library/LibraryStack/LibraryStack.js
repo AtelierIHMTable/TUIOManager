@@ -94,8 +94,8 @@ class LibraryStack extends TUIOWidget {
       let newY = this._y + diffY;
 
       for (var i = 0; i < this._stackList.length; i++) {
-        this._stackList[i].x = newX;
-        this._stackList[i].y = newY;
+        this._stackList[i]._x = newX;
+        this._stackList[i]._y = newY;
       }
 
       if (newX < 0) {
