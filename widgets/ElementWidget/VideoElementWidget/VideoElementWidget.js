@@ -50,6 +50,7 @@ class VideoElementWidget extends ElementWidget {
     this._domElem.css('transform-origin', `scale(${initialScale})`);
     this.idTagPlayPause = tagPlayPause;
     this.isPlaying = false;
+    this.canPlayPauseTangible = true;
   } // constructor
 
   /**
@@ -61,7 +62,7 @@ class VideoElementWidget extends ElementWidget {
   onTagCreation(tuioTag) {
     super.onTagCreation(tuioTag);
     if (this.isTouched(tuioTag.x, tuioTag.y)) {
-      if (tuioTag.id === this.idTagPlayPause) {
+      if (tuioTag.id === this.idTagPlayPause && this.canPlayPauseTangible) {
         this._domElem.children().first().on('ended', () => {
           this._domElem.children().eq(1).show();
         });
@@ -76,6 +77,17 @@ class VideoElementWidget extends ElementWidget {
         }
       }
     }
+  }
+
+  /**
+   * Call to enable/disable play/pause
+   *
+   * @method rotate
+   * @param {boolean} canZoomTangible - Enable/disable tangible zoom
+   * @param {boolean} canZoomTactile - Enable/disable tactile zoom
+  */
+  canPlayPause(canPlayPauseTangible) {
+    this.canPlayPauseTangible = canPlayPauseTangible;
   }
 } // class ImageElementWidget
 
