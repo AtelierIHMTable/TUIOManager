@@ -123,7 +123,6 @@ class CircularMenu extends TUIOWidget {
    * @param {TUIOTouch} tuioTouch - A TUIOTouch instance.
    */
   onTouchCreation(tuioTouch) {
-    console.log(tuioTouch.x, tuioTouch.y);
     if (this.isTouched(tuioTouch.x, tuioTouch.y)) {
       this._touches = {
         ...this._touches,
@@ -242,9 +241,6 @@ class CircularMenu extends TUIOWidget {
   }
 
   menuItemTouch(index) {
-    // Si le noeud touché est une feuille -> execution de sa fonction
-    // Sinon, on change de noeud et on reconstruit le menu
-    console.log(index);
     if (this.tree.childs[index].isLeaf()) {
       this.tree.childs[index].callback();
     } else {
