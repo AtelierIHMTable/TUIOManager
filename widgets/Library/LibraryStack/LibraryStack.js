@@ -90,8 +90,8 @@ class LibraryStack extends TUIOWidget {
       const diffX = tuioTouch.x - lastTouchValue.x;
       const diffY = tuioTouch.y - lastTouchValue.y;
 
-      let newX = this.x + diffX;
-      let newY = this.y + diffY;
+      let newX = this._x + diffX;
+      let newY = this._y + diffY;
 
       for (var i = 0; i < this._stackList.length; i++) {
         this._stackList[i].x = newX;
@@ -205,8 +205,11 @@ class LibraryStack extends TUIOWidget {
   }//moveTo()
 
   addElementWidget(elementWidget) {
-    elementWidget.x = this.x;
-    elementWidget.y = this.y;
+    console.log("before x = " + elementWidget._x + " y = " +elementWidget._y);
+    elementWidget._x = this._x;
+    elementWidget._y = this._y;
+    console.log("after x = " + elementWidget.x + " y = " +elementWidget.y);
+
     elementWidget._isInStack = true;
     elementWidget.canMove(false, false);
     elementWidget.canZoom(false, false);
