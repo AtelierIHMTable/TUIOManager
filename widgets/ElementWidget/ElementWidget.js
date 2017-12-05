@@ -136,7 +136,7 @@ class ElementWidget extends TUIOWidget {
        //console.log(TUIOManager.getInstance()._widgets[widgetId].constructor.name);
         if(TUIOManager.getInstance()._widgets[widgetId].constructor.name === 'LibraryStack') {
           //console.log("found a stack !!! at "+ TUIOManager.getInstance()._widgets[widgetId]._x);
-          if ( this.isInBounds(TUIOManager.getInstance()._widgets[widgetId]), tuioTouch) {
+          if ( this.isInBounds(TUIOManager.getInstance()._widgets[widgetId]), tuioTouch.x, tuioTouch.y) {
             //console.log("pic is in bounds !!!");
             this._isInStack= true;
             TUIOManager.getInstance()._widgets[widgetId].addElementWidget(this);
@@ -396,8 +396,8 @@ class ElementWidget extends TUIOWidget {
     this.isDisabled = isDisabled;
   }
 
-  isInBounds(libStack, tuioTouch) {
-    if(tuioTouch.x >= libStack._x && tuioTouch.x <= (libStack._x + libStack._width) && tuioTouch.y >= libStack._y && tuioTouch.y <= (libStack._y + libStack._height) ) {
+  isInBounds(libStack, x, y) {
+    if(x >= libStack._x && x <= (libStack._x + libStack._width) && y >= libStack._y && y <= (libStack._y + libStack._height) ) {
       return true;
     }
     return false;
