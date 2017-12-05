@@ -224,14 +224,13 @@ class LibraryStack extends TUIOWidget {
     elementToAdd.canRotate(false, false);
     this._stackList.push(elementToAdd);
 
-    elementToAdd._domElem.css('left', '0px');
-    elementToAdd._domElem.css('top', '0px');
+
 
     //console.log(elementWidget.constructor.name);
     this._domElem.append(elementToAdd._domElem);
     const oldWidth = elementToAdd._domElem.width();
     //console.log("oldWidth = " + oldWidth);
-    elementToAdd._domElem.css('width', this._domElem.width()-20);
+    elementToAdd._domElem.css('width', this._domElem.width()-this._domElem.width()/2.7);
     //console.log("newWidth = " + elementWidget._domElem.width());
     //console.log("oldHeight = "+ elementWidget._domElem.height());
 
@@ -245,6 +244,12 @@ class LibraryStack extends TUIOWidget {
       const newHeight = elementToAdd._domElem.height() - (elementToAdd._domElem.height()- this._domElem.height() + 20);
       elementToAdd._domElem.css('height', newHeight);
     }
+
+    const freeWidth = (this._domElem.width() - elementToAdd._domElem.width()) / 2;
+    elementToAdd._domElem.css('left', freeWidth +'px');
+    const freeHeight = (this._domElem.height() - elementToAdd._domElem.height()) / 2;
+    elementToAdd._domElem.css('top', freeHeight + 'px');
+
     elementToAdd._domElem.css('transform', 'rotate('+ this._angle+'deg)');
     elementToAdd._domElem.addClass('stack-element');
     this._angle += 50;
