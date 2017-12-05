@@ -130,21 +130,7 @@ class ElementWidget extends TUIOWidget {
   onTouchUpdate(tuioTouch) {
     console.log("Movin");
     console.log(TUIOManager.getInstance()._widgets);
-    if(!this._isInStack){
-      Object.keys(TUIOManager.getInstance()._widgets).forEach((widgetId) => {
-        //console.log(widgetId);
-       //console.log(TUIOManager.getInstance()._widgets[widgetId].constructor.name);
-        if(TUIOManager.getInstance()._widgets[widgetId].constructor.name === 'LibraryStack') {
-          //console.log("found a stack !!! at "+ TUIOManager.getInstance()._widgets[widgetId]._x);
-          if ( this.isInBounds(TUIOManager.getInstance()._widgets[widgetId]), tuioTouch.x, tuioTouch.y) {
-            //console.log("pic is in bounds !!!");
-            this._isInStack= true;
-            TUIOManager.getInstance()._widgets[widgetId].addElementWidget(this);
-            return;
-          }
-        }
-      });
-    }
+    
 
 
 
@@ -230,6 +216,28 @@ class ElementWidget extends TUIOWidget {
    */
   onTouchDeletion(tuioTouchId) {
     super.onTouchDeletion(tuioTouchId);
+    if (typeof (this._lastTouchesValues[tuioTouchId]) !== 'undefined') {
+      const lastTouchValue = this._lastTouchesValues[tuioTouchId];
+      console.log(tuioTouchId);
+      console.log(lastTouchValue);
+      const x = lastTouchValue.x;
+      const y = lastTouchValue.y;
+      if(!this._isInStack){
+        Object.keys(TUIOManager.getInstance()._widgets).forEach((widgetId) => {
+          //console.log(widgetId);
+        //console.log(TUIOManager.getInstance()._widgets[widgetId].constructor.name);
+          if(TUIOManager.getInstance()._widgets[widgetId].constructor.name === 'LibraryStack') {
+            //console.log("found a stack !!! at "+ TUIOManager.getInstance()._widgets[widgetId]._x);
+            if ( this.isInBounds(TUIOManager.getInstance()._widgets[widgetId], x, y)) {
+              //console.log("pic is in bounds !!!");
+              this._isInStack= true;
+              TUIOManager.getInstance()._widgets[widgetId].addElementWidget(this);
+              return;
+            }
+          }
+        });
+      }
+    }
     ElementWidget.isAlreadyTouched = false;
     this.lastAngle = null;
   }
@@ -397,6 +405,7 @@ class ElementWidget extends TUIOWidget {
   }
 
   isInBounds(libStack, x, y) {
+    console.log(x, y);
     if(x >= libStack._x && x <= (libStack._x + libStack._width) && y >= libStack._y && y <= (libStack._y + libStack._height) ) {
       return true;
     }
