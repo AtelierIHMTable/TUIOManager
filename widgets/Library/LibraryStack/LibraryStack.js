@@ -9,7 +9,8 @@ import TUIOWidget from 'tuiomanager/core/TUIOWidget';
 import { WINDOW_WIDTH, WINDOW_HEIGHT } from 'tuiomanager/core/constants';
 import { radToDeg } from 'tuiomanager/core/helpers';
 
-
+import ImageElementWidget from 'tuiomanager/widgets/ElementWidget/ImageElementWidget/ImageElementWidget';
+import VideoElementWidget from 'tuiomanager/widgets/ElementWidget/VideoElementWidget/VideoElementWidget';
 
 
 /**
@@ -85,6 +86,7 @@ class LibraryStack extends TUIOWidget {
    * @param {TUIOTouch} tuioTouch - A TUIOTouch instance.
    */
   onTouchUpdate(tuioTouch) {
+    console.log("STACK TOUCHED");
     if (typeof (this._lastTouchesValues[tuioTouch.id]) !== 'undefined') {
       const lastTouchValue = this._lastTouchesValues[tuioTouch.id];
       const diffX = tuioTouch.x - lastTouchValue.x;
@@ -205,38 +207,53 @@ class LibraryStack extends TUIOWidget {
   }//moveTo()
 
   addElementWidget(elementWidget) {
-    console.log("before x = " + elementWidget._x + " y = " +elementWidget._y);
-    elementWidget._x = this._x;
-    elementWidget._y = this._y;
-    console.log("after x = " + elementWidget.x + " y = " +elementWidget.y);
-
-    elementWidget._isInStack = true;
-    elementWidget.canMove(false, false);
-    elementWidget.canZoom(false, false);
-    elementWidget.canRotate(false, false);
-    this._stackList.push(elementWidget);
-
-    console.log(elementWidget.constructor.name);
-    this._domElem.append(elementWidget._domElem);
-    const oldWidth = elementWidget._domElem.width();
-    console.log("oldWidth = " + oldWidth);
-    elementWidget._domElem.css('width', this._domElem.width()-20);
-    console.log("newWidth = " + elementWidget._domElem.width());
-    console.log("oldHeight = "+ elementWidget._domElem.height());
-
-    const newHeight = elementWidget._domElem.width() * elementWidget._domElem.height() / oldWidth;
-    console.log("newHeight = "+ newHeight);
-    elementWidget._domElem.css('height', newHeight);
-
-    if(elementWidget._domElem.height() > this._domElem.height()) {
-      const newWidth = elementWidget._domElem.width() - (elementWidget._domElem.height()- this._domElem.height() + 20);
-      elementWidget._domElem.css('width', newWidth+'px');
-      const newHeight = elementWidget._domElem.height() - (elementWidget._domElem.height()- this._domElem.height() + 20);
-      elementWidget._domElem.css('height', newHeight);
+    //console.log("before x = " + elementWidget._x + " y = " +elementWidget._y);
+    let elementToAdd;
+    if(elementWidget.constructor.name === 'ImageElementWidget') {
+    //  ImageElementWidget(0, 0, 250, 333, 0, 2, 'assets/IMG_20150304_201145.jpg', 'B3', 'C9', '38');
+      elementToAdd = new ImageElementWidget(0, 0, 250, 333, 0, 2,elementWidget._domElem.prop('src'), 'B3', 'C9', '38');
     }
-    elementWidget._domElem.css('transform', 'rotate('+ this._angle+'deg)');
-    elementWidget._domElem.addClass('stack-element');
+
+    elementToAdd._x = this._x;
+    elementToAdd._y = this._y;
+    //console.log("after x = " + elementWidget._x + " y = " +elementWidget._y);
+
+    elementToAdd._isInStack = true;
+    elementToAdd.canMove(false, false);
+    elementToAdd.canZoom(false, false);
+    elementToAdd.canRotate(false, false);
+    this._stackList.push(elementToAdd);
+
+    elementToAdd._domElem.css('left', '0px');
+    elementToAdd._domElem.css('top', '0px');
+
+    //console.log(elementWidget.constructor.name);
+    this._domElem.append(elementToAdd._domElem);
+    const oldWidth = elementToAdd._domElem.width();
+    //console.log("oldWidth = " + oldWidth);
+    elementToAdd._domElem.css('width', this._domElem.width()-20);
+    //console.log("newWidth = " + elementWidget._domElem.width());
+    //console.log("oldHeight = "+ elementWidget._domElem.height());
+
+    const newHeight = elementToAdd._domElem.width() * elementToAdd._domElem.height() / oldWidth;
+    //console.log("newHeight = "+ newHeight);
+    elementToAdd._domElem.css('height', newHeight);
+
+    if(elementToAdd._domElem.height() > this._domElem.height()) {
+      const newWidth = elementToAdd._domElem.width() - (elementToAdd._domElem.height()- this._domElem.height() + 20);
+      elementToAdd._domElem.css('width', newWidth+'px');
+      const newHeight = elementToAdd._domElem.height() - (elementToAdd._domElem.height()- this._domElem.height() + 20);
+      elementToAdd._domElem.css('height', newHeight);
+    }
+    elementToAdd._domElem.css('transform', 'rotate('+ this._angle+'deg)');
+    elementToAdd._domElem.addClass('stack-element');
     this._angle += 50;
+    elementToAdd._currentAngle = this._angle;
+
+    //elementToAdd._domElem.css('z-index', '0');
+    elementWidget._domElem.remove();
+    elementWidget.deleteWidget();
+
   }// addElementWidget()
 
   isInBounds(element) {
@@ -253,7 +270,7 @@ var maglobal = "baybay";
 var allTheStacks = [];
 
 var CheckStacks = function (element) {
-  console.log("In CheckStacks() !!!");
+  //console.log("In CheckStacks() !!!");
   for (var i = 0; i < allTheStacks.length; i++) {
     if( allTheStacks[i].isInBounds(element)) {
       allTheStacks[i].addElementWidget(element);

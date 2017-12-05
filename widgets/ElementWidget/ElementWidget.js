@@ -5,6 +5,7 @@
 
 
 import TUIOWidget from '../../core/TUIOWidget';
+import TUIOManager from '../../core/TUIOManager';
 import { radToDeg } from '../../core/helpers';
 import Point from '../../src/utils/Point';
 
@@ -116,6 +117,26 @@ class ElementWidget extends TUIOWidget {
    * @param {TUIOTouch} tuioTouch - A TUIOTouch instance.
    */
   onTouchUpdate(tuioTouch) {
+    console.log("Movin");
+    console.log(TUIOManager.getInstance()._widgets);
+    if(!this._isInStack){
+      Object.keys(TUIOManager.getInstance()._widgets).forEach((widgetId) => {
+        //console.log(widgetId);
+       //console.log(TUIOManager.getInstance()._widgets[widgetId].constructor.name);
+        if(TUIOManager.getInstance()._widgets[widgetId].constructor.name === 'LibraryStack') {
+          //console.log("found a stack !!! at "+ TUIOManager.getInstance()._widgets[widgetId]._x);
+          if ( this.isInBounds(TUIOManager.getInstance()._widgets[widgetId])) {
+            //console.log("pic is in bounds !!!");
+            this._isInStack= true;
+            TUIOManager.getInstance()._widgets[widgetId].addElementWidget(this);
+            return;
+          }
+        }
+      });
+    }
+
+
+
     if (typeof (this._lastTouchesValues[tuioTouch.id]) !== 'undefined') {
       if (this.zIndex !== ElementWidget.zIndexGlobal) {
         ElementWidget.zIndexGlobal += 1;
@@ -362,7 +383,15 @@ class ElementWidget extends TUIOWidget {
   disable(isDisabled) {
     this.isDisabled = isDisabled;
   }
-}
+
+  isInBounds(libStack) {
+    if(this._x >= libStack._x && this._x <= (libStack._x + libStack._width) && this._y >= libStack._y && this._y <= (libStack._y + libStack._height) ) {
+      return true;
+    }
+    return false;
+  }//isInBounds
+
+}// class
 
 ElementWidget.zIndexGlobal = 0;
 
