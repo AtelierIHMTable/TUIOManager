@@ -44,6 +44,21 @@ class Point {
   angleWith(p2) {
     return (Math.atan2(p2.y - this.y, p2.x - this.x)) * (180 / Math.PI);
   }
+
+  rotate(angleD, originX, originY) {
+    const angle = (angleD * Math.PI) / 180.0;
+    const s = Math.sin(angle);
+    const c = Math.cos(angle);
+
+    this._x -= originX;
+    this._y -= originY;
+
+    const xnew = (this.x * c) - (this.y * s);
+    const ynew = (this.x * s) + (this.y * c);
+
+    this._x = xnew + originX;
+    this._y = ynew + originY;
+  }
 }
 
 export default Point;
