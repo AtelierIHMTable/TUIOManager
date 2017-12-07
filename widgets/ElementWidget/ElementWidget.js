@@ -76,7 +76,7 @@ class ElementWidget extends TUIOWidget {
     const p = new Point(x, y);
     p.rotate((360 - this._currentAngle), ox, oy);
     this._domElem.css('transform', `rotate(${this._currentAngle}deg) scale(${this.scale})`);
-    return (p.x >= nx && p.x <= nx + width && p.y >= ny && p.y <= ny + height);
+    return (p.x >= nx && p.x <= nx + width && p.y >= ny && p.y <= ny + height) && !this.isDisabled;
     // return (x >= this.x && x <= this.x + this.width && y >= this.y && y <= this.y + this.height) && !this.isDisabled;
   }
 
@@ -87,18 +87,20 @@ class ElementWidget extends TUIOWidget {
    * @param {TUIOTouch} tuioTouch - A TUIOTouch instance.
    */
   onTouchCreation(tuioTouch) {
-    super.onTouchCreation(tuioTouch);
-    if (this.isTouched(tuioTouch.x, tuioTouch.y)) {
-      this._lastTouchesValues = {
-        ...this._lastTouchesValues,
-        [tuioTouch.id]: {
-          x: tuioTouch.x,
-          y: tuioTouch.y,
-        },
-      };
-      this._lastTouchesValues.pinchDistance = 0;
-      if (this._lastTouchesValues.scale == null) {
-        this._lastTouchesValues.scale = 1;
+    if (!this._isInStack) {
+      super.onTouchCreation(tuioTouch);
+      if (this.isTouched(tuioTouch.x, tuioTouch.y)) {
+        this._lastTouchesValues = {
+          ...this._lastTouchesValues,
+          [tuioTouch.id]: {
+            x: tuioTouch.x,
+            y: tuioTouch.y,
+          },
+        };
+        this._lastTouchesValues.pinchDistance = 0;
+        if (this._lastTouchesValues.scale == null) {
+          this._lastTouchesValues.scale = this.scale;
+        }
       }
     }
   }
@@ -117,7 +119,7 @@ class ElementWidget extends TUIOWidget {
     this._domElem.css('left', `${x}px`);
     this._domElem.css('top', `${y}px`);
     if (angle !== null) {
-      this._domElem.css('transform', `rotate(${angle}deg)`);
+      this._domElem.css('transform', `rotate(${angle}deg) scale(${this.scale})`);
     }
   }
 
@@ -128,12 +130,6 @@ class ElementWidget extends TUIOWidget {
    * @param {TUIOTouch} tuioTouch - A TUIOTouch instance.
    */
   onTouchUpdate(tuioTouch) {
-    console.log("Movin");
-    console.log(TUIOManager.getInstance()._widgets);
-    
-
-
-
     if (typeof (this._lastTouchesValues[tuioTouch.id]) !== 'undefined') {
       if (this.zIndex !== ElementWidget.zIndexGlobal) {
         ElementWidget.zIndexGlobal += 1;
@@ -196,11 +192,12 @@ class ElementWidget extends TUIOWidget {
             this.lastAngle = touch1.angleWith(touch2);
           }
         }
+        this._domElem.css('transform', `rotate(360deg) scale(${this.scale})`);
+        this._width = this._domElem.width();
+        this._height = this._domElem.height();
         this._domElem.css('transform', `rotate(${this._currentAngle}deg) scale(${this.scale})`);
         this._x = this._domElem.position().left;
         this._y = this._domElem.position().top;
-        this._width = this._domElem.width();
-        this._height = this._domElem.height();
       // } else if (touchesWidgets.length === 5 && this.canDeleteTactile) {
       //   this._domElem.remove();
       //   this.deleteWidget();
@@ -218,18 +215,12 @@ class ElementWidget extends TUIOWidget {
     super.onTouchDeletion(tuioTouchId);
     if (typeof (this._lastTouchesValues[tuioTouchId]) !== 'undefined') {
       const lastTouchValue = this._lastTouchesValues[tuioTouchId];
-      console.log(tuioTouchId);
-      console.log(lastTouchValue);
       const x = lastTouchValue.x;
       const y = lastTouchValue.y;
-      if(!this._isInStack){
+      if (!this._isInStack) {
         Object.keys(TUIOManager.getInstance()._widgets).forEach((widgetId) => {
-          //console.log(widgetId);
-        //console.log(TUIOManager.getInstance()._widgets[widgetId].constructor.name);
-          if(TUIOManager.getInstance()._widgets[widgetId].constructor.name === 'LibraryStack') {
-            //console.log("found a stack !!! at "+ TUIOManager.getInstance()._widgets[widgetId]._x);
+          if (TUIOManager.getInstance()._widgets[widgetId].constructor.name === 'LibraryStack') {
             if ( this.isInBounds(TUIOManager.getInstance()._widgets[widgetId], x, y)) {
-              //console.log("pic is in bounds !!!");
               this._isInStack= true;
               TUIOManager.getInstance()._widgets[widgetId].addElementWidget(this);
               return;
@@ -265,7 +256,7 @@ class ElementWidget extends TUIOWidget {
       this._lastTagsValues.angle = 0;
       //  Setting the scale only at the start
       if (this._lastTagsValues.scale == null) {
-        this._lastTagsValues.scale = 1;
+        this._lastTagsValues.scale = this.scale;
       }
     }
   }
@@ -294,8 +285,8 @@ class ElementWidget extends TUIOWidget {
         const newX = this.internX + diffX;
         const newY = this.internY + diffY;
 
-        this._currentAngle = radToDeg(tuioTag.angle);
         if (this.canRotateTangible) {
+          this._currentAngle = radToDeg(tuioTag.angle);
           this.moveTo(newX, newY, this._currentAngle);
         } else {
           this.moveTo(newX, newY);
@@ -318,13 +309,13 @@ class ElementWidget extends TUIOWidget {
           newscale = this._lastTagsValues.scale * 1.5; // new scale is 1.5 times the old scale
           this.scale = newscale;
           this._lastTagsValues.angle = tuioTag.angle;// We save the new angle
-          this._domElem.css('transform', `scale(${newscale})`); // We set the dom element scale
+          this._domElem.css('transform', `rotate(${this._currentAngle}deg) scale(${newscale})`); // We set the dom element scale
           this._lastTagsValues.scale = newscale; //  We save the scale
         } else if (tuioTag.angle < this._lastTagsValues.angle) { //  Decreasing angle inferior to the last saved angle(counterclockwise)
           newscale = this._lastTagsValues.scale * 0.75;// new scale is 0.75 times the old scale
           this.scale = newscale;
           this._lastTagsValues.angle = tuioTag.angle;// We save the new angle
-          this._domElem.css('transform', `scale(${newscale})`); // We set the dom element scale
+          this._domElem.css('transform', `rotate(${this._currentAngle}deg) scale(${newscale})`); // We set the dom element scale
           this._lastTagsValues.scale = newscale;// We save the scale
         }
         this._x = this._domElem.position().left;
@@ -343,7 +334,6 @@ class ElementWidget extends TUIOWidget {
    */
   onTagDeletion(tuioTagId) {
     super.onTagDeletion(tuioTagId);
-    console.log('TAG DELETED');
   }
 
   /**
@@ -405,7 +395,6 @@ class ElementWidget extends TUIOWidget {
   }
 
   isInBounds(libStack, x, y) {
-    console.log(x, y);
     if(x >= libStack._x && x <= (libStack._x + libStack._width) && y >= libStack._y && y <= (libStack._y + libStack._height) ) {
       return true;
     }

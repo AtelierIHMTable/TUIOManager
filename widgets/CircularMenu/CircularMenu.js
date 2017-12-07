@@ -56,7 +56,7 @@ class CircularMenu extends TUIOWidget {
           .css('background-color', this.backBackgroundColor),
       );
     this.isHide = false;
-    //this._domElem.hide();
+    // this._domElem.hide();
   }
 
   /**
@@ -260,20 +260,20 @@ class CircularMenu extends TUIOWidget {
    * @param {TUIOTag} tuioTag - A TUIOTag instance.
    */
   onTagCreation(tuioTag) {
-    this._tags = {
-      ...this._tags,
-      [tuioTag.id]: tuioTag,
-    };
-    this._tags[tuioTag.id].addWidget(this);
-
-    this._lastTagsValues = {
-      ...this._lastTagsValues,
-      [tuioTag.id]: {
-        x: tuioTag.x,
-        y: tuioTag.y,
-      },
-    };
     if (tuioTag.id === this.idTagMenu) {
+      this._tags = {
+        ...this._tags,
+        [tuioTag.id]: tuioTag,
+      };
+      this._tags[tuioTag.id].addWidget(this);
+  
+      this._lastTagsValues = {
+        ...this._lastTagsValues,
+        [tuioTag.id]: {
+          x: tuioTag.x,
+          y: tuioTag.y,
+        },
+      };
       this.nbItems = 0;
       this._domElem.find('ul').empty();
       this.constructMenu();
@@ -346,7 +346,6 @@ class CircularMenu extends TUIOWidget {
     this.toggleOptions(this.domElem);
     this.isHide = true;
     this.tree = this.root;
-    console.log('DELETED');
   }
 
 

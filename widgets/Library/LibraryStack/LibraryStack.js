@@ -5,13 +5,8 @@
 // Import JQuery
 import $ from 'jquery/dist/jquery.min';
 
-import TUIOWidget from 'tuiomanager/core/TUIOWidget';
-import { WINDOW_WIDTH, WINDOW_HEIGHT } from 'tuiomanager/core/constants';
-import { radToDeg } from 'tuiomanager/core/helpers';
-
-import ImageElementWidget from 'tuiomanager/widgets/ElementWidget/ImageElementWidget/ImageElementWidget';
-import VideoElementWidget from 'tuiomanager/widgets/ElementWidget/VideoElementWidget/VideoElementWidget';
-
+import TUIOWidget from '../../../core/TUIOWidget';
+import { radToDeg } from '../../../core/helpers';
 
 /**
  * Main class to manage LibraryStack.
@@ -33,24 +28,39 @@ class LibraryStack extends TUIOWidget {
    * @param {number} width - ImageWidget's width.
    * @param {number} height - ImageWidget's height.
    */
-  constructor(x, y, width, height) {
-    super(x, y, width, height);
+  constructor(x, y, size, stackTitle, allowcontentsArray) {
+    super(x, y, size, size);
 
     this._lastTouchesValues = {};
     this._lastTagsValues = {};
     this._stackList = [];
     this._angle = 0;
-
+    this.zIndexElem = -20000000;
     this._domElem = $('<div class="library-stack"> </div>');
-    //this._domElem.attr('src', imgSrc);
-    this._domElem.css('width', `${width}px`);
-    this._domElem.css('height', `${height}px`);
+    this._domElem.css('width', `${size}px`);
+    this._domElem.css('height', `${size}px`);
     this._domElem.css('position', 'absolute');
     this._domElem.css('left', `${x}px`);
     this._domElem.css('top', `${y}px`);
+    this._domElem.css('z-index', -1);
     this._domElem.css('background-color', '#FF6633');
+    this.stackTitle = $('<div>').text(stackTitle)
+                        .css('margin-top', '-35px')
+                        .css('text-align', 'center')
+                        .css('width', `${size}`)
+                        .css('max-width', `${size}`)
+                        .css('white-space', 'nowrap')
+                        .css('height', '40px')
+                        .css('overflow', 'hidden')
+                        .css('font-size', '100px');
 
-    allTheStacks.push(this);
+    this._domElem.append(this.stackTitle);
+    this.zIndex = -1;
+    this.allowcontentsArray = allowcontentsArray;
+    this.elementInfoArray = [];
+    this.upperIndex = 0;
+    this.canRemove = true;
+    // this.allTheStacks.push(this);
   }
 
   /**
@@ -68,6 +78,7 @@ class LibraryStack extends TUIOWidget {
    */
   onTouchCreation(tuioTouch) {
     super.onTouchCreation(tuioTouch);
+    this.resizeFont(this.stackTitle.get(0));
     if (this.isTouched(tuioTouch.x, tuioTouch.y)) {
       this._lastTouchesValues = {
         ...this._lastTouchesValues,
@@ -76,7 +87,23 @@ class LibraryStack extends TUIOWidget {
           y: tuioTouch.y,
         },
       };
+      this.touchedTimestamp = Date.now();
+      this.touchedInitX = tuioTouch.x;
+      this.touchedInitY = tuioTouch.y;
     }
+  }
+
+  resizeFont() {
+    const element = this.stackTitle.get(0);
+    while (element.scrollWidth > element.offsetWidth || element.scrollHeight > element.offsetHeight) {
+      const newSize = parseFloat($(element).css('font-size').slice(0, -2)) * 0.95;
+      $(element).css('font-size', `${newSize}px`);
+    }
+  }
+
+  addTo(parent) {
+    super.addTo(parent);
+    this.resizeFont();
   }
 
   /**
@@ -86,44 +113,62 @@ class LibraryStack extends TUIOWidget {
    * @param {TUIOTouch} tuioTouch - A TUIOTouch instance.
    */
   onTouchUpdate(tuioTouch) {
-    console.log("STACK TOUCHED");
     if (typeof (this._lastTouchesValues[tuioTouch.id]) !== 'undefined') {
-      const lastTouchValue = this._lastTouchesValues[tuioTouch.id];
-      const diffX = tuioTouch.x - lastTouchValue.x;
-      const diffY = tuioTouch.y - lastTouchValue.y;
+      const touchesWidgets = [];
+      const currentTouches = this.touches;
+      Object.keys(this.touches).forEach((key) => {
+        touchesWidgets.push(currentTouches[key]);
+      });
+      const updateTouch = Date.now();
+      if (touchesWidgets.length === 1) {
+        const deltaX = Math.abs(tuioTouch.x - this.touchedInitX);
+        const deltaY = Math.abs(tuioTouch.y - this.touchedInitY);
+        if (((updateTouch - this.touchedTimestamp) / 1000 > 1) && deltaX < 10 && deltaY < 10) {
+          if (this.canRemove) {
+            this.removeElementWidget();
+            this.canRemove = false;
+          }
+        } else {
+          const lastTouchValue = this._lastTouchesValues[tuioTouch.id];
+          const diffX = tuioTouch.x - lastTouchValue.x;
+          const diffY = tuioTouch.y - lastTouchValue.y;
 
-      let newX = this._x + diffX;
-      let newY = this._y + diffY;
+          const newX = this._x + diffX;
+          const newY = this._y + diffY;
 
-      for (var i = 0; i < this._stackList.length; i++) {
-        this._stackList[i]._x = newX;
-        this._stackList[i]._y = newY;
+          for (let i = 0; i < this._stackList.length; i += 1) {
+            this._stackList[i].internX = newX;
+            this._stackList[i].internY = newY;
+          }
+
+          this.moveTo(newX, newY);
+          this._lastTouchesValues = {
+            ...this._lastTouchesValues,
+            [tuioTouch.id]: {
+              x: tuioTouch.x,
+              y: tuioTouch.y,
+            },
+          };
+        }
       }
+    }
+  }
 
-      if (newX < 0) {
-        newX = 0;
+  /**
+   * Call after a TUIOTouch deletion.
+   *
+   * @method onTouchDeletion
+   * @param {number/string} tuioTouchId - TUIOTouch's id to delete.
+   */
+  onTouchDeletion(tuioTouchId) {
+    super.onTouchDeletion(tuioTouchId);
+    if (typeof (this._lastTouchesValues[tuioTouchId]) !== 'undefined') {
+      const endTouch = Date.now();
+      const delta = endTouch - this.touchedTimestamp;
+      if (delta / 1000 <= 0.5) {
+        this.browseStack();
       }
-
-      if (newX > (WINDOW_WIDTH - this.width)) {
-        newX = WINDOW_WIDTH - this.width;
-      }
-
-      if (newY < 0) {
-        newY = 0;
-      }
-
-      if (newY > (WINDOW_HEIGHT - this.height)) {
-        newY = WINDOW_HEIGHT - this.height;
-      }
-
-      this.moveTo(newX, newY);
-      this._lastTouchesValues = {
-        ...this._lastTouchesValues,
-        [tuioTouch.id]: {
-          x: tuioTouch.x,
-          y: tuioTouch.y,
-        },
-      };
+      this.canRemove = true;
     }
   }
 
@@ -158,24 +203,8 @@ class LibraryStack extends TUIOWidget {
       const diffX = tuioTag.x - lastTagValue.x;
       const diffY = tuioTag.y - lastTagValue.y;
 
-      let newX = this.x + diffX;
-      let newY = this.y + diffY;
-
-      if (newX < 0) {
-        newX = 0;
-      }
-
-      if (newX > (WINDOW_WIDTH - this.width)) {
-        newX = WINDOW_WIDTH - this.width;
-      }
-
-      if (newY < 0) {
-        newY = 0;
-      }
-
-      if (newY > (WINDOW_HEIGHT - this.height)) {
-        newY = WINDOW_HEIGHT - this.height;
-      }
+      const newX = this.x + diffX;
+      const newY = this.y + diffY;
 
       this.moveTo(newX, newY, radToDeg(tuioTag.angle));
       this._lastTagsValues = {
@@ -206,82 +235,114 @@ class LibraryStack extends TUIOWidget {
     }
   }//moveTo()
 
+
   addElementWidget(elementWidget) {
-    //console.log("before x = " + elementWidget._x + " y = " +elementWidget._y);
     let elementToAdd;
-    if(elementWidget.constructor.name === 'ImageElementWidget') {
-    //  ImageElementWidget(0, 0, 250, 333, 0, 2, 'assets/IMG_20150304_201145.jpg', 'B3', 'C9', '38');
-      elementToAdd = new ImageElementWidget(0, 0, 250, 333, 0, 2,elementWidget._domElem.prop('src'), 'B3', 'C9', '38');
+    if (this.allowcontentsArray.indexOf(elementWidget.constructor.name) !== -1 || this.allowcontentsArray.length === 0) {
+      elementToAdd = elementWidget;
+      elementToAdd._domElem.css('transform', 'rotate(360deg)');
+      const elemWidth = elementToAdd._domElem.width();
+      const elemHeight = elementToAdd._domElem.height();
+      this.elementInfoArray.push(
+        {
+          x: elementToAdd.x,
+          y: elementToAdd.y,
+          width: elemWidth,
+          height: elemHeight,
+          angle: elementToAdd._currentAngle,
+          scale: elementToAdd.scale,
+          zIndex: elementToAdd.zIndex,
+        },
+      );
+      elementToAdd._x = this._x;
+      elementToAdd._y = this._y;
+      this.zIndexElem += 1;
+      elementToAdd.zIndex = this.zIndexElem;
+
+      elementToAdd._isInStack = true;
+      elementToAdd.disable(true);
+      
+      let newWidth;
+      let newHeight;
+      
+      if (elemWidth > elemHeight) {
+        newWidth = this.width - 50;
+        newHeight = (elemHeight * newWidth) / elemWidth;
+      } else {
+        newHeight = this.width - 50;
+        newWidth = (elemWidth * newHeight) / elemHeight;
+      }
+
+      const newLeft = (this.width / 2) - (newWidth / 2);
+      const newTop = (this.height / 2) - (newHeight / 2);
+      elementToAdd._domElem.addClass('stack-element')
+                            .css('left', newLeft)
+                            .css('top', newTop)
+                            .css('width', newWidth)
+                            .css('height', newHeight);
+      const angle = this._stackList.length * 10;
+      elementToAdd._domElem.css('transform', `rotate(${angle}deg)`)
+                           .appendTo(this._domElem);
+
+      this._stackList.push(elementToAdd);
     }
-
-    elementToAdd._x = this._x;
-    elementToAdd._y = this._y;
-    //console.log("after x = " + elementWidget._x + " y = " +elementWidget._y);
-
-    elementToAdd._isInStack = true;
-    elementToAdd.canMove(false, false);
-    elementToAdd.canZoom(false, false);
-    elementToAdd.canRotate(false, false);
-    this._stackList.push(elementToAdd);
-
-
-
-    //console.log(elementWidget.constructor.name);
-    this._domElem.append(elementToAdd._domElem);
-    const oldWidth = elementToAdd._domElem.width();
-    //console.log("oldWidth = " + oldWidth);
-    elementToAdd._domElem.css('width', this._domElem.width()-this._domElem.width()/2.7);
-    //console.log("newWidth = " + elementWidget._domElem.width());
-    //console.log("oldHeight = "+ elementWidget._domElem.height());
-
-    const newHeight = elementToAdd._domElem.width() * elementToAdd._domElem.height() / oldWidth;
-    //console.log("newHeight = "+ newHeight);
-    elementToAdd._domElem.css('height', newHeight);
-
-    if(elementToAdd._domElem.height() > this._domElem.height()) {
-      const newWidth = elementToAdd._domElem.width() - (elementToAdd._domElem.height()- this._domElem.height() + 20);
-      elementToAdd._domElem.css('width', newWidth+'px');
-      const newHeight = elementToAdd._domElem.height() - (elementToAdd._domElem.height()- this._domElem.height() + 20);
-      elementToAdd._domElem.css('height', newHeight);
-    }
-
-    const freeWidth = (this._domElem.width() - elementToAdd._domElem.width()) / 2;
-    elementToAdd._domElem.css('left', freeWidth +'px');
-    const freeHeight = (this._domElem.height() - elementToAdd._domElem.height()) / 2;
-    elementToAdd._domElem.css('top', freeHeight + 'px');
-
-    elementToAdd._domElem.css('transform', 'rotate('+ this._angle+'deg)');
-    elementToAdd._domElem.addClass('stack-element');
-    this._angle += 50;
-    elementToAdd._currentAngle = this._angle;
-
-    //elementToAdd._domElem.css('z-index', '0');
-    elementWidget._domElem.remove();
-    elementWidget.deleteWidget();
-
   }// addElementWidget()
 
+  removeElementWidget() {
+    const upperIndex = this.getUpperIndex();
+
+    const elementToRemove = this._stackList[upperIndex];
+    const elemenToRemoveInfos = this.elementInfoArray[upperIndex];
+
+    elementToRemove.disable(false);
+    elementToRemove._width = elemenToRemoveInfos.width;
+    elementToRemove._height = elemenToRemoveInfos.height;
+    elementToRemove._currentAngle = elemenToRemoveInfos.angle;
+    elementToRemove.scale = elemenToRemoveInfos.scale;
+    elementToRemove.zIndex = elemenToRemoveInfos.zIndex;
+    elementToRemove._domElem.css('z-index', elemenToRemoveInfos.zIndex)
+                            .css('top', elementToRemove.internY)
+                            .css('left', elementToRemove.internX)
+                            .css('width', elemenToRemoveInfos.width)
+                            .css('height', elemenToRemoveInfos.height)
+                            .css('transform', `rotate(${elemenToRemoveInfos.angle}deg) scale(${elemenToRemoveInfos.scale})`)
+                            .removeClass('stack-element')
+                            .appendTo(this._domElem.parent());
+    elementToRemove._isInStack = false;
+    this._stackList.splice(upperIndex, 1);
+    this.elementInfoArray.splice(upperIndex, 1);
+  }
+
   isInBounds(element) {
-    if(element.x >= this.x && element.x <= (this.x + this.width) && element.y >= this.y && element.y <= (this.y + this.height)) {
+    if (element.x >= this.x && element.x <= (this.x + this.width) && element.y >= this.y && element.y <= (this.y + this.height)) {
       return true;
     }
     return false;
   }// isInBounds()
 
-}// class LibraryStack
-
-var maglobal = "baybay";
-
-var allTheStacks = [];
-
-var CheckStacks = function (element) {
-  //console.log("In CheckStacks() !!!");
-  for (var i = 0; i < allTheStacks.length; i++) {
-    if( allTheStacks[i].isInBounds(element)) {
-      allTheStacks[i].addElementWidget(element);
-      break;
+  browseStack() {
+    this.upperIndex = (this.upperIndex + 1) % this._stackList.length;
+    const zIndexBottom = this._stackList[this._stackList.length - 1].zIndex;
+    for (let i = this._stackList.length - 1; i > 0; i -= 1) {
+      this._stackList[i].zIndex = this._stackList[i - 1].zIndex;
+      this._stackList[i]._domElem.css('z-index', this._stackList[i].zIndex);
     }
+    this._stackList[0].zIndex = zIndexBottom;
+    this._stackList[0]._domElem.css('z-index', this._stackList[0].zIndex);
   }
-}// CheckStacks()
+
+  getUpperIndex() {
+    let maxZindex = -20000000;
+    let index = 0;
+    for (let i = 0; i < this._stackList.length; i += 1) {
+      if (this._stackList[i].zIndex > maxZindex) {
+        maxZindex = this._stackList[i].zIndex;
+        index = i;
+      }
+    }
+    return index;
+  }
+
+}// class LibraryStack
 
 export default LibraryStack;
