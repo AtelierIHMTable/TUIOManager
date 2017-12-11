@@ -2,6 +2,8 @@
 Introduction widgets ....
 FAIRE ATTENTION A ETRE EN FULLSCREEN NAVIGATEUR
 
+//addTo()
+
 ## ElementWidget
 
 ElementWidget est une widget abstraite fournissant un ensemble d'interactions tactiles et tangibles. Cette widget est de forme rectangulaire, et la nature de son contenu (image, vidéo, texte, ...) doit être définit dans une classe héritant d'ElementWidget. Le type de contenu compatible ne se limite uniquement à sa possibilité d'implementation en HTML.
@@ -44,7 +46,7 @@ constructor(x, y, width, height, initialRotation, initialScale, src, tagMove, ta
 #### Exemple d'utilisation
 ```javascript
 const candiesImage = new ImageElementWidget(100, 150, 110, 110, 0, 1, 'assets/example-health/candies.png', 'B3', 'C9', '38');
-$('#app').append(candiesImage.domElem);
+candiesImage.addTo($('#app').get(0));
 ```
 Les formats d'images pris en comptes sont tous ceux compatibles avec la balise `<img>` HTML5 et pris en charge par le navigateur utilisé. 
 
@@ -127,6 +129,7 @@ const root = new MenuItem('root', '', '', false);
 root.addChild(difficulties);
 root.addChild(icones);
 const circularmenu = new CircularMenu('6D', root);
+circularmenu.addTo($('#app').get(0));
 ```
 
 On definit ensuite les noeuds de l'arbre toujours avec `MenuItem`. On ne définit cette fois pas les callback pour ces noeuds mais on ajoute les fils définit précedemment avec `addChild()` pour définir les sous-menus. On finit par définir la racine de l'arbre avec les premiers items du menus. Enfin, on créé le l'objet `CircularMenu` en lui passant en paramètre le tag associé ainsi que l'arbre créé.
@@ -160,3 +163,97 @@ setBackMenuItemText(text, textColor, backgroundColor)
 On peut donc appelé ces fonctions sur `CicrularMenu` pour définir le bouton retour soit en tant qu'icône soit en tant que texte.
 
 Le nombre d'items pour le menu est cependant limité. Actuellement, il est n'est pas possible d'afficher plus de 8 items simultanément sinon les items se superposent. Ainsi, le nombre d'items est limité à 8 pour la racine de l'arbre, et 7 pour tous les autres noeuds (car présence de l'item retour).
+
+## LibraryStack
+
+LibraryStack est un container d'ElementWidget. Il permet donc d'afficher sous forme d'une pile un certain nombre d'éléments. 
+
+<p align="center"> 
+    <img src="images/libraryStackExample.png">
+</p>
+
+#### Constructeur
+
+```javascript
+/**
+ * Constructor LibraryStack
+ *
+ * @method onTagDeletion
+ * @param {number} x - X position of the stack
+ * @param {number} y - Y position of the stack
+ * @param {number} size - Size of the stack
+ * @param {string} stackTitle - Title of the stack
+ * @param {string} color - Color in Hexadecimal of the border or background of the stack
+ * @param {boolean} isFull - Define if the stack has border or a full background color
+ * @param {String Array} allowcontentsArray - Array of allowed ElementWidget to fill the stack. Set an empty array to accept all kind of ElementWidget
+ */
+constructor(x, y, size, stackTitle, color, isFull, allowcontentsArray)
+```
+
+#### Fonctions disponibles
+
+```javascript
+/**
+ * Set tangible interaction with the stack
+ *
+ * @method setTangible
+ * @param {string} tag - Id of the object
+ * @param {number} positionMode - PositionMode of the tag object
+ */
+setTangible(tag, positionMode)
+```
+Cette fonction permet d'associer la LibraryStack à un objet. La stack ne sera donc plus afficher directement au lancement, mais sera afficher uniquement lorsque l'objet associé est posé sur la table.
+
+
+| Mode         | Position           |
+| ------------- |:-------------:|
+| 0      | TOP  |
+| 1      | LEFT    |
+| 2 | RIGHT      |
+| 3 | BOTTOM      |
+
+
+```javascript
+/**
+ * Add an ElementWidget (ImageElementWidget/VideoElementWidget/...) to the Stack
+ *
+ * @method addElementWidget
+ * @param {ElementWidget} element - ElementWidget to add
+ */
+addElementWidget(element)
+```
+
+```javascript
+/**
+ * Hide the stack and disable all his interactions
+ */
+hide()
+```
+
+```javascript
+/**
+ * Show the stack and enable all his interactions
+ */
+show()
+```
+
+#### Exemple d'utilisation
+
+```javascript
+// Libstack acceptant tout type d'ElementWidget
+const libstack = new LibraryStack(600, 300, 300, 'ma stack', '#C9C9C9', false, []);
+libstack.addTo($('#example-container').get(0));
+
+libstack.addElementWidget(imageWidgetA);
+libstack.addElementWidget(imageWidgetB);
+```
+
+```javascript
+// Libstack acceptant uniquement des ImagesElementWidget et qui apparaît lors de la pose du tag 38, à la position 0
+const libstack = new LibraryStack(600, 300, 300, 'Stack Images', '#C9C9C9', false, ['ImageElementWidget']);
+libstack.setTangible('38', 0);
+libstack.addTo($('#example-container').get(0));
+libstack.addElementWidget(imageWidgetA);
+libstack.addElementWidget(imageWidgetB);
+```
+

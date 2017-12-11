@@ -84,6 +84,7 @@ class LibraryStack extends TUIOWidget {
     this.canRemove = true;
     this._currentAngle = 0;
     this.showTag = '';
+    this.scale = 1;
     // this.allTheStacks.push(this);
   }
 
@@ -286,8 +287,22 @@ class LibraryStack extends TUIOWidget {
           y: tuioTag.y,
         },
       };
-      this._x = tuioTag.x;
-      this._y = tuioTag.y;
+      if (this.tangibleMode === 0) { // TOP
+        this._x = tuioTag.x - this.width/2;
+        this._y = tuioTag.y + 80;
+      } else if (this.tangibleMode === 1) { // LEFT
+        this._x = tuioTag.x + 80;
+        this._y = tuioTag.y - this.height/2;
+      } else if (this.tangibleMode === 2) { // RIGHT
+        this._x = tuioTag.x - this.width - 80;
+        this._y = tuioTag.y - this.height/2;
+      } else if (this.tangibleMode === 3) { // BOTTOM
+        this._x = tuioTag.x - this.width/2;
+        this._y = tuioTag.y - this.height - 80;
+      } else { // AUTO
+        this._x = tuioTag.x;
+        this._y = tuioTag.y;
+      }
       this.moveTo(this.x, this.y, radToDeg(tuioTag.angle));
       this.show();
     }
@@ -347,14 +362,17 @@ class LibraryStack extends TUIOWidget {
     this._domElem.css('left', `${x}px`);
     this._domElem.css('top', `${y}px`);
     if (angle !== null) {
-      this._domElem.css('transform', `rotate(${angle}deg)`);
+      this._domElem.css('transform', `rotate(${angle}deg) scale(${this.scale})`);
     }
   }//moveTo()
 
+  isAllowedElement(elementWidget) {
+    return (this.allowcontentsArray.indexOf(elementWidget.constructor.name) !== -1 || this.allowcontentsArray.length === 0);
+  }
 
   addElementWidget(elementWidget) {
     let elementToAdd;
-    if (this.allowcontentsArray.indexOf(elementWidget.constructor.name) !== -1 || this.allowcontentsArray.length === 0) {
+    if (this.isAllowedElement(elementWidget)) {
       elementToAdd = elementWidget;
       elementToAdd._domElem.css('transform', 'rotate(360deg)');
       const elemWidth = elementToAdd._domElem.width();
@@ -471,8 +489,9 @@ class LibraryStack extends TUIOWidget {
     this.isDisabled = false;
   }
 
-  setTangible(tag) {
+  setTangible(tag, mode) {
     this.showTag = tag;
+    this.tangibleMode = mode;
     this.hide();
   }
 
