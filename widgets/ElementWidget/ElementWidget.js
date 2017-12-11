@@ -17,7 +17,7 @@ import Point from '../../src/utils/Point';
  */
 class ElementWidget extends TUIOWidget {
   // constructor (x, y, width, height, initialRotation, tagMove, tagDelete, tagZoom, )
-  constructor(x, y, width, height, initialRotation, initialScale, tagMove, tagDelete, tagZoom) {
+  constructor(x, y, width, height, initialRotation, initialScale, tagMove, tagDelete, tagZoom, tagDuplicate) {
     if (new.target === ElementWidget) {
       throw new TypeError('ElementWidget is an abstract class. It cannot be instanciated');
     }
@@ -37,7 +37,6 @@ class ElementWidget extends TUIOWidget {
     this.scale = 1;
     ElementWidget.zIndexGlobal += 1;
     this.zIndex = ElementWidget.zIndexGlobal;
-
     this.canMoveTactile = true;
     this.canZoomTactile = true;
     this.canRotateTactile = true;
@@ -49,6 +48,7 @@ class ElementWidget extends TUIOWidget {
     this.canDeleteTangible = true;
 
     this.isDisabled = false;
+    this.tagDuplicate = tagDuplicate;
   }// constructor
 
   /**

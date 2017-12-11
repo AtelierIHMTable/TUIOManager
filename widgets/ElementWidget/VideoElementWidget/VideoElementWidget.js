@@ -24,8 +24,8 @@ class VideoElementWidget extends ElementWidget {
    * @param {number} width - ImageElementWidget's width.
    * @param {number} height - ImageElementWidget's height.
    */
-  constructor(x, y, width, height, initialRotation, initialScale, src, tagMove, tagDelete, tagZoom, tagPlayPause) {
-    super(x, y, width, height, initialRotation, initialScale, tagMove, tagDelete, tagZoom);
+  constructor(x, y, width, height, initialRotation, initialScale, src, tagMove, tagDelete, tagZoom, tagDuplicate, tagPlayPause) {
+    super(x, y, width, height, initialRotation, initialScale, tagMove, tagDelete, tagZoom, tagDuplicate);
     this._domElem = $('<div>');
     this._domElem.append(
       $('<video>').attr('src', src)
@@ -46,6 +46,7 @@ class VideoElementWidget extends ElementWidget {
     this._domElem.css('position', 'absolute');
     this._domElem.css('left', `${x}px`);
     this._domElem.css('top', `${y}px`);
+    this._domElem.css('z-index', `${this.zIndex}`);
     this._domElem.css('transform', `rotate(${initialRotation}deg)`);
     this._domElem.css('transform-origin', `scale(${initialScale})`);
     this.idTagPlayPause = tagPlayPause;
@@ -118,6 +119,10 @@ class VideoElementWidget extends ElementWidget {
     if (this.isTouched(tuioTag.x, tuioTag.y)) {
       if (tuioTag.id === this.idTagPlayPause && this.canPlayPauseTangible) {
         this.playPauseVideo();
+      } else if (tuioTag.id === this.tagDuplicate) {
+        const clone = new VideoElementWidget(200, 200, this.width, this.height, this._currentAngle, 1, this.src, this.tagMove, this.tagDelete, this.tagZoom, this.tagDuplicate, this.idTagPlayPause);
+        TUIOManager.getInstance().addWidget(clone);
+        this._domElem.parent().append(clone.domElem);
       }
     }
   }
