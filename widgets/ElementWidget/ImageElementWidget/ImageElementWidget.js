@@ -43,6 +43,7 @@ class ImageElementWidget extends ElementWidget {
   } // constructor
 
   onTagUpdate(tuioTag) {
+    super.onTagUpdate(tuioTag);
     if (typeof (this._lastTagsValues[tuioTag.id]) !== 'undefined') {
       if (tuioTag.id === this.tagDuplicate && !this.hasDuplicate) {
         const clone = new ImageElementWidget(this.x + 10, this.y + 10, this.width, this.height, this._currentAngle, 1, this.src, this.tagMove, this.tagDelete, this.tagZoom, this.tagDuplicate);
@@ -54,6 +55,7 @@ class ImageElementWidget extends ElementWidget {
   }
 
   onTagDeletion(tuioTagId) {
+    super.onTagDeletion(tuioTagId);
     if (typeof (this._lastTagsValues[tuioTagId]) !== 'undefined') {
       if (tuioTagId === this.tagDuplicate) {
         this.hasDuplicate = false;

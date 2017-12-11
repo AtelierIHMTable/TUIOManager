@@ -1,8 +1,9 @@
 # Widgets
-Introduction widgets ....
-FAIRE ATTENTION A ETRE EN FULLSCREEN NAVIGATEUR
+Introduction widgets .. blablabla
 
-//addTo()
+Il faut faire attention à ce que l'application Web soit en plein écran pour que la librairie TUIO fonctionne correctement.
+
+Pour toutes les widgets, pour les ajouter à l'application HTML, il faut utiliser la méthode `addTo(domElem)`. Cette méthode prend en argument l'élément DOM HTML, récuperable en javascript avec `getElementById()` ou en JQuery avec `$('#id').get(0)`.
 
 ## ElementWidget
 
@@ -13,7 +14,6 @@ ElementWidget est une widget abstraite fournissant un ensemble d'interactions ta
 | ------------- |:-------------:|
 | 1 doigt      | Mouvement de la widget  |
 | 2 doigts      | Rotation + Resize    |
-| 5 doigts | Suppression      |
 
 
 Concernant les interactions tangibles, ce sont les mêmes que celles disponibles en tactiles. L'association du tag et de l'interaction se fait via le constructeur de la widget.
@@ -37,7 +37,7 @@ La première implémentation d'ElementWidget (ImageElementWidget) permet d'affic
 
 #### Constructeur
 ```typescript
-constructor(x, y, width, height, initialRotation, initialScale, src, tagMove, tagDelete, tagZoom);
+constructor(x, y, width, height, initialRotation, initialScale, src, tagMove, tagDelete, tagZoom, tagDuplicate);
 ```
     
  
@@ -45,7 +45,7 @@ constructor(x, y, width, height, initialRotation, initialScale, src, tagMove, ta
 
 #### Exemple d'utilisation
 ```javascript
-const candiesImage = new ImageElementWidget(100, 150, 110, 110, 0, 1, 'assets/example-health/candies.png', 'B3', 'C9', '38');
+const candiesImage = new ImageElementWidget(100, 150, 110, 110, 0, 1, 'assets/example-health/candies.png', 'B3', 'C9', '38', '6');
 candiesImage.addTo($('#app').get(0));
 ```
 Les formats d'images pris en comptes sont tous ceux compatibles avec la balise `<img>` HTML5 et pris en charge par le navigateur utilisé. 
@@ -57,11 +57,12 @@ Une deuxième implémentation d'ElementWidget (VideoElementWidget) concerne l'af
 
 #### Constructeur 
 ```javascript
-constructor(x, y, width, height, initialRotation, initialScale, src, tagMove, tagDelete, tagZoom, tagPlayPause)
+constructor(x, y, width, height, initialRotation, initialScale, src, tagMove, tagDelete, tagZoom, tagDuplicate, tagPlayPause)
 ```
 #### Example d'utilisation
 ```javascript
-const videoWidget = new VideoElementWidget(100, 100, 250, 140, 0, 1, 'assets/video/video.mp4', 'B3', 'C9', '38', '3');
+const videoWidget = new VideoElementWidget(100, 100, 250, 140, 0, 1, 'assets/video/video.mp4', 'B3', 'C9', '38', '6', '3');
+videoWidget.addTo($('#app').get(0));
 ```
 En plus des fonctions disponibles via `ElementWidget`, VideoElementWidget dispose de `canPlayPause(canPlayPauseTangible)` permettant d'action/désactiver le play/pause via un tag.
 
@@ -205,7 +206,7 @@ setTangible(tag, positionMode)
 Cette fonction permet d'associer la LibraryStack à un objet. La stack ne sera donc plus afficher directement au lancement, mais sera afficher uniquement lorsque l'objet associé est posé sur la table.
 
 
-| Mode         | Position           |
+| PositionMode         | Position           |
 | ------------- |:-------------:|
 | 0      | TOP  |
 | 1      | LEFT    |
@@ -222,6 +223,8 @@ Cette fonction permet d'associer la LibraryStack à un objet. La stack ne sera d
  */
 addElementWidget(element)
 ```
+
+Cette fonction permet d'ajouter par défaut  des ElementWidgets à la LibraryStack.
 
 ```javascript
 /**

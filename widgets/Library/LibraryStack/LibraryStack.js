@@ -271,7 +271,6 @@ class LibraryStack extends TUIOWidget {
    * @param {TUIOTag} tuioTag - A TUIOTag instance.
    */
   onTagCreation(tuioTag) {
-    console.log(tuioTag.id);
     if (tuioTag.id === this.showTag) {
       console.log("OKOK");
       this._tags = {

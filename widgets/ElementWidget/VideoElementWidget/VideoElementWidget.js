@@ -8,6 +8,7 @@
 import $ from 'jquery/dist/jquery.min';
 
 import ElementWidget from '../ElementWidget';
+import TUIOManager from '../../../core/TUIOManager';
   /**
    * Main class to manage ImageElementWidget.
    *
@@ -27,6 +28,7 @@ class VideoElementWidget extends ElementWidget {
   constructor(x, y, width, height, initialRotation, initialScale, src, tagMove, tagDelete, tagZoom, tagDuplicate, tagPlayPause) {
     super(x, y, width, height, initialRotation, initialScale, tagMove, tagDelete, tagZoom, tagDuplicate);
     this._domElem = $('<div>');
+    this.src = src;
     this._domElem.append(
       $('<video>').attr('src', src)
                   .css('width', '100%')
@@ -120,7 +122,8 @@ class VideoElementWidget extends ElementWidget {
       if (tuioTag.id === this.idTagPlayPause && this.canPlayPauseTangible) {
         this.playPauseVideo();
       } else if (tuioTag.id === this.tagDuplicate) {
-        const clone = new VideoElementWidget(200, 200, this.width, this.height, this._currentAngle, 1, this.src, this.tagMove, this.tagDelete, this.tagZoom, this.tagDuplicate, this.idTagPlayPause);
+        console.log("DUPLICATE");
+        const clone = new VideoElementWidget(this.x + 10, this.y + 10, this.width, this.height, this._currentAngle, 1, this.src, this.tagMove, this.tagDelete, this.tagZoom, this.tagDuplicate, this.idTagPlayPause);
         TUIOManager.getInstance().addWidget(clone);
         this._domElem.parent().append(clone.domElem);
       }
