@@ -220,7 +220,7 @@ class ElementWidget extends TUIOWidget {
       if (!this._isInStack) {
         Object.keys(TUIOManager.getInstance()._widgets).forEach((widgetId) => {
           if (TUIOManager.getInstance()._widgets[widgetId].constructor.name === 'LibraryStack') {
-            if ( this.isInBounds(TUIOManager.getInstance()._widgets[widgetId], x, y)) {
+            if ( this.isInBounds(TUIOManager.getInstance()._widgets[widgetId], x, y) && !TUIOManager.getInstance()._widgets[widgetId].isDisabled) {
               this._isInStack= true;
               TUIOManager.getInstance()._widgets[widgetId].addElementWidget(this);
               return;

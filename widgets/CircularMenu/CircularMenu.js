@@ -252,7 +252,7 @@ class CircularMenu extends TUIOWidget {
     }
   }
 
-  
+
   /**
    * Call after a TUIOTag creation.
    *
@@ -266,7 +266,7 @@ class CircularMenu extends TUIOWidget {
         [tuioTag.id]: tuioTag,
       };
       this._tags[tuioTag.id].addWidget(this);
-  
+
       this._lastTagsValues = {
         ...this._lastTagsValues,
         [tuioTag.id]: {
@@ -341,11 +341,13 @@ class CircularMenu extends TUIOWidget {
    * @param {number/string} tuioTagId - TUIOTag's id to delete.
    */
   onTagDeletion(tuioTagId) {
-    super.onTagDeletion(tuioTagId);
-    this._domElem.hide();
-    this.toggleOptions(this.domElem);
-    this.isHide = true;
-    this.tree = this.root;
+    if (typeof (this._lastTagsValues[tuioTagId]) !== 'undefined') {
+      super.onTagDeletion(tuioTagId);
+      this._domElem.hide();
+      this.toggleOptions(this.domElem);
+      this.isHide = true;
+      this.tree = this.root;
+    }
   }
 
 

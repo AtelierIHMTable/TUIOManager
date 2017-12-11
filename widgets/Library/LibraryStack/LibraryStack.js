@@ -7,6 +7,7 @@ import $ from 'jquery/dist/jquery.min';
 
 import TUIOWidget from '../../../core/TUIOWidget';
 import { radToDeg } from '../../../core/helpers';
+import Point from '../../../src/utils/Point';
 
 /**
  * Main class to manage LibraryStack.
@@ -28,38 +29,61 @@ class LibraryStack extends TUIOWidget {
    * @param {number} width - ImageWidget's width.
    * @param {number} height - ImageWidget's height.
    */
-  constructor(x, y, size, stackTitle, allowcontentsArray) {
+  constructor(x, y, size, stackTitle, color, isFull, allowcontentsArray) {
     super(x, y, size, size);
 
     this._lastTouchesValues = {};
     this._lastTagsValues = {};
     this._stackList = [];
-    this._angle = 0;
     this.zIndexElem = -20000000;
-    this._domElem = $('<div class="library-stack"> </div>');
-    this._domElem.css('width', `${size}px`);
-    this._domElem.css('height', `${size}px`);
-    this._domElem.css('position', 'absolute');
-    this._domElem.css('left', `${x}px`);
-    this._domElem.css('top', `${y}px`);
-    this._domElem.css('z-index', -1);
-    this._domElem.css('background-color', '#FF6633');
-    this.stackTitle = $('<div>').text(stackTitle)
-                        .css('margin-top', '-35px')
+    this._domElem = $('<div>')
+          .css('width', `${size}px`)
+          .css('height', `${size}px`)
+          .css('position', 'absolute')
+          .css('left', `${x}px`)
+          .css('top', `${y}px`)
+          .css('z-index', -1);
+    this.stackTitleTop = $('<div>').text(stackTitle)
+                        .css('margin-top', '-40px')
                         .css('text-align', 'center')
                         .css('width', `${size}`)
                         .css('max-width', `${size}`)
                         .css('white-space', 'nowrap')
                         .css('height', '40px')
-                        .css('overflow', 'hidden')
+                        .css('font-size', '100px');
+    this.stackTitleBottom = $('<div>').text(stackTitle)
+                        .css('position', 'absolute')
+                        .css('bottom', 0)
+                        .css('margin-bottom', '-60px')
+                        .css('text-align', 'center')
+                        .css('width', `${size}`)
+                        .css('max-width', `${size}`)
+                        .css('white-space', 'nowrap')
+                        .css('transform', 'rotate(180deg)')
+                        .css('height', '40px')
                         .css('font-size', '100px');
 
-    this._domElem.append(this.stackTitle);
+    this.stackDiv = $('<div class="library-stack"> </div>')
+                        .css('width', `${size}px`)
+                        .css('height', `${size}px`)
+                        .css('position', 'absolute')
+                        .css('z-index', -1)
+                        .css('overflow', 'hidden');
+    if (isFull) {
+      this.stackDiv.css('background-color', color);
+    } else {
+      this.stackDiv.css('border', `solid 10px ${color}`);
+    }
+    this._domElem.append(this.stackTitleTop);
+    this._domElem.append(this.stackDiv);
+    this._domElem.append(this.stackTitleBottom);
     this.zIndex = -1;
     this.allowcontentsArray = allowcontentsArray;
     this.elementInfoArray = [];
     this.upperIndex = 0;
     this.canRemove = true;
+    this._currentAngle = 0;
+    this.showTag = '';
     // this.allTheStacks.push(this);
   }
 
@@ -70,6 +94,29 @@ class LibraryStack extends TUIOWidget {
    */
   get domElem() { return this._domElem; }
 
+
+  /**
+   * Check if TUIOWidget is touched.
+   *
+   * @method isTouched
+   * @param {number} x - Point's abscissa to test.
+   * @param {number} y - Point's ordinate to test.
+   */
+  isTouched(x, y) {
+    this._domElem.css('transform', `rotate(360deg) scale(${this.scale})`);
+    const nx = this._domElem[0].getBoundingClientRect().left;
+    const ny = this._domElem[0].getBoundingClientRect().top;
+    const width = this._domElem.width();
+    const height = this._domElem.height();
+    const ox = (nx + (width / 2));
+    const oy = (ny + (height / 2));
+    const p = new Point(x, y);
+    p.rotate((360 - this._currentAngle), ox, oy);
+    this._domElem.css('transform', `rotate(${this._currentAngle}deg) scale(${this.scale})`);
+    return (p.x >= nx && p.x <= nx + width && p.y >= ny && p.y <= ny + height) && !this.isDisabled;
+    // return (x >= this.x && x <= this.x + this.width && y >= this.y && y <= this.y + this.height) && !this.isDisabled;
+  }
+
   /**
    * Call after a TUIOTouch creation.
    *
@@ -78,7 +125,6 @@ class LibraryStack extends TUIOWidget {
    */
   onTouchCreation(tuioTouch) {
     super.onTouchCreation(tuioTouch);
-    this.resizeFont(this.stackTitle.get(0));
     if (this.isTouched(tuioTouch.x, tuioTouch.y)) {
       this._lastTouchesValues = {
         ...this._lastTouchesValues,
@@ -87,14 +133,17 @@ class LibraryStack extends TUIOWidget {
           y: tuioTouch.y,
         },
       };
+      if (this._lastTouchesValues.scale == null) {
+        this._lastTouchesValues.scale = 1;
+      }
+
       this.touchedTimestamp = Date.now();
       this.touchedInitX = tuioTouch.x;
       this.touchedInitY = tuioTouch.y;
     }
   }
 
-  resizeFont() {
-    const element = this.stackTitle.get(0);
+  resizeFont(element) {
     while (element.scrollWidth > element.offsetWidth || element.scrollHeight > element.offsetHeight) {
       const newSize = parseFloat($(element).css('font-size').slice(0, -2)) * 0.95;
       $(element).css('font-size', `${newSize}px`);
@@ -103,7 +152,8 @@ class LibraryStack extends TUIOWidget {
 
   addTo(parent) {
     super.addTo(parent);
-    this.resizeFont();
+    this.resizeFont(this.stackTitleTop.get(0));
+    this.resizeFont(this.stackTitleBottom.get(0));
   }
 
   /**
@@ -123,9 +173,11 @@ class LibraryStack extends TUIOWidget {
       if (touchesWidgets.length === 1) {
         const deltaX = Math.abs(tuioTouch.x - this.touchedInitX);
         const deltaY = Math.abs(tuioTouch.y - this.touchedInitY);
-        if (((updateTouch - this.touchedTimestamp) / 1000 > 1) && deltaX < 10 && deltaY < 10) {
+        if (((updateTouch - this.touchedTimestamp) / 1000 > 0.5) && deltaX < 10 && deltaY < 10) {
           if (this.canRemove) {
-            this.removeElementWidget();
+            const removedElem = this.removeElementWidget(tuioTouch);
+            super.onTouchDeletion(tuioTouch.id);
+            removedElem.onTouchCreation(tuioTouch);
             this.canRemove = false;
           }
         } else {
@@ -150,6 +202,42 @@ class LibraryStack extends TUIOWidget {
             },
           };
         }
+      } else if (touchesWidgets.length === 2) {
+        const touch1 = new Point(touchesWidgets[0].x, touchesWidgets[0].y);
+        const touch2 = new Point(touchesWidgets[1].x, touchesWidgets[1].y);
+        let newscale = this._lastTouchesValues.scale;
+        // Resize d'une image
+        // if (this.canZoomTactile) {
+          const c = touch1.distanceTo(touch2);
+          if (c > this._lastTouchesValues.pinchDistance) {
+            newscale = this._lastTouchesValues.scale * 1.018; // new scale is 1.5 times the old scale
+            this._lastTouchesValues.scale = newscale; //  We save the scale
+          } else if (c < this._lastTouchesValues.pinchDistance) {
+            newscale = this._lastTouchesValues.scale * 0.985; // new scale is 1.5 times the old scale
+            this._lastTouchesValues.scale = newscale; //  We save the scale
+          }
+          this.scale = newscale;
+          this._lastTouchesValues.pinchDistance = c;
+        //}
+
+        // Rotation d'une image
+        //if (this.canRotateTactile) {
+          if (!this.lastAngle) {
+            this.lastAngle = touch1.angleWith(touch2);
+          } else {
+            if (this.lastAngle < touch1.angleWith(touch2)) {
+              this._currentAngle += touch1.angleWith(touch2) - this.lastAngle;
+            } else {
+              this._currentAngle -= this.lastAngle - touch1.angleWith(touch2);
+            }
+            this._currentAngle = this._currentAngle % 360;
+            this.lastAngle = touch1.angleWith(touch2);
+          }
+        //}
+        this._domElem.css('transform', `rotate(360deg) scale(${this.scale})`);
+        this._domElem.css('transform', `rotate(${this._currentAngle}deg) scale(${this.scale})`);
+        // this._x = this._domElem.position().left;
+        // this._y = this._domElem.position().top;
       }
     }
   }
@@ -166,9 +254,12 @@ class LibraryStack extends TUIOWidget {
       const endTouch = Date.now();
       const delta = endTouch - this.touchedTimestamp;
       if (delta / 1000 <= 0.5) {
-        this.browseStack();
+        if (this._stackList.length > 0) {
+          this.browseStack();
+        }
       }
       this.canRemove = true;
+      this.lastAngle = null;
     }
   }
 
@@ -179,8 +270,15 @@ class LibraryStack extends TUIOWidget {
    * @param {TUIOTag} tuioTag - A TUIOTag instance.
    */
   onTagCreation(tuioTag) {
-    super.onTagCreation(tuioTag);
-    if (this.isTouched(tuioTag.x, tuioTag.y)) {
+    console.log(tuioTag.id);
+    if (tuioTag.id === this.showTag) {
+      console.log("OKOK");
+      this._tags = {
+        ...this._tags,
+        [tuioTag.id]: tuioTag,
+      };
+      this._tags[tuioTag.id].addWidget(this);
+
       this._lastTagsValues = {
         ...this._lastTagsValues,
         [tuioTag.id]: {
@@ -188,6 +286,10 @@ class LibraryStack extends TUIOWidget {
           y: tuioTag.y,
         },
       };
+      this._x = tuioTag.x;
+      this._y = tuioTag.y;
+      this.moveTo(this.x, this.y, radToDeg(tuioTag.angle));
+      this.show();
     }
   }
 
@@ -214,6 +316,20 @@ class LibraryStack extends TUIOWidget {
           y: tuioTag.y,
         },
       };
+    }
+  }
+
+   /**
+   * Call after a TUIOTag deletion.
+   *
+   * @method onTagUpdate
+   * @param {TUIOTag} tuioTag - A TUIOTag instance.
+   */
+  onTagDeletion(tuioTagid) {
+    if (typeof (this._lastTagsValues[tuioTagid]) !== 'undefined') {
+      super.onTagDeletion(tuioTagid);
+      this.hide();
+      this.isDisabled = true;
     }
   }
 
@@ -278,17 +394,18 @@ class LibraryStack extends TUIOWidget {
       elementToAdd._domElem.addClass('stack-element')
                             .css('left', newLeft)
                             .css('top', newTop)
+                            .css('overflow', 'hidden')
                             .css('width', newWidth)
                             .css('height', newHeight);
       const angle = this._stackList.length * 10;
       elementToAdd._domElem.css('transform', `rotate(${angle}deg)`)
-                           .appendTo(this._domElem);
+                           .appendTo(this.stackDiv);
 
       this._stackList.push(elementToAdd);
     }
   }// addElementWidget()
 
-  removeElementWidget() {
+  removeElementWidget(tuioTouch) {
     const upperIndex = this.getUpperIndex();
 
     const elementToRemove = this._stackList[upperIndex];
@@ -301,16 +418,17 @@ class LibraryStack extends TUIOWidget {
     elementToRemove.scale = elemenToRemoveInfos.scale;
     elementToRemove.zIndex = elemenToRemoveInfos.zIndex;
     elementToRemove._domElem.css('z-index', elemenToRemoveInfos.zIndex)
-                            .css('top', elementToRemove.internY)
-                            .css('left', elementToRemove.internX)
+                            .css('top', tuioTouch.y - elementToRemove.height/2)
+                            .css('left', tuioTouch.x - elementToRemove.width/2)
                             .css('width', elemenToRemoveInfos.width)
                             .css('height', elemenToRemoveInfos.height)
                             .css('transform', `rotate(${elemenToRemoveInfos.angle}deg) scale(${elemenToRemoveInfos.scale})`)
                             .removeClass('stack-element')
-                            .appendTo(this._domElem.parent());
+                            .appendTo(this._domElem.parent().parent());
     elementToRemove._isInStack = false;
     this._stackList.splice(upperIndex, 1);
     this.elementInfoArray.splice(upperIndex, 1);
+    return elementToRemove;
   }
 
   isInBounds(element) {
@@ -341,6 +459,21 @@ class LibraryStack extends TUIOWidget {
       }
     }
     return index;
+  }
+
+  hide() {
+    this._domElem.hide();
+    this.isDisabled = true;
+  }
+
+  show() {
+    this._domElem.show();
+    this.isDisabled = false;
+  }
+
+  setTangible(tag) {
+    this.showTag = tag;
+    this.hide();
   }
 
 }// class LibraryStack

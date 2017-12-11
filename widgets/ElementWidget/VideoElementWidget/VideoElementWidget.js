@@ -51,7 +51,61 @@ class VideoElementWidget extends ElementWidget {
     this.idTagPlayPause = tagPlayPause;
     this.isPlaying = false;
     this.canPlayPauseTangible = true;
+    this.canPlayPauseTactile = true;
+    this.canPlayPause = true;
   } // constructor
+
+
+  /**
+   * Call after a TUIOTag creation.
+   *
+   * @method onTagCreation
+   * @param {TUIOTag} tuioTag - A TUIOTag instance.
+   */
+  onTouchCreation(tuioTouch) {
+    super.onTouchCreation(tuioTouch);
+    this.timeInitTouchVideo = Date.now();
+    this.touchInitX = tuioTouch.x;
+    this.touchInitY = tuioTouch.y;
+  }
+
+  /**
+   * Call after a TUIOTouch update.
+   *
+   * @method onTouchUpdate
+   * @param {TUIOTouch} tuioTouch - A TUIOTouch instance.
+   */
+  onTouchUpdate(tuioTouch) {
+    super.onTouchUpdate(tuioTouch);
+    if (typeof (this._lastTouchesValues[tuioTouch.id]) !== 'undefined') {
+      const touchesWidgets = [];
+      const currentTouches = this.touches;
+      Object.keys(this.touches).forEach((key) => {
+        touchesWidgets.push(currentTouches[key]);
+      });
+      const timeUpdateTouch = Date.now();
+      const deltaX = Math.abs(tuioTouch.x - this.touchInitX);
+      const deltaY = Math.abs(tuioTouch.y - this.touchInitY);
+      const deltaT = (timeUpdateTouch - this.timeInitTouchVideo) / 1000;
+      if (touchesWidgets.length === 1 && this.canPlayPause && deltaT > 0.5 && deltaX < 10 && deltaY < 10) {
+        this.canPlayPause = false;
+        this.playPauseVideo();
+        super.onTouchDeletion(tuioTouch.id);
+        this.canRemove = false;
+      }
+    }
+  }
+
+  /**
+   * Call after a TUIOTouch update.
+   *
+   * @method onTouchUpdate
+   * @param {TUIOTouch} tuioTouch - A TUIOTouch instance.
+   */
+  onTouchDeletion(tuioTouchId) {
+    super.onTouchDeletion(tuioTouchId);
+    this.canPlayPause = true;
+  }
 
   /**
    * Call after a TUIOTag creation.
@@ -63,19 +117,23 @@ class VideoElementWidget extends ElementWidget {
     super.onTagCreation(tuioTag);
     if (this.isTouched(tuioTag.x, tuioTag.y)) {
       if (tuioTag.id === this.idTagPlayPause && this.canPlayPauseTangible) {
-        this._domElem.children().first().on('ended', () => {
-          this._domElem.children().eq(1).show();
-        });
-        if (this.isPlaying) {
-          this._domElem.children().first()[0].pause();
-          this._domElem.children().eq(1).show();
-          this.isPlaying = false;
-        } else {
-          this._domElem.children().first()[0].play();
-          this._domElem.children().eq(1).hide();
-          this.isPlaying = true;
-        }
+        this.playPauseVideo();
       }
+    }
+  }
+
+  playPauseVideo() {
+    this._domElem.children().first().on('ended', () => {
+      this._domElem.children().eq(1).show();
+    });
+    if (this.isPlaying) {
+      this._domElem.children().first()[0].pause();
+      this._domElem.children().eq(1).show();
+      this.isPlaying = false;
+    } else {
+      this._domElem.children().first()[0].play();
+      this._domElem.children().eq(1).hide();
+      this.isPlaying = true;
     }
   }
 
@@ -86,8 +144,9 @@ class VideoElementWidget extends ElementWidget {
    * @param {boolean} canZoomTangible - Enable/disable tangible zoom
    * @param {boolean} canZoomTactile - Enable/disable tactile zoom
   */
-  canPlayPause(canPlayPauseTangible) {
+  canPlayPause(canPlayPauseTangible, canPlayPauseTactile) {
     this.canPlayPauseTangible = canPlayPauseTangible;
+    this.canPlayPauseTactile = canPlayPauseTactile;
   }
 } // class ImageElementWidget
 
