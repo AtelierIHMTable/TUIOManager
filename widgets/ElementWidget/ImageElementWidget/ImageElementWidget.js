@@ -26,8 +26,8 @@ class ImageElementWidget extends ElementWidget {
   * @param {number} width - ImageElementWidget's width.
   * @param {number} height - ImageElementWidget's height.
   */
-  constructor(x, y, width, height, initialRotation, initialScale, src, tagMove, tagDelete, tagZoom, tagDuplicate) {
-    super(x, y, width, height, initialRotation, initialScale, tagMove, tagDelete, tagZoom, tagDuplicate);
+  constructor(x, y, width, height, initialRotation, initialScale, src) {
+    super(x, y, width, height, initialRotation, initialScale);
     this.src = src;
     this._domElem = $('<img>');
     this._domElem.attr('src', src);

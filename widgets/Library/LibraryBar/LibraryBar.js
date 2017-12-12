@@ -5,6 +5,7 @@
 
 import $ from 'jquery/dist/jquery.min';
 import TUIOWidget from '../../../core/TUIOWidget';
+import WidgetsInteraction from '../../../widgets/WidgetsInteraction';
 
 /**
  * Class for a circular menu.
@@ -12,28 +13,12 @@ import TUIOWidget from '../../../core/TUIOWidget';
  * @class CircularMenu
  * @extends TUIOWidget
  */
-class LibraryBar extends TUIOWidget {
+class LibraryBar extends WidgetsInteraction {
 
   constructor(x, y, width, height) {
     super(x, y, width, height);
-    this._domElem = $('<div>');
-    this._domElem.css('top', `${x}`);
-    this._domElem.css('left', `${y}`);
-    this._domElem.css('width', `${width}`);
-    this._domElem.css('height', `${height}`);
-    this._domElem.css('display', 'inline');
   }
 
-
-  addElementWidget(elementWidget) {
-    const newElem = $('<div>')
-      .css('width', 200)
-      .css('height', 200)
-      .css('background-color', '#000')
-      .css('margin-left', '20')
-      .css('display', 'inline');
-    this._domElem.append(newElem);
-  }
 
   /**
   * Check if TUIOWidget is touched.

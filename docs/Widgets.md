@@ -18,18 +18,33 @@ ElementWidget est une widget abstraite fournissant un ensemble d'interactions ta
 
 Concernant les interactions tangibles, ce sont les mêmes que celles disponibles en tactiles. L'association du tag et de l'interaction se fait via le constructeur de la widget.
 
-Les fonctions disponibles pour toutes les ElementWidgets sont : 
+#### Fonctions disponibles
 ```typescript
+// Interactions
 canRotate(canRotateTangible, canRotateTactile);
 canMove(canMoveTangible, canMoveTactile);
 canZoom(canZoomTangible, canZoomTactile);
 canDelete(canDeleteTangible, canDeleteTactile);
 disable(isDisabled);
 ```
-
 Tous les paramètres de ces fonctions sont des booléens.
 Elles permettant d'activer/désactiver certaines fonctionnalités des widgets en fonction des interactions tactiles et tangibles, voir même de tout désactiver avec la fonction `disable()`.
+**Par défaut, un ElementWidget a toutes les interactions d'activées.**
 
+```typescript
+// Tags setters
+setTagMove(tagMove);
+setTagZoom(tagZoom);
+setTagDelete(tagDelete);
+setTagDuplicate(tagDuplicate);
+
+// mettre fonction pour contrôler une widget à distance
+
+// rajouter des callback sur les onTouch ?
+
+// hide/show ?
+```
+Ces fonctions permettent d'utiliser des interactions tangibles avec les `ElementWidget`. Le paramètre en entrée est donc son id (visible sous l'objet).
 
 ### ImageElementWidget
 
@@ -37,7 +52,19 @@ La première implémentation d'ElementWidget (ImageElementWidget) permet d'affic
 
 #### Constructeur
 ```typescript
-constructor(x, y, width, height, initialRotation, initialScale, src, tagMove, tagDelete, tagZoom, tagDuplicate);
+/**
+ * Constructor ImageElementWidget
+ *
+ * @method constructor
+ * @param {number} x - X position of the Image on the screen
+ * @param {number} y - Y position of the Image on the screen
+ * @param {number} width - Width of the Image
+ * @param {number} height - Height of the Image
+ * @param {number} initialRotation - Initial rotation in degree. Set to 0 if no rotation
+ * @param {number} initialScale - Initial scale of the image. Set to 1 if no rescaling
+ * @param {string} src - Source of the image
+ */
+constructor(x, y, width, height, initialRotation, initialScale, src);
 ```
     
  
@@ -45,7 +72,7 @@ constructor(x, y, width, height, initialRotation, initialScale, src, tagMove, ta
 
 #### Exemple d'utilisation
 ```javascript
-const candiesImage = new ImageElementWidget(100, 150, 110, 110, 0, 1, 'assets/example-health/candies.png', 'B3', 'C9', '38', '6');
+const candiesImage = new ImageElementWidget(100, 150, 110, 110, 0, 1, 'assets/example-health/candies.png');
 candiesImage.addTo($('#app').get(0));
 ```
 Les formats d'images pris en comptes sont tous ceux compatibles avec la balise `<img>` HTML5 et pris en charge par le navigateur utilisé. 
@@ -55,16 +82,36 @@ Les formats d'images pris en comptes sont tous ceux compatibles avec la balise `
 
 Une deuxième implémentation d'ElementWidget (VideoElementWidget) concerne l'affichage de vidéo. Comme ImageElementWidget, les vidéos compatible avec cette widget sont les formats supportés par la balise `<video>` d'HTML5.
 
+Concernant l'intéraction tactile, pour lire et mettre en pause la vidéo, un long press (1 seconde) avec un seul doigt est nécessaire.
+
 #### Constructeur 
 ```javascript
-constructor(x, y, width, height, initialRotation, initialScale, src, tagMove, tagDelete, tagZoom, tagDuplicate, tagPlayPause)
+/**
+ * Constructor VideoElementWidget
+ *
+ * @method constructor
+ * @param {number} x - X position of the Video on the screen
+ * @param {number} y - Y position of the Video on the screen
+ * @param {number} width - Width of the Video
+ * @param {number} height - Height of the Video
+ * @param {number} initialRotation - Initial rotation in degree. Set to 0 if no rotation
+ * @param {number} initialScale - Initial scale of the Video. Set to 1 if no rescaling
+ * @param {string} src - Source of the Video
+ */
+constructor(x, y, width, height, initialRotation, initialScale, src)
 ```
+#### Fonctions disponibles
+
+En plus des fonctions disponibles dans `ElementWidget`, VideoElementWidget dispose de `setTagPlayPause(tagPlayPause)` permettant d'associer un tag à la lecture et mise en pause d'une `VideoElementWidget`.
+Pour activer/désactiver la lecture de vidéos (via tangible ou tactile) : `canPlayPause(canPlayPauseTangible, canPlayPauseTactile)`
+
+
 #### Example d'utilisation
 ```javascript
-const videoWidget = new VideoElementWidget(100, 100, 250, 140, 0, 1, 'assets/video/video.mp4', 'B3', 'C9', '38', '6', '3');
+const videoWidget = new VideoElementWidget(100, 100, 250, 140, 0, 1, 'assets/video/video.mp4');
 videoWidget.addTo($('#app').get(0));
 ```
-En plus des fonctions disponibles via `ElementWidget`, VideoElementWidget dispose de `canPlayPause(canPlayPauseTangible)` permettant d'action/désactiver le play/pause via un tag.
+
 
 
 ## CircularMenu
@@ -172,6 +219,16 @@ LibraryStack est un container d'ElementWidget. Il permet donc d'afficher sous fo
 <p align="center"> 
     <img src="images/libraryStackExample.png">
 </p>
+
+**Interactions disponibles**
+
+| Nombre de doigts         | Effet           |
+| ------------- |:-------------:|
+| 1 doigt      | Mouvement de la stack  |
+| 2 doigts      | Rotation + Resize    |
+| Touch court      | Parcourt de la stack    |
+| Touch long      | Sort l'image au sommet de la pile    |
+
 
 #### Constructeur
 

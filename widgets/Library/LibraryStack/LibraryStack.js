@@ -272,7 +272,6 @@ class LibraryStack extends TUIOWidget {
    */
   onTagCreation(tuioTag) {
     if (tuioTag.id === this.showTag) {
-      console.log("OKOK");
       this._tags = {
         ...this._tags,
         [tuioTag.id]: tuioTag,
@@ -415,6 +414,8 @@ class LibraryStack extends TUIOWidget {
                             .css('width', newWidth)
                             .css('height', newHeight);
       const angle = this._stackList.length * 10;
+      elementToAdd._currentAngle = angle;
+      elementToAdd.scale = 1;
       elementToAdd._domElem.css('transform', `rotate(${angle}deg)`)
                            .appendTo(this.stackDiv);
 

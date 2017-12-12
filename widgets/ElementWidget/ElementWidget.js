@@ -17,16 +17,16 @@ import Point from '../../src/utils/Point';
  */
 class ElementWidget extends TUIOWidget {
   // constructor (x, y, width, height, initialRotation, tagMove, tagDelete, tagZoom, )
-  constructor(x, y, width, height, initialRotation, initialScale, tagMove, tagDelete, tagZoom, tagDuplicate) {
+  constructor(x, y, width, height, initialRotation, initialScale) {
     if (new.target === ElementWidget) {
       throw new TypeError('ElementWidget is an abstract class. It cannot be instanciated');
     }
     super(x, y, width, height);
     this._width *= initialScale;
     this._height *= initialScale;
-    this.idTagMove = tagMove;
-    this.idTagDelete = tagDelete;
-    this.idTagZoom = tagZoom;
+    this.idTagMove = '';
+    this.idTagDelete = '';
+    this.idTagZoom = '';
     this._currentAngle = initialRotation;
     this._lastTouchesValues = {};
     this._lastTagsValues = {};
@@ -48,7 +48,7 @@ class ElementWidget extends TUIOWidget {
     this.canDeleteTangible = true;
 
     this.isDisabled = false;
-    this.tagDuplicate = tagDuplicate;
+    this.tagDuplicate = '';
   }// constructor
 
   /**
@@ -77,7 +77,6 @@ class ElementWidget extends TUIOWidget {
     p.rotate((360 - this._currentAngle), ox, oy);
     this._domElem.css('transform', `rotate(${this._currentAngle}deg) scale(${this.scale})`);
     return (p.x >= nx && p.x <= nx + width && p.y >= ny && p.y <= ny + height) && !this.isDisabled;
-    // return (x >= this.x && x <= this.x + this.width && y >= this.y && y <= this.y + this.height) && !this.isDisabled;
   }
 
   /**
@@ -240,26 +239,28 @@ class ElementWidget extends TUIOWidget {
    * @param {TUIOTag} tuioTag - A TUIOTag instance.
    */
   onTagCreation(tuioTag) {
-    super.onTagCreation(tuioTag);
+    if (!this._isInStack) {
+      super.onTagCreation(tuioTag);
+      if (this.isTouched(tuioTag.x, tuioTag.y)) {
+        this._lastTagsValues = {
+          ...this._lastTagsValues,
+          [tuioTag.id]: {
+            x: tuioTag.x,
+            y: tuioTag.y,
+            angle: tuioTag.angle,
 
-    if (this.isTouched(tuioTag.x, tuioTag.y)) {
-      this._lastTagsValues = {
-        ...this._lastTagsValues,
-        [tuioTag.id]: {
-          x: tuioTag.x,
-          y: tuioTag.y,
-          angle: tuioTag.angle,
-
-        },
-      };
-      //  This will be used to save the last angle recorded and make a comparison in onTagUpdate
-      this._lastTagsValues.angle = 0;
-      //  Setting the scale only at the start
-      if (this._lastTagsValues.scale == null) {
-        this._lastTagsValues.scale = this.scale;
+          },
+        };
+        //  This will be used to save the last angle recorded and make a comparison in onTagUpdate
+        this._lastTagsValues.angle = 0;
+        //  Setting the scale only at the start
+        if (this._lastTagsValues.scale == null) {
+          this._lastTagsValues.scale = this.scale;
+        }
       }
     }
   }
+
 
   /**
    * Call after a TUIOTag update.
@@ -400,6 +401,22 @@ class ElementWidget extends TUIOWidget {
     }
     return false;
   }//isInBounds
+
+  setTagMove(tagMove) {
+    this.idTagMove = tagMove;
+  }
+
+  setTagZoom(tagZoom) {
+    this.idTagZoom = tagZoom;
+  }
+
+  setTagDelete(tagDelete) {
+    this.idTagDelete = tagDelete;
+  }
+
+  setTagDuplicate(tagDuplicate) {
+    this.tagDuplicate = tagDuplicate;
+  }
 
 }// class
 
