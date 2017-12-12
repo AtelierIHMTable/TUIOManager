@@ -246,7 +246,7 @@ show()
 ```javascript
 // Libstack acceptant tout type d'ElementWidget
 const libstack = new LibraryStack(600, 300, 300, 'ma stack', '#C9C9C9', false, []);
-libstack.addTo($('#example-container').get(0));
+libstack.addTo($('#app').get(0));
 
 libstack.addElementWidget(imageWidgetA);
 libstack.addElementWidget(imageWidgetB);
@@ -256,7 +256,7 @@ libstack.addElementWidget(imageWidgetB);
 // Libstack acceptant uniquement des ImagesElementWidget et qui apparaît lors de la pose du tag 38, à la position 0
 const libstack = new LibraryStack(600, 300, 300, 'Stack Images', '#C9C9C9', false, ['ImageElementWidget']);
 libstack.setTangible('38', 0);
-libstack.addTo($('#example-container').get(0));
+libstack.addTo($('#app').get(0));
 libstack.addElementWidget(imageWidgetA);
 libstack.addElementWidget(imageWidgetB);
 ```
