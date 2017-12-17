@@ -5,15 +5,14 @@
 
 import $ from 'jquery/dist/jquery.min';
 import TUIOWidget from '../../../core/TUIOWidget';
-import WidgetsInteraction from '../../../widgets/WidgetsInteraction';
 
 /**
- * Class for a circular menu.
+ * Class for a LibraryBar
  *
- * @class CircularMenu
+ * @class LibraryBar
  * @extends TUIOWidget
  */
-class LibraryBar extends WidgetsInteraction {
+class LibraryBar extends TUIOWidget {
 
   constructor(x, y, width, height) {
     super(x, y, width, height);

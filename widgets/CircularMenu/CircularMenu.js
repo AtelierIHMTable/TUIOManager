@@ -148,7 +148,14 @@ class CircularMenu extends TUIOWidget {
     }
   }
 
-
+  /**
+   * Add a text item to the menu
+   *
+   * @method addTextItem
+   * @param {string} itemName - Item name
+   * @param {string} textColor - Text color in hexadecimal
+   * @param {string} backgroundColor - Background color in hexadecimal
+   */
   addTextItem(itemName, textColor, backgroundColor) {
     this._domElem.find('ul').append(
       $('<li>').attr('class', 'limenu').append(
@@ -169,6 +176,14 @@ class CircularMenu extends TUIOWidget {
     this.nbItems += 1;
   }
 
+  /**
+   * Add a icon item to the menu
+   *
+   * @method addIconItem
+   * @param {string} iconClass - Icon class
+   * @param {string} iconColor - Icon color in hexadecimal
+   * @param {string} backgroundColor - Background color in hexadecimal
+   */
   addIconItem(iconClass, iconColor, backgroundColor) {
     this.domElem.find('ul').append(
       $('<li>').attr('class', 'limenu').append(
@@ -186,12 +201,25 @@ class CircularMenu extends TUIOWidget {
     );
   }
 
+  /**
+   * Add back item to the menu
+   *
+   * @method addBackItem
+   */
   addBackItem() {
     this.domElem.find('ul').append(
       this.backItem,
     );
   }
 
+   /**
+   * Set back menu item to an icon
+   *
+   * @method setBackMenuItemIcon
+   * @param {string} iconClass - Icon class
+   * @param {string} iconColor - Icon color in hexadecimal
+   * @param {string} backgroundColor - Background color in hexadecimal
+   */
   setBackMenuItemIcon(iconClass, iconColor, backgroundColor) {
     this.backItem = $('<li>').append(
       $('<input>').attr('id', `c ${this.nbItems}`).attr('type', 'checkbox'),
@@ -206,6 +234,14 @@ class CircularMenu extends TUIOWidget {
     );
   }
 
+  /**
+   * Set back menu item to a text
+   *
+   * @method setBackMenuItemIcon
+   * @param {string} text - Back text
+   * @param {string} textColor - Text color in hexadecimal
+   * @param {string} backgroundColor - Background color in hexadecimal
+   */
   setBackMenuItemText(text, textColor, backgroundColor) {
     this.backItem = $('<li>').append(
       $('<input>').attr('id', `c ${this.nbItems}`).attr('type', 'checkbox'),
@@ -217,6 +253,11 @@ class CircularMenu extends TUIOWidget {
     );
   }
 
+  /**
+   * Called to construct the menu
+   *
+   * @method constructMenu
+   */
   constructMenu() {
     if (this.tree.name !== this.rootName) {
       this.addBackItem();
@@ -240,6 +281,11 @@ class CircularMenu extends TUIOWidget {
     }
   }
 
+  /**
+   * Called when an item of the menu is touched
+   *
+   * @method menuItemTouch
+   */
   menuItemTouch(index) {
     if (this.tree.childs[index].isLeaf()) {
       this.tree.childs[index].callback();

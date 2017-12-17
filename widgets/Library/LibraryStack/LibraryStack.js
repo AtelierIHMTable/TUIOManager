@@ -21,13 +21,15 @@ import Point from '../../../src/utils/Point';
  */
 class LibraryStack extends TUIOWidget {
   /**
-   * ImageWidget constructor.
+   * Constructor LibraryStack
    *
-   * @constructor
-   * @param {number} x - ImageWidget's upperleft coin abscissa.
-   * @param {number} y - ImageWidget's upperleft coin ordinate.
-   * @param {number} width - ImageWidget's width.
-   * @param {number} height - ImageWidget's height.
+   * @param {number} x - X position of the stack
+   * @param {number} y - Y position of the stack
+   * @param {number} size - Size of the stack
+   * @param {string} stackTitle - Title of the stack
+   * @param {string} color - Color in Hexadecimal of the border or background of the stack
+   * @param {boolean} isFull - Define if the stack has border or a full background color
+   * @param {String Array} allowcontentsArray - Array of allowed ElementWidget to fill the stack. Set an empty array to accept all kind of ElementWidget
    */
   constructor(x, y, size, stackTitle, color, isFull, allowcontentsArray) {
     super(x, y, size, size);
@@ -89,7 +91,7 @@ class LibraryStack extends TUIOWidget {
   }
 
   /**
-   * ImageWidget's domElem.
+   * LibraryStack's domElem.
    *
    * @returns {JQuery Object} ImageWidget's domElem.
    */
@@ -97,7 +99,7 @@ class LibraryStack extends TUIOWidget {
 
 
   /**
-   * Check if TUIOWidget is touched.
+   * Check if LibraryStack is touched.
    *
    * @method isTouched
    * @param {number} x - Point's abscissa to test.
@@ -144,6 +146,12 @@ class LibraryStack extends TUIOWidget {
     }
   }
 
+  /**
+   * Set the size of the Stack title to fit correctly
+   *
+   * @method onTouchCreation
+   * @param {DOM} element - DOM Elem of the titles
+   */
   resizeFont(element) {
     while (element.scrollWidth > element.offsetWidth || element.scrollHeight > element.offsetHeight) {
       const newSize = parseFloat($(element).css('font-size').slice(0, -2)) * 0.95;
@@ -151,6 +159,10 @@ class LibraryStack extends TUIOWidget {
     }
   }
 
+  /**
+   * Call to add the stack to a DOM
+   * @param {DOM} parent - DOMElem to put the libraryStack
+   */
   addTo(parent) {
     super.addTo(parent);
     this.resizeFont(this.stackTitleTop.get(0));
@@ -286,17 +298,17 @@ class LibraryStack extends TUIOWidget {
         },
       };
       if (this.tangibleMode === 0) { // TOP
-        this._x = tuioTag.x - this.width/2;
+        this._x = tuioTag.x - (this.width / 2);
         this._y = tuioTag.y + 80;
       } else if (this.tangibleMode === 1) { // LEFT
         this._x = tuioTag.x + 80;
-        this._y = tuioTag.y - this.height/2;
+        this._y = tuioTag.y - (this.height / 2);
       } else if (this.tangibleMode === 2) { // RIGHT
-        this._x = tuioTag.x - this.width - 80;
-        this._y = tuioTag.y - this.height/2;
+        this._x = tuioTag.x - (this.width - 80);
+        this._y = tuioTag.y - (this.height / 2);
       } else if (this.tangibleMode === 3) { // BOTTOM
-        this._x = tuioTag.x - this.width/2;
-        this._y = tuioTag.y - this.height - 80;
+        this._x = tuioTag.x - (this.width / 2);
+        this._y = tuioTag.y - (this.height - 80);
       } else { // AUTO
         this._x = tuioTag.x;
         this._y = tuioTag.y;
@@ -362,12 +374,20 @@ class LibraryStack extends TUIOWidget {
     if (angle !== null) {
       this._domElem.css('transform', `rotate(${angle}deg) scale(${this.scale})`);
     }
-  }//moveTo()
+  }
 
+  /**
+   * Check if the elementwidget is allowed to be placed in this LibraryStack
+   * @param {ElementWidget} elementWidget - Elementwidget to add
+   */
   isAllowedElement(elementWidget) {
     return (this.allowcontentsArray.indexOf(elementWidget.constructor.name) !== -1 || this.allowcontentsArray.length === 0);
   }
 
+  /**
+   * Add an ElementWidget to this LibraryStack
+   * @param {ElementWidget} elementWidget  - Elementwidget to add
+   */
   addElementWidget(elementWidget) {
     let elementToAdd;
     if (this.isAllowedElement(elementWidget)) {
@@ -421,8 +441,12 @@ class LibraryStack extends TUIOWidget {
 
       this._stackList.push(elementToAdd);
     }
-  }// addElementWidget()
+  }
 
+  /**
+   * Remove the top ElementWidget of this LibraryStack
+   * @param {TUIOTouch} tuioTouch - TUIOTouch Instance
+   */
   removeElementWidget(tuioTouch) {
     const upperIndex = this.getUpperIndex();
 
@@ -456,6 +480,9 @@ class LibraryStack extends TUIOWidget {
     return false;
   }// isInBounds()
 
+  /**
+   * Browse the LibraryStack by changing tkhe z-index of all the ElementWidget
+   */
   browseStack() {
     this.upperIndex = (this.upperIndex + 1) % this._stackList.length;
     const zIndexBottom = this._stackList[this._stackList.length - 1].zIndex;
@@ -467,6 +494,9 @@ class LibraryStack extends TUIOWidget {
     this._stackList[0]._domElem.css('z-index', this._stackList[0].zIndex);
   }
 
+  /**
+   * Get the z-index of the upper ElementWidget
+   */
   getUpperIndex() {
     let maxZindex = -20000000;
     let index = 0;
@@ -479,16 +509,27 @@ class LibraryStack extends TUIOWidget {
     return index;
   }
 
+  /**
+   * Hide the LibraryStack
+   */
   hide() {
     this._domElem.hide();
     this.isDisabled = true;
   }
 
+  /**
+   * Show the LibraryStack
+   */
   show() {
     this._domElem.show();
     this.isDisabled = false;
   }
 
+  /**
+   * Set tangible LibraryStack
+   * @param {string} tag - Tag ID
+   * @param {number} mode - Position mode 
+   */
   setTangible(tag, mode) {
     this.showTag = tag;
     this.tangibleMode = mode;

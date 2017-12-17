@@ -10,13 +10,23 @@ import { radToDeg } from '../../core/helpers';
 import Point from '../../src/utils/Point';
 
 /**
- * Abstract class to manage ImageElementWidget.
+ * Abstract class
  *
  * @class ElementWidget
  * @extends TUIOWidget
  */
 class ElementWidget extends TUIOWidget {
-  // constructor (x, y, width, height, initialRotation, tagMove, tagDelete, tagZoom, )
+  /**
+   * ElementWidget constructor.
+   *
+   * @constructor
+   * @param {number} x - ElementWidget's upperleft coin abscissa.
+   * @param {number} y - ElementWidget's upperleft coin ordinate.
+   * @param {number} width - ElementWidget's width.
+   * @param {number} height - ElementWidget's height.
+   * @param {number} initialRotation - Initial Rotation of the Element. Set to 0 of no rotation
+   * @param {number} initialScale - Initial Scale of the Element. Set to 1 of no rescale
+   */
   constructor(x, y, width, height, initialRotation, initialScale) {
     if (new.target === ElementWidget) {
       throw new TypeError('ElementWidget is an abstract class. It cannot be instanciated');
@@ -340,7 +350,7 @@ class ElementWidget extends TUIOWidget {
   /**
    * Call to enable/disable rotation
    *
-   * @method rotate
+   * @method canRotate
    * @param {boolean} canRotateTangible - Enable/disable tangible rotation
    * @param {boolean} canRotateTactile - Enable/disable tactile rotation
   */
@@ -352,7 +362,7 @@ class ElementWidget extends TUIOWidget {
   /**
    * Call to enable/disable rotation
    *
-   * @method rotate
+   * @method canMove
    * @param {boolean} canMoveTangible - Enable/disable tangible movement
    * @param {boolean} canMoveTactile - Enable/disable tactile movement
   */
@@ -364,7 +374,7 @@ class ElementWidget extends TUIOWidget {
   /**
    * Call to enable/disable rotation
    *
-   * @method rotate
+   * @method canZoom
    * @param {boolean} canZoomTangible - Enable/disable tangible zoom
    * @param {boolean} canZoomTactile - Enable/disable tactile zoom
   */
@@ -376,7 +386,7 @@ class ElementWidget extends TUIOWidget {
   /**
    * Call to enable/disable rotation
    *
-   * @method rotate
+   * @method canDelete
    * @param {boolean} canZoomTangible - Enable/disable tangible delete
    * @param {boolean} canZoomTactile - Enable/disable tactile delete
   */
@@ -388,32 +398,64 @@ class ElementWidget extends TUIOWidget {
   /**
    * Call to enable/disable rotation
    *
-   * @method rotate
+   * @method disable
    * @param {boolean} isDisabled - Enable/disable interaction with the widget
   */
   disable(isDisabled) {
     this.isDisabled = isDisabled;
   }
 
+  /**
+   * Return if this ElementWidget position is in the bounding box of a LibraryStack
+   *
+   * @method isInBounds
+   * @param {LibStack} libStack - Libstack to compare
+   * @param {number} x - X coordinates of the touch deletion
+   * @param {number} y - Y coordinates of the touch deletion
+  */
   isInBounds(libStack, x, y) {
     if(x >= libStack._x && x <= (libStack._x + libStack._width) && y >= libStack._y && y <= (libStack._y + libStack._height) ) {
       return true;
     }
     return false;
-  }//isInBounds
+  }
 
+  /**
+   * Set the move tag
+   *
+   * @method setTagMove
+   * @param {string} tagMove - Move tag id
+  */
   setTagMove(tagMove) {
     this.idTagMove = tagMove;
   }
 
+  /**
+   * Set the move tag
+   *
+   * @method setTagZoom
+   * @param {string} tagZoom - Zoom tag id
+  */
   setTagZoom(tagZoom) {
     this.idTagZoom = tagZoom;
   }
 
+  /**
+   * Set the move tag
+   *
+   * @method setTagDelete
+   * @param {string} tagDelete - Delete tag id
+  */
   setTagDelete(tagDelete) {
     this.idTagDelete = tagDelete;
   }
 
+  /**
+   * Set the move tag
+   *
+   * @method setTagDuplicate
+   * @param {string} tagDuplicate - Duplicate tag id
+  */
   setTagDuplicate(tagDuplicate) {
     this.tagDuplicate = tagDuplicate;
   }
@@ -421,5 +463,4 @@ class ElementWidget extends TUIOWidget {
 }// class
 
 ElementWidget.zIndexGlobal = 0;
-
 export default ElementWidget;

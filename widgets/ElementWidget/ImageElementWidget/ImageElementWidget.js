@@ -25,6 +25,9 @@ class ImageElementWidget extends ElementWidget {
   * @param {number} y - ImageElementWidget's upperleft coin ordinate.
   * @param {number} width - ImageElementWidget's width.
   * @param {number} height - ImageElementWidget's height.
+  * @param {number} initialRotation - Initial rotation. Set to 0 of no rotation
+  * @param {number} initialScale - Initial scale. Set to 1 of no rescale
+  * @param {string} src - Source of the image
   */
   constructor(x, y, width, height, initialRotation, initialScale, src) {
     super(x, y, width, height, initialRotation, initialScale);
@@ -42,6 +45,12 @@ class ImageElementWidget extends ElementWidget {
     this.hasDuplicate = false;
   } // constructor
 
+  /**
+   * Call after a TUIOTag update.
+   *
+   * @method onTagUpdate
+   * @param {TUIOTag} tuioTag - A TUIOTag instance.
+   */
   onTagUpdate(tuioTag) {
     super.onTagUpdate(tuioTag);
     if (typeof (this._lastTagsValues[tuioTag.id]) !== 'undefined') {
@@ -54,6 +63,12 @@ class ImageElementWidget extends ElementWidget {
     }
   }
 
+  /**
+   * Call after a TUIOTag deletion.
+   *
+   * @method onTagDeletion
+   * @param {number/string} tuioTagId - TUIOTag's id to delete.
+   */
   onTagDeletion(tuioTagId) {
     super.onTagDeletion(tuioTagId);
     if (typeof (this._lastTagsValues[tuioTagId]) !== 'undefined') {

@@ -1,5 +1,4 @@
 # Widgets
-Introduction widgets .. blablabla
 
 Il faut faire attention à ce que l'application Web soit en plein écran pour que la librairie TUIO fonctionne correctement.
 
@@ -37,12 +36,6 @@ setTagMove(tagMove);
 setTagZoom(tagZoom);
 setTagDelete(tagDelete);
 setTagDuplicate(tagDuplicate);
-
-// mettre fonction pour contrôler une widget à distance
-
-// rajouter des callback sur les onTouch ?
-
-// hide/show ?
 ```
 Ces fonctions permettent d'utiliser des interactions tangibles avec les `ElementWidget`. Le paramètre en entrée est donc son id (visible sous l'objet).
 
@@ -128,7 +121,6 @@ Pour mettre en place le menu circulaire, il y a deux classes présentes : `MenuI
 /**
  * Constructor MenuItem
  *
- * @method onTagDeletion
  * @param {string} item - Text of the menu item OR class of the icon
  * @param {string} backgroundcolor - Hexadecimal of background color
  * @param {string} color - Hexadecimal of text/icon color
@@ -140,7 +132,6 @@ constructor(item, backgroundcolor, color, isIcon);
 /**
  * Constructor CircularMenu
  *
- * @method onTagDeletion
  * @param {string} tagMenu - Text for back button
  * @param {MenuItem} rootTree - Root of the menu tree
  */
@@ -148,6 +139,12 @@ constructor(tagMenu, rootTree)
 ```
 
 #### Example d'utilisation
+
+Il faut dans un premier temps inclure le fichier css du menu circulaire. Pour cela dans la page html de l'application :
+```
+<link rel="stylesheet" type="text/css"  href="path/to/tuiomanager/widgets/CircularMenu/circularmenu.css">
+```
+
 ```javascript
 const facile = new MenuItem('Facile', '#2E7D32', '#FFF', false);
 facile.setTouchCallback(() => {
@@ -236,7 +233,6 @@ LibraryStack est un container d'ElementWidget. Il permet donc d'afficher sous fo
 /**
  * Constructor LibraryStack
  *
- * @method onTagDeletion
  * @param {number} x - X position of the stack
  * @param {number} y - Y position of the stack
  * @param {number} size - Size of the stack
@@ -281,7 +277,7 @@ Cette fonction permet d'associer la LibraryStack à un objet. La stack ne sera d
 addElementWidget(element)
 ```
 
-Cette fonction permet d'ajouter par défaut  des ElementWidgets à la LibraryStack.
+Cette fonction optionnelle permet d'ajouter par défaut des ElementWidgets à la LibraryStack lorsqu'elle est créé.
 
 ```javascript
 /**
@@ -299,21 +295,17 @@ show()
 
 #### Exemple d'utilisation
 
+LibStack acceptant tout type d'ElementWidget :
 ```javascript
-// Libstack acceptant tout type d'ElementWidget
+
 const libstack = new LibraryStack(600, 300, 300, 'ma stack', '#C9C9C9', false, []);
 libstack.addTo($('#example-container').get(0));
-
-libstack.addElementWidget(imageWidgetA);
-libstack.addElementWidget(imageWidgetB);
 ```
 
+ LibStack acceptant uniquement des ImagesElementWidget et qui apparaît lors de la pose du tag 38, à la position 0 :
 ```javascript
-// Libstack acceptant uniquement des ImagesElementWidget et qui apparaît lors de la pose du tag 38, à la position 0
 const libstack = new LibraryStack(600, 300, 300, 'Stack Images', '#C9C9C9', false, ['ImageElementWidget']);
 libstack.setTangible('38', 0);
 libstack.addTo($('#example-container').get(0));
-libstack.addElementWidget(imageWidgetA);
-libstack.addElementWidget(imageWidgetB);
 ```
 
