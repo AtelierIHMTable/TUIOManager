@@ -1,4 +1,6 @@
 # Widgets
+TUIOManager regroupe des widgets utilisables sur une table tactile SAMSUNG SUR40.
+Cette documentation présente les différents widgets utilisables et comment les instancier.
 
 Il faut faire attention à ce que l'application Web soit en plein écran pour que la librairie TUIO fonctionne correctement.
 
