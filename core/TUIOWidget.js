@@ -3,7 +3,7 @@
  * @author Vincent Forquet
  * @author Nicolas Forget
  */
-
+import $ from 'jquery/dist/jquery.min';
 import uuidV4 from 'uuid/v4';
 
 import TUIOManager from './TUIOManager';
@@ -33,7 +33,6 @@ class TUIOWidget {
 
     this._touches = {};
     this._tags = {};
-
     TUIOManager.getInstance().addWidget(this);
   }
 
@@ -172,6 +171,25 @@ class TUIOWidget {
    */
   onTagUpdate(tuioTag) {
     // To override if needed.
+  }
+
+  /**
+   * Call to delete a widget
+   *
+   * @method deleteWidget
+   */
+  deleteWidget() {
+    TUIOManager.getInstance().removeWidget(this);
+  }
+
+  /**
+   * Call to add the widget to a DOM element
+   *
+   * @method addTo
+   * @param {DOM-Elem} element - A TUIOTag instance.
+   */
+  addTo(element) {
+    $(element).append(this._domElem);
   }
 
 /* eslint-enable no-unused-vars,class-methods-use-this */
