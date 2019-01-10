@@ -13,7 +13,6 @@ import TUIOObject from './TUIOObject';
  * @extends TUIOObject
  */
 class TUIOTag extends TUIOObject {
-
   /**
    * TUIOTag constructor.
    *

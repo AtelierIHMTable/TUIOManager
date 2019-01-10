@@ -5,14 +5,10 @@
   },
   "parser": "babel-eslint",
   "extends": "airbnb-base",
-  "parserOptions": {
-    "ecmaFeatures": {
-      "experimentalObjectRestSpread": true
-    }
-  },
   "rules": {
+    "class-methods-use-this": "off",
     "max-len": [1, 200],
-    "no-underscore-dangle": [2, { "allowAfterThis": true }],
+    "no-underscore-dangle": "off",
     "linebreak-style": [0, "windows"]
   }
 }

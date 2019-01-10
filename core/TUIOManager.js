@@ -29,7 +29,6 @@ let tuioManagerInstance = null;
  * @class TUIOManager
  */
 class TUIOManager {
-
   /**
    * TUIOManager constructor.
    *

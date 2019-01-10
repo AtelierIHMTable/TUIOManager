@@ -35,6 +35,7 @@ class MenuItem {
   get isIcon() {
     return this._isIcon;
   }
+
   get icon() {
     return this._icon;
   }

@@ -14,7 +14,6 @@ import { radToDeg } from '../../core/helpers';
  * @extends TUIOWidget
  */
 class CircularMenu extends TUIOWidget {
-
   constructor(tagMenu, rootTree) {
     super(300, 300, 300, 300);
     this.tree = rootTree;
@@ -25,14 +24,15 @@ class CircularMenu extends TUIOWidget {
       $('<ul>')
         .attr('class', 'ulmenu'),
     ).css('z-index', 2147483647)
-    .css('top', '300px')
-    .css('left', '300px');
+      .css('top', '300px')
+      .css('left', '300px');
     this.zIndex = 2147483647;
     this.angleStart = -360;
     this.menuItemCoord = [];
     this._lastTagsValues = {};
     this.nbItems = 0;
     this.idTagMenu = tagMenu;
+    /* eslint-disable max-len */
     this.backItem = $('<li>')
       .attr('class', 'limenu')
       .append(
@@ -51,10 +51,11 @@ class CircularMenu extends TUIOWidget {
               .css('height', '50%')
               .css('color', this.backIconColor)
               .css('margin', 'auto'),
-            )
+          )
           .css('color', this.backIconColor)
           .css('background-color', this.backBackgroundColor),
       );
+    /* eslint-enable max-len */
     this.isHide = false;
     // this._domElem.hide();
   }
@@ -67,7 +68,7 @@ class CircularMenu extends TUIOWidget {
    * @param {number} angle - Angle in degrees.
    */
   rotate(li, d) {
-    $({ d: this.angleStart }).animate({ d: d }, {
+    $({ d: this.angleStart }).animate({ d }, {
       step: (now) => {
         $(li).css({ transform: `rotate( ${now}deg)` });
       },
@@ -87,7 +88,11 @@ class CircularMenu extends TUIOWidget {
     const deg = $(s).hasClass('half') ? 180 / (li.length - 1) : 360 / li.length;
     for (let i = 0; i < li.length; i += 1) {
       const d = $(s).hasClass('half') ? (i * deg) - 90 : i * deg;
-      $(s).hasClass('open') ? this.rotate(li[i], d) : this.rotate(li[i], this.angleStart);
+      if ($(s).hasClass('open')) {
+        this.rotate(li[i], d);
+      } else {
+        this.rotate(li[i], this.angleStart);
+      }
     }
   }
 
@@ -162,13 +167,14 @@ class CircularMenu extends TUIOWidget {
         $('<input>').attr('id', `c ${this.nbItems}`).attr('type', 'checkbox'),
         $('<label>')
           .attr('for', `c ${this.nbItems}`)
-          .append($('<div>')
-            .text(itemName)
-            .css('display', 'table-cell')
-            .css('vertical-align', 'middle')
-            .css('color', textColor)
-            .css('background-color', backgroundColor)
-            .css('max-width', '80px'),
+          .append(
+            $('<div>')
+              .text(itemName)
+              .css('display', 'table-cell')
+              .css('vertical-align', 'middle')
+              .css('color', textColor)
+              .css('background-color', backgroundColor)
+              .css('max-width', '80px'),
           )
           .css('display', 'table'),
       ),
@@ -212,7 +218,7 @@ class CircularMenu extends TUIOWidget {
     );
   }
 
-   /**
+  /**
    * Set back menu item to an icon
    *
    * @method setBackMenuItemIcon
@@ -277,7 +283,12 @@ class CircularMenu extends TUIOWidget {
       const y = $(li[i]).find('label')[0].getBoundingClientRect().top;
       const width = $(li[i]).find('label').width();
       const height = $(li[i]).find('label').height();
-      this.menuItemCoord.push({ xmin: x, ymin: y, xmax: x + width, ymax: y + height });
+      this.menuItemCoord.push({
+        xmin: x,
+        ymin: y,
+        xmax: x + width,
+        ymax: y + height,
+      });
     }
   }
 
@@ -336,7 +347,12 @@ class CircularMenu extends TUIOWidget {
         const y = $(li[i]).find('label')[0].getBoundingClientRect().top;
         const width = $(li[i]).find('label').width();
         const height = $(li[i]).find('label').height();
-        this.menuItemCoord.push({ xmin: x, ymin: y, xmax: x + width, ymax: y + height });
+        this.menuItemCoord.push({
+          xmin: x,
+          ymin: y,
+          xmax: x + width,
+          ymax: y + height,
+        });
       }
     }
   }
@@ -366,7 +382,12 @@ class CircularMenu extends TUIOWidget {
           const y = $(li[i]).find('label')[0].getBoundingClientRect().top;
           const width = $(li[i]).find('label').width();
           const height = $(li[i]).find('label').height();
-          this.menuItemCoord.push({ xmin: x, ymin: y, xmax: x + width, ymax: y + height });
+          this.menuItemCoord.push({
+            xmin: x,
+            ymin: y,
+            xmax: x + width,
+            ymax: y + height,
+          });
         }
 
         this._lastTagsValues = {
@@ -395,8 +416,6 @@ class CircularMenu extends TUIOWidget {
       this.tree = this.root;
     }
   }
-
-
 }
 
 export default CircularMenu;
