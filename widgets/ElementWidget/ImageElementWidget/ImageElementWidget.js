@@ -10,7 +10,7 @@ import ElementWidget from '../ElementWidget';
 import TUIOManager from '../../../core/TUIOManager';
 
 
- /**
+/**
   * Main class to manage ImageElementWidget.
   *
   * @class ImageElementWidget

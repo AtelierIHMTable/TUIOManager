@@ -5,6 +5,7 @@ const fse = require('fs-extra');
 const getConfig = require('./webpack.common.js');
 
 const webpackConfig = getConfig();
+webpackConfig.mode = 'development';
 
 const buildPath = webpackConfig.output.path;
 

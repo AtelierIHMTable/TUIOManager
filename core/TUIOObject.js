@@ -10,7 +10,6 @@
  * @class TUIOObject
  */
 class TUIOObject {
-
   /**
    * TUIOObject constructor.
    *

@@ -1,8 +1,5 @@
 const path = require('path');
 const fs = require('fs');
-/* eslint-disable import/no-extraneous-dependencies */
-const combineLoaders = require('webpack-combine-loaders/combineLoaders');
-/* eslint-enable import/no-extraneous-dependencies */
 
 const includePaths = [
   fs.realpathSync(`${__dirname}/src`),
@@ -22,38 +19,31 @@ module.exports = () => (
       filename: 'tuiomanager.js',
     },
     resolve: {
-      extensions: ['', '.js'],
-      root: resolvePaths,
-      fallback: resolvePaths,
+      extensions: ['.js'],
+      modules: resolvePaths,
+      enforceExtension: false,
     },
     resolveLoader: {
-      root: resolvePaths,
-      fallback: resolvePaths,
-    },
-    eslint: {
-      configFile: './.eslintrc',
+      modules: resolvePaths,
     },
     module: {
-      loaders: [
+      rules: [
         {
           test: /\.js?$/,
-          loader: combineLoaders([
+          use: [
             {
               loader: 'babel-loader',
               query: {
                 babelrc: false,
                 presets: [
-                  'es2015',
-                ].map(dep => require.resolve(`babel-preset-${dep}`)),
-                plugins: [
-                  'transform-object-rest-spread',
-                ].map(dep => require.resolve(`babel-plugin-${dep}`)),
+                  'env',
+                ].map(dep => require.resolve(`@babel/preset-${dep}`)),
               },
             },
             {
               loader: 'eslint-loader',
             },
-          ]),
+          ],
           include: includePaths,
           exclude: /node_modules/,
         },

@@ -13,7 +13,6 @@ import TUIOObject from './TUIOObject';
  * @extends TUIOObject
  */
 class TUIOTouch extends TUIOObject {
-
   /**
    * Update TUIOTouch.
    *

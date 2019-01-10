@@ -14,7 +14,6 @@ import TUIOManager from './TUIOManager';
  * @class TUIOWidget
  */
 class TUIOWidget {
-
   /**
    * TUIOWidget constructor.
    *
@@ -152,7 +151,7 @@ class TUIOWidget {
     }
   }
 
-/* eslint-disable no-unused-vars,class-methods-use-this */
+  /* eslint-disable no-unused-vars,class-methods-use-this */
   /**
    * Call after a TUIOTouch update.
    *
