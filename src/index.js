@@ -3,8 +3,8 @@
  */
 
 // Import TUIOManager
-import TUIOManager from '../core/TUIOManager';
+import TUIOManager from '../core/TUIOManager'
 
-const tuioManager = new TUIOManager();
+const tuioManager = new TUIOManager()
 
-tuioManager.start();
+tuioManager.start()

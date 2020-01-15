@@ -10,16 +10,16 @@
  */
 class Point {
   constructor(x, y) {
-    this._x = x;
-    this._y = y;
+    this._x = x
+    this._y = y
   }
 
   get x() {
-    return this._x;
+    return this._x
   }
 
   get y() {
-    return this._y;
+    return this._y
   }
 
   /**
@@ -29,9 +29,9 @@ class Point {
    * @param {Point} p2 - A Point instance.
    */
   distanceTo(p2) {
-    const a = this.x - p2.x;
-    const b = this.y - p2.y;
-    return Math.sqrt((a * a) + (b * b));
+    const a = this.x - p2.x
+    const b = this.y - p2.y
+    return Math.sqrt((a * a) + (b * b))
   }
 
   /**
@@ -41,23 +41,23 @@ class Point {
    * @param {Point} p2 - A Point instance.
    */
   angleWith(p2) {
-    return (Math.atan2(p2.y - this.y, p2.x - this.x)) * (180 / Math.PI);
+    return (Math.atan2(p2.y - this.y, p2.x - this.x)) * (180 / Math.PI)
   }
 
   rotate(angleD, originX, originY) {
-    const angle = (angleD * Math.PI) / 180.0;
-    const s = Math.sin(angle);
-    const c = Math.cos(angle);
+    const angle = (angleD * Math.PI) / 180.0
+    const s = Math.sin(angle)
+    const c = Math.cos(angle)
 
-    this._x -= originX;
-    this._y -= originY;
+    this._x -= originX
+    this._y -= originY
 
-    const xnew = (this.x * c) - (this.y * s);
-    const ynew = (this.x * s) + (this.y * c);
+    const xnew = (this.x * c) - (this.y * s)
+    const ynew = (this.x * s) + (this.y * c)
 
-    this._x = xnew + originX;
-    this._y = ynew + originY;
+    this._x = xnew + originX
+    this._y = ynew + originY
   }
 }
 
-export default Point;
+export default Point

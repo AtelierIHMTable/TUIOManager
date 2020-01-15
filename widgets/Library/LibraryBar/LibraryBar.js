@@ -3,8 +3,7 @@
  * @author Rémy Kaloustian <remy.kaloustian@gmail.com>
  */
 
-import $ from 'jquery/dist/jquery.min';
-import TUIOWidget from '../../../core/TUIOWidget';
+import TUIOWidget from '../../../core/TUIOWidget'
 
 /**
  * Class for a LibraryBar
@@ -15,7 +14,7 @@ import TUIOWidget from '../../../core/TUIOWidget';
 class LibraryBar extends TUIOWidget {
 
   constructor(x, y, width, height) {
-    super(x, y, width, height);
+    super(x, y, width, height)
   }
 
 
@@ -27,7 +26,7 @@ class LibraryBar extends TUIOWidget {
   * @param {number} y - Point's ordinate to test.
   */
   isTouched(x, y) {
-    return (x >= this.x && x <= this.width + this.x && y >= this.y && y <= this.y + this.height) && !this.isHide;
+    return (x >= this.x && x <= this.width + this.x && y >= this.y && y <= this.y + this.height) && !this.isHide
   }
 
   /**
@@ -35,7 +34,7 @@ class LibraryBar extends TUIOWidget {
    *
    * @returns {JQuery Object} ImageWidget's domElem.
    */
-  get domElem() { return this._domElem; }
+  get domElem() { return this._domElem }
 
   /**
    * Call after a TUIOTouch creation.
@@ -88,4 +87,4 @@ class LibraryBar extends TUIOWidget {
   }
 }
 
-export default LibraryBar;
+export default LibraryBar
