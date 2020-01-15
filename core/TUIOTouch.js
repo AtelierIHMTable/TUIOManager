@@ -4,7 +4,7 @@
  * @author Nicolas Forget
  */
 
-import TUIOObject from './TUIOObject';
+import TUIOObject from './TUIOObject'
 
 /**
  * Main class to manage TUIOTouch.
@@ -21,9 +21,9 @@ class TUIOTouch extends TUIOObject {
    * @param {string/number} y - New TUIOTouch's ordinate.
    */
   update(x, y) {
-    super.update(x, y);
-    this.notifyWidgets('onTouchUpdate');
+    super.update(x, y)
+    this.notifyWidgets('onTouchUpdate')
   }
 }
 
-export default TUIOTouch;
+export default TUIOTouch

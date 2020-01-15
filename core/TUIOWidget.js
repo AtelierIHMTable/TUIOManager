@@ -3,10 +3,10 @@
  * @author Vincent Forquet
  * @author Nicolas Forget
  */
-import $ from 'jquery/dist/jquery.min';
-import uuidV4 from 'uuid/v4';
+import $ from 'jquery/dist/jquery.min'
+import uuidV4 from 'uuid/v4'
 
-import TUIOManager from './TUIOManager';
+import TUIOManager from './TUIOManager'
 
 /**
  * Main class to manage TUIOWidget.
@@ -24,15 +24,15 @@ class TUIOWidget {
    * @param {number} height - TUIOWidget's height.
    */
   constructor(x, y, width, height) {
-    this._id = uuidV4();
-    this._x = x;
-    this._y = y;
-    this._width = width;
-    this._height = height;
+    this._id = uuidV4()
+    this._x = x
+    this._y = y
+    this._width = width
+    this._height = height
 
-    this._touches = {};
-    this._tags = {};
-    TUIOManager.getInstance().addWidget(this);
+    this._touches = {}
+    this._tags = {}
+    TUIOManager.getInstance().addWidget(this)
   }
 
   /**
@@ -40,49 +40,49 @@ class TUIOWidget {
    *
    * @returns {string} TUIOWidget's id.
    */
-  get id() { return this._id; }
+  get id() { return this._id }
 
   /**
    * TUIOWidget's upperleft corner abscissa getter.
    *
    * @returns {number} TUIOWidget's upperleft corner abscissa.
    */
-  get x() { return this._x; }
+  get x() { return this._x }
 
   /**
    * TUIOWidget's upperleft corner ordinate getter.
    *
    * @returns {number} TUIOWidget's upperleft corner ordinate.
    */
-  get y() { return this._y; }
+  get y() { return this._y }
 
   /**
    * TUIOWidget's width.
    *
    * @returns {number} TUIOWidget's width.
    */
-  get width() { return this._width; }
+  get width() { return this._width }
 
   /**
    * TUIOWidget's height.
    *
    * @returns {number} TUIOWidget's height.
    */
-  get height() { return this._height; }
+  get height() { return this._height }
 
   /**
    * TUIOWidget's touches.
    *
    * @returns {Object} TUIOWidget's touches.
    */
-  get touches() { return this._touches; }
+  get touches() { return this._touches }
 
   /**
    * TUIOWidget's tags.
    *
    * @returns {Object} TUIOWidget's tags.
    */
-  get tags() { return this._tags; }
+  get tags() { return this._tags }
 
   /**
    * Check if TUIOWidget is touched.
@@ -92,7 +92,7 @@ class TUIOWidget {
    * @param {number} y - Point's ordinate to test.
    */
   isTouched(x, y) {
-    return (x >= this._x && x <= this._x + this._width && y >= this._y && y <= this._y + this._height);
+    return (x >= this._x && x <= this._x + this._width && y >= this._y && y <= this._y + this._height)
   }
 
   /**
@@ -106,8 +106,8 @@ class TUIOWidget {
       this._touches = {
         ...this._touches,
         [tuioTouch.id]: tuioTouch,
-      };
-      this._touches[tuioTouch.id].addWidget(this);
+      }
+      this._touches[tuioTouch.id].addWidget(this)
     }
   }
 
@@ -122,8 +122,8 @@ class TUIOWidget {
       this._tags = {
         ...this._tags,
         [tuioTag.id]: tuioTag,
-      };
-      this._tags[tuioTag.id].addWidget(this);
+      }
+      this._tags[tuioTag.id].addWidget(this)
     }
   }
 
@@ -135,7 +135,7 @@ class TUIOWidget {
    */
   onTouchDeletion(tuioTouchId) {
     if (typeof (this._touches[tuioTouchId]) !== 'undefined') {
-      delete this._touches[tuioTouchId];
+      delete this._touches[tuioTouchId]
     }
   }
 
@@ -147,7 +147,7 @@ class TUIOWidget {
    */
   onTagDeletion(tuioTagId) {
     if (typeof (this._tags[tuioTagId]) !== 'undefined') {
-      delete this._tags[tuioTagId];
+      delete this._tags[tuioTagId]
     }
   }
 
@@ -178,7 +178,7 @@ class TUIOWidget {
    * @method deleteWidget
    */
   deleteWidget() {
-    TUIOManager.getInstance().removeWidget(this);
+    TUIOManager.getInstance().removeWidget(this)
   }
 
   /**
@@ -188,10 +188,10 @@ class TUIOWidget {
    * @param {DOM-Elem} element - A TUIOTag instance.
    */
   addTo(element) {
-    $(element).append(this._domElem);
+    $(element).append(this._domElem)
   }
 
 /* eslint-enable no-unused-vars,class-methods-use-this */
 }
 
-export default TUIOWidget;
+export default TUIOWidget

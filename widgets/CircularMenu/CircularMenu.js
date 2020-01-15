@@ -3,9 +3,9 @@
  * @author Rémy Kaloustian <remy.kaloustian@gmail.com>
  */
 
-import $ from 'jquery/dist/jquery.min';
-import TUIOWidget from '../../core/TUIOWidget';
-import { radToDeg } from '../../core/helpers';
+import $ from 'jquery/dist/jquery.min'
+import TUIOWidget from '../../core/TUIOWidget'
+import { radToDeg } from '../../core/helpers'
 
 /**
  * Class for a circular menu.
@@ -15,23 +15,23 @@ import { radToDeg } from '../../core/helpers';
  */
 class CircularMenu extends TUIOWidget {
   constructor(tagMenu, rootTree) {
-    super(300, 300, 300, 300);
-    this.tree = rootTree;
-    this.root = rootTree;
-    this.rootName = this.tree.name;
-    this._domElem = $('<div>').attr('class', 'selector');
+    super(300, 300, 300, 300)
+    this.tree = rootTree
+    this.root = rootTree
+    this.rootName = this.tree.name
+    this._domElem = $('<div>').attr('class', 'selector')
     this._domElem.append(
       $('<ul>')
         .attr('class', 'ulmenu'),
     ).css('z-index', 2147483647)
       .css('top', '300px')
-      .css('left', '300px');
-    this.zIndex = 2147483647;
-    this.angleStart = -360;
-    this.menuItemCoord = [];
-    this._lastTagsValues = {};
-    this.nbItems = 0;
-    this.idTagMenu = tagMenu;
+      .css('left', '300px')
+    this.zIndex = 2147483647
+    this.angleStart = -360
+    this.menuItemCoord = []
+    this._lastTagsValues = {}
+    this.nbItems = 0
+    this.idTagMenu = tagMenu
     /* eslint-disable max-len */
     this.backItem = $('<li>')
       .attr('class', 'limenu')
@@ -54,10 +54,10 @@ class CircularMenu extends TUIOWidget {
           )
           .css('color', this.backIconColor)
           .css('background-color', this.backBackgroundColor),
-      );
+      )
     /* eslint-enable max-len */
-    this.isHide = false;
-    // this._domElem.hide();
+    this.isHide = false
+    // this._domElem.hide()
   }
 
   /**
@@ -70,10 +70,10 @@ class CircularMenu extends TUIOWidget {
   rotate(li, d) {
     $({ d: this.angleStart }).animate({ d }, {
       step: (now) => {
-        $(li).css({ transform: `rotate( ${now}deg)` });
+        $(li).css({ transform: `rotate( ${now}deg)` })
       },
       duration: 1,
-    });
+    })
   }
 
   /**
@@ -83,15 +83,15 @@ class CircularMenu extends TUIOWidget {
    * @param {DOM} s - Root of the Dom of the menu.
    */
   toggleOptions(s) {
-    $(s).toggleClass('open');
-    const li = $(s).find('li');
-    const deg = $(s).hasClass('half') ? 180 / (li.length - 1) : 360 / li.length;
+    $(s).toggleClass('open')
+    const li = $(s).find('li')
+    const deg = $(s).hasClass('half') ? 180 / (li.length - 1) : 360 / li.length
     for (let i = 0; i < li.length; i += 1) {
-      const d = $(s).hasClass('half') ? (i * deg) - 90 : i * deg;
+      const d = $(s).hasClass('half') ? (i * deg) - 90 : i * deg
       if ($(s).hasClass('open')) {
-        this.rotate(li[i], d);
+        this.rotate(li[i], d)
       } else {
-        this.rotate(li[i], this.angleStart);
+        this.rotate(li[i], this.angleStart)
       }
     }
   }
@@ -101,7 +101,7 @@ class CircularMenu extends TUIOWidget {
      *
      * @returns {JQuery Object} ImageWidget's domElem.
      */
-  get domElem() { return this._domElem; }
+  get domElem() { return this._domElem }
 
   /**
    * Check if TUIOWidget is touched.
@@ -114,11 +114,11 @@ class CircularMenu extends TUIOWidget {
     if (!this.isHide) {
       for (let i = 0; i < this.menuItemCoord.length; i += 1) {
         if (x >= this.menuItemCoord[i].xmin && x <= this.menuItemCoord[i].xmax && y >= this.menuItemCoord[i].ymin && y <= this.menuItemCoord[i].ymax) {
-          return true;
+          return true
         }
       }
     }
-    return false;
+    return false
   }
 
   /**
@@ -132,22 +132,22 @@ class CircularMenu extends TUIOWidget {
       this._touches = {
         ...this._touches,
         [tuioTouch.id]: tuioTouch,
-      };
-      this._touches[tuioTouch.id].addWidget(this);
+      }
+      this._touches[tuioTouch.id].addWidget(this)
       for (let i = 0; i < this.menuItemCoord.length; i += 1) {
         if (tuioTouch.x >= this.menuItemCoord[i].xmin && tuioTouch.x <= this.menuItemCoord[i].xmax && tuioTouch.y >= this.menuItemCoord[i].ymin && tuioTouch.y <= this.menuItemCoord[i].ymax) {
           if (this.tree.name === this.rootName) {
-            this.menuItemTouch(i);
+            this.menuItemTouch(i)
           } else if (i === 0) {
-            this.tree = this.tree.parent;
-            this.nbItems = 0;
-            this.toggleOptions(this.domElem);
-            this._domElem.find('ul').empty();
-            this.constructMenu();
+            this.tree = this.tree.parent
+            this.nbItems = 0
+            this.toggleOptions(this.domElem)
+            this._domElem.find('ul').empty()
+            this.constructMenu()
           } else {
-            this.menuItemTouch(i - 1);
+            this.menuItemTouch(i - 1)
           }
-          break;
+          break
         }
       }
     }
@@ -178,8 +178,8 @@ class CircularMenu extends TUIOWidget {
           )
           .css('display', 'table'),
       ),
-    );
-    this.nbItems += 1;
+    )
+    this.nbItems += 1
   }
 
   /**
@@ -204,7 +204,7 @@ class CircularMenu extends TUIOWidget {
           .css('line-height', '80px')
           .css('background-color', backgroundColor),
       ),
-    );
+    )
   }
 
   /**
@@ -215,7 +215,7 @@ class CircularMenu extends TUIOWidget {
   addBackItem() {
     this.domElem.find('ul').append(
       this.backItem,
-    );
+    )
   }
 
   /**
@@ -237,7 +237,7 @@ class CircularMenu extends TUIOWidget {
         )
         .css('color', iconColor)
         .css('background-color', backgroundColor),
-    );
+    )
   }
 
   /**
@@ -256,7 +256,7 @@ class CircularMenu extends TUIOWidget {
         .text(text)
         .css('color', textColor)
         .css('background-color', backgroundColor),
-    );
+    )
   }
 
   /**
@@ -266,29 +266,29 @@ class CircularMenu extends TUIOWidget {
    */
   constructMenu() {
     if (this.tree.name !== this.rootName) {
-      this.addBackItem();
+      this.addBackItem()
     }
     for (let i = 0; i < this.tree.childs.length; i += 1) {
       if (this.tree.childs[i].isIcon) {
-        this.addIconItem(this.tree.childs[i].icon, this.tree.childs[i].color, this.tree.childs[i].backgroundcolor);
+        this.addIconItem(this.tree.childs[i].icon, this.tree.childs[i].color, this.tree.childs[i].backgroundcolor)
       } else {
-        this.addTextItem(this.tree.childs[i].name, this.tree.childs[i].color, this.tree.childs[i].backgroundcolor);
+        this.addTextItem(this.tree.childs[i].name, this.tree.childs[i].color, this.tree.childs[i].backgroundcolor)
       }
     }
-    this.toggleOptions(this.domElem);
-    const li = this.domElem.find('li');
-    this.menuItemCoord = [];
+    this.toggleOptions(this.domElem)
+    const li = this.domElem.find('li')
+    this.menuItemCoord = []
     for (let i = 0; i < li.length; i += 1) {
-      const x = $(li[i]).find('label')[0].getBoundingClientRect().left;
-      const y = $(li[i]).find('label')[0].getBoundingClientRect().top;
-      const width = $(li[i]).find('label').width();
-      const height = $(li[i]).find('label').height();
+      const x = $(li[i]).find('label')[0].getBoundingClientRect().left
+      const y = $(li[i]).find('label')[0].getBoundingClientRect().top
+      const width = $(li[i]).find('label').width()
+      const height = $(li[i]).find('label').height()
       this.menuItemCoord.push({
         xmin: x,
         ymin: y,
         xmax: x + width,
         ymax: y + height,
-      });
+      })
     }
   }
 
@@ -299,13 +299,13 @@ class CircularMenu extends TUIOWidget {
    */
   menuItemTouch(index) {
     if (this.tree.childs[index].isLeaf()) {
-      this.tree.childs[index].callback();
+      this.tree.childs[index].callback()
     } else {
-      this.tree = this.tree.childs[index];
-      this.nbItems = 0;
-      this.toggleOptions(this.domElem);
-      this._domElem.find('ul').empty();
-      this.constructMenu();
+      this.tree = this.tree.childs[index]
+      this.nbItems = 0
+      this.toggleOptions(this.domElem)
+      this._domElem.find('ul').empty()
+      this.constructMenu()
     }
   }
 
@@ -321,8 +321,8 @@ class CircularMenu extends TUIOWidget {
       this._tags = {
         ...this._tags,
         [tuioTag.id]: tuioTag,
-      };
-      this._tags[tuioTag.id].addWidget(this);
+      }
+      this._tags[tuioTag.id].addWidget(this)
 
       this._lastTagsValues = {
         ...this._lastTagsValues,
@@ -330,29 +330,29 @@ class CircularMenu extends TUIOWidget {
           x: tuioTag.x,
           y: tuioTag.y,
         },
-      };
-      this.nbItems = 0;
-      this._domElem.find('ul').empty();
-      this.constructMenu();
-      this.topSelector = tuioTag.y - (this.domElem.height() / 2);
-      this.leftSelector = tuioTag.x - (this.domElem.width() / 2);
-      this.domElem.css('top', this.topSelector);
-      this.domElem.css('left', this.leftSelector);
-      this._domElem.show();
-      this.isHide = false;
-      const li = this.domElem.find('li');
-      this.menuItemCoord = [];
+      }
+      this.nbItems = 0
+      this._domElem.find('ul').empty()
+      this.constructMenu()
+      this.topSelector = tuioTag.y - (this.domElem.height() / 2)
+      this.leftSelector = tuioTag.x - (this.domElem.width() / 2)
+      this.domElem.css('top', this.topSelector)
+      this.domElem.css('left', this.leftSelector)
+      this._domElem.show()
+      this.isHide = false
+      const li = this.domElem.find('li')
+      this.menuItemCoord = []
       for (let i = 0; i < li.length; i += 1) {
-        const x = $(li[i]).find('label')[0].getBoundingClientRect().left;
-        const y = $(li[i]).find('label')[0].getBoundingClientRect().top;
-        const width = $(li[i]).find('label').width();
-        const height = $(li[i]).find('label').height();
+        const x = $(li[i]).find('label')[0].getBoundingClientRect().left
+        const y = $(li[i]).find('label')[0].getBoundingClientRect().top
+        const width = $(li[i]).find('label').width()
+        const height = $(li[i]).find('label').height()
         this.menuItemCoord.push({
           xmin: x,
           ymin: y,
           xmax: x + width,
           ymax: y + height,
-        });
+        })
       }
     }
   }
@@ -366,28 +366,28 @@ class CircularMenu extends TUIOWidget {
   onTagUpdate(tuioTag) {
     if (typeof (this._lastTagsValues[tuioTag.id]) !== 'undefined') {
       if (tuioTag.id === this.idTagMenu) {
-        const lastTagValue = this._lastTagsValues[tuioTag.id];
-        const diffX = tuioTag.x - lastTagValue.x;
-        const diffY = tuioTag.y - lastTagValue.y;
+        const lastTagValue = this._lastTagsValues[tuioTag.id]
+        const diffX = tuioTag.x - lastTagValue.x
+        const diffY = tuioTag.y - lastTagValue.y
 
-        this.topSelector = this.topSelector + diffY;
-        this.leftSelector = this.leftSelector + diffX;
-        this.domElem.css('top', this.topSelector);
-        this.domElem.css('left', this.leftSelector);
-        this._domElem.css('transform', `rotate(${radToDeg(tuioTag.angle)}deg)`);
-        const li = this.domElem.find('li');
-        this.menuItemCoord = [];
+        this.topSelector += diffY
+        this.leftSelector += diffX
+        this.domElem.css('top', this.topSelector)
+        this.domElem.css('left', this.leftSelector)
+        this._domElem.css('transform', `rotate(${radToDeg(tuioTag.angle)}deg)`)
+        const li = this.domElem.find('li')
+        this.menuItemCoord = []
         for (let i = 0; i < li.length; i += 1) {
-          const x = $(li[i]).find('label')[0].getBoundingClientRect().left;
-          const y = $(li[i]).find('label')[0].getBoundingClientRect().top;
-          const width = $(li[i]).find('label').width();
-          const height = $(li[i]).find('label').height();
+          const x = $(li[i]).find('label')[0].getBoundingClientRect().left
+          const y = $(li[i]).find('label')[0].getBoundingClientRect().top
+          const width = $(li[i]).find('label').width()
+          const height = $(li[i]).find('label').height()
           this.menuItemCoord.push({
             xmin: x,
             ymin: y,
             xmax: x + width,
             ymax: y + height,
-          });
+          })
         }
 
         this._lastTagsValues = {
@@ -396,7 +396,7 @@ class CircularMenu extends TUIOWidget {
             x: tuioTag.x,
             y: tuioTag.y,
           },
-        };
+        }
       }
     }
   }
@@ -409,13 +409,13 @@ class CircularMenu extends TUIOWidget {
    */
   onTagDeletion(tuioTagId) {
     if (typeof (this._lastTagsValues[tuioTagId]) !== 'undefined') {
-      super.onTagDeletion(tuioTagId);
-      this._domElem.hide();
-      this.toggleOptions(this.domElem);
-      this.isHide = true;
-      this.tree = this.root;
+      super.onTagDeletion(tuioTagId)
+      this._domElem.hide()
+      this.toggleOptions(this.domElem)
+      this.isHide = true
+      this.tree = this.root
     }
   }
 }
 
-export default CircularMenu;
+export default CircularMenu
