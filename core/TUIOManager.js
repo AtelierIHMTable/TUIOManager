@@ -171,6 +171,7 @@ class TUIOManager {
         this._tags[socketData.id] = new TUIOTag(socketData.id, socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT, socketData.angle);
         this.notifyWidgets('onTagCreation', this._tags[socketData.id]);
         this._tags[socketData.id].update(socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT, socketData.angle);
+        if (this._showInteractions) this._drawPointer(socketData.id, socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT, 'green');
         break
       }
       default:
@@ -195,7 +196,8 @@ class TUIOManager {
       }
       case TAG_SOCKETIO_TYPE: {
         if (typeof (this._tags[socketData.id]) !== 'undefined') {
-          this._tags[socketData.id].update(socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT, socketData.angle)
+          this._tags[socketData.id].update(socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT, socketData.angle);
+          if (this._showInteractions) this._updatePointer(socketData.id, socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT);
         }
         break
       }
@@ -223,6 +225,7 @@ class TUIOManager {
       case TAG_SOCKETIO_TYPE: {
         if (typeof (this._tags[socketData.id]) !== 'undefined') {
           this.notifyWidgets('onTagDeletion', socketData.id);
+          if (this._showInteractions) this._removePointer(socketData.id);
           delete this._tags[socketData.id]
         }
         break
@@ -240,6 +243,7 @@ class TUIOManager {
    * @private
    */
   _drawPointer(id, x, y, color = 'red') {
+    // noinspection CssInvalidPropertyValue
     document.getElementsByTagName('body')[0]
       .insertAdjacentHTML('beforeend',
         `<div id="${id}" style="z-index: 1000; background: ${color}; height: 25px; width: 25px; position: absolute; border-radius: 50%; left: ${x}px; top: ${y}px"></div>`);
