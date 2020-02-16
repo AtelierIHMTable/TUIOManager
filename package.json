@@ -1,6 +1,6 @@
 {
   "name": "tuiomanager",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "scripts": {
     "devMode": "node initTUIOManagerDevMode.js",
     "build": "node dev-webpack-compiler.js",
