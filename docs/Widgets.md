@@ -41,6 +41,13 @@ setTagDuplicate(tagDuplicate);
 ```
 Ces fonctions permettent d'utiliser des interactions tangibles avec les `ElementWidget`. Le paramètre en entrée est donc son id (visible sous l'objet).
 
+```typescript
+// Z-index behavior setter
+shouldGoOnTop(boolean)
+```
+
+Cet attribut permet de définir si un widget doit passer au dessus de tous les autres lorsqu'un tag ou un touché est detécté dessus. Par défaut, un widget passera au dessus.
+
 ### ImageElementWidget
 
 La première implémentation d'ElementWidget (ImageElementWidget) permet d'afficher tout type d'image compatible avec la balise `<img>` d'HTML5. 
