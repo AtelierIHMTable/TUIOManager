@@ -2,6 +2,7 @@
  * @author Christian Brel <ch.brel@gmail.com>
  * @author Vincent Forquet
  * @author Nicolas Forget
+ * @author Lucas Oms <lucas.oms@hotmail.fr>
  */
 
 import io from 'socket.io-client'
@@ -21,7 +22,7 @@ import {
  * @type TUIOManager
  * @private
  */
-let tuioManagerInstance = null
+let tuioManagerInstance = null;
 
 /**
  * Main class to manage TUIOManager.
@@ -38,14 +39,45 @@ class TUIOManager {
     if (tuioManagerInstance !== null) {
       return tuioManagerInstance
     }
-    this._touches = {}
-    this._tags = {}
+    this._touches = {};
+    this._tags = {};
 
-    this._widgets = {}
+    this._widgets = {};
 
-    tuioManagerInstance = this
+    tuioManagerInstance = this;
+    this._showInteractions = true;
+    document.getElementsByTagName('head')[0].insertAdjacentHTML('beforeend',
+      `<style>
+        .fadeout {
+            animation: fadeout .3s forwards;
+            opacity: 1;
+        }
+
+        @keyframes fadeout {
+            0% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+           </style>`);
 
     return tuioManagerInstance
+  }
+
+  /**
+   * @returns {boolean}
+   */
+  get showInteractions() {
+    return this._showInteractions;
+  }
+
+  /**
+   * @param {boolean} value
+   */
+  set showInteractions(value) {
+    this._showInteractions = value;
   }
 
   /**
@@ -94,10 +126,11 @@ class TUIOManager {
    * @param {any} param - Param for method call.
    */
   notifyWidgets(methodToCall, param) {
-    Object.keys(this._widgets).forEach((widgetId) => {
-      const currentWidget = this._widgets[widgetId]
-      currentWidget[methodToCall](param)
-    })
+    Object.keys(this._widgets)
+      .forEach((widgetId) => {
+        const currentWidget = this._widgets[widgetId];
+        currentWidget[methodToCall](param)
+      })
   }
 
   /**
@@ -107,13 +140,13 @@ class TUIOManager {
    * @param {string} socketIOUrl - Socket IO Server's url. Default : 'http://localhost:9000/'
    */
   start(socketIOUrl = 'http://localhost:9000/') {
-    const socketIOClient = io(socketIOUrl)
+    const socketIOClient = io(socketIOUrl);
     socketIOClient.on(CREATE_SOCKETIO_ACTION, (data) => {
       this.handleCreate(data)
-    })
+    });
     socketIOClient.on(UPDATE_SOCKETIO_ACTION, (data) => {
       this.handleUpdate(data)
-    })
+    });
     socketIOClient.on(DELETE_SOCKETIO_ACTION, (data) => {
       this.handleDelete(data)
     })
@@ -128,15 +161,17 @@ class TUIOManager {
   handleCreate(socketData) {
     switch (socketData.type) {
       case TOUCH_SOCKETIO_TYPE: {
-        this._touches[socketData.id] = new TUIOTouch(socketData.id, socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT)
-        this.notifyWidgets('onTouchCreation', this._touches[socketData.id])
-        this._touches[socketData.id].update(socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT)
+        this._touches[socketData.id] = new TUIOTouch(socketData.id, socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT);
+        this.notifyWidgets('onTouchCreation', this._touches[socketData.id]);
+        this._touches[socketData.id].update(socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT);
+        if (this._showInteractions) this._drawPointer(socketData.id, socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT);
         break
       }
       case TAG_SOCKETIO_TYPE: {
-        this._tags[socketData.id] = new TUIOTag(socketData.id, socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT, socketData.angle)
-        this.notifyWidgets('onTagCreation', this._tags[socketData.id])
-        this._tags[socketData.id].update(socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT, socketData.angle)
+        this._tags[socketData.id] = new TUIOTag(socketData.id, socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT, socketData.angle);
+        this.notifyWidgets('onTagCreation', this._tags[socketData.id]);
+        this._tags[socketData.id].update(socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT, socketData.angle);
+        if (this._showInteractions) this._drawPointer(socketData.id, socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT, 'green');
         break
       }
       default:
@@ -154,13 +189,15 @@ class TUIOManager {
     switch (socketData.type) {
       case TOUCH_SOCKETIO_TYPE: {
         if (typeof (this._touches[socketData.id]) !== 'undefined') {
-          this._touches[socketData.id].update(socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT)
+          this._touches[socketData.id].update(socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT);
+          if (this._showInteractions) this._updatePointer(socketData.id, socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT);
         }
         break
       }
       case TAG_SOCKETIO_TYPE: {
         if (typeof (this._tags[socketData.id]) !== 'undefined') {
-          this._tags[socketData.id].update(socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT, socketData.angle)
+          this._tags[socketData.id].update(socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT, socketData.angle);
+          if (this._showInteractions) this._updatePointer(socketData.id, socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT);
         }
         break
       }
@@ -179,20 +216,54 @@ class TUIOManager {
     switch (socketData.type) {
       case TOUCH_SOCKETIO_TYPE: {
         if (typeof (this._touches[socketData.id]) !== 'undefined') {
-          this.notifyWidgets('onTouchDeletion', socketData.id)
+          this.notifyWidgets('onTouchDeletion', socketData.id);
+          if (this._showInteractions) this._removePointer(socketData.id);
           delete this._touches[socketData.id]
         }
         break
       }
       case TAG_SOCKETIO_TYPE: {
         if (typeof (this._tags[socketData.id]) !== 'undefined') {
-          this.notifyWidgets('onTagDeletion', socketData.id)
+          this.notifyWidgets('onTagDeletion', socketData.id);
+          if (this._showInteractions) this._removePointer(socketData.id);
           delete this._tags[socketData.id]
         }
         break
       }
       default:
         break
+    }
+  }
+
+  /**
+   * @param id of the Touch object
+   * @param {number} x position left
+   * @param {number} y position top
+   * @param {string} color
+   * @private
+   */
+  _drawPointer(id, x, y, color = 'red') {
+    // noinspection CssInvalidPropertyValue
+    document.getElementsByTagName('body')[0]
+      .insertAdjacentHTML('beforeend',
+        `<div id="${id}" style="z-index: 1000; background: ${color}; height: 25px; width: 25px; position: absolute; border-radius: 50%; left: ${x}px; top: ${y}px"></div>`);
+  }
+
+  _updatePointer(id, x, y) {
+    const elem = document.getElementById(id);
+    if (elem) {
+      elem.style.top = `${y}px`;
+      elem.style.left = `${x}px`;
+    }
+  }
+
+  _removePointer(id) {
+    const elem = document.getElementById(id);
+    if (elem) {
+      elem.classList.add('fadeout');
+      setTimeout(() => {
+        elem.remove();
+      }, 300)
     }
   }
 }
