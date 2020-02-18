@@ -17,7 +17,16 @@ class BaseWidget extends TUIOWidget {
     super(x, y, width, height);
     BaseWidget.zIndexGlobal += 1;
     this.zIndex = BaseWidget.zIndexGlobal;
+    this._currentTransform = '';
   }// constructor
+
+  get currentTransform() {
+    return this._currentTransform;
+  }
+
+  set currentTransform(value) {
+    this._currentTransform = value;
+  }
 }
 
 BaseWidget.zIndexGlobal = 0;

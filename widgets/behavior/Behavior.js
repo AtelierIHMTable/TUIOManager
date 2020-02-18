@@ -21,6 +21,14 @@ class Behavior extends TUIOWidget {
     return this.widget.touches;
   }
 
+  get currentTransform() {
+    return this.widget.currentTransform;
+  }
+
+  set currentTransform(value) {
+    this.widget.currentTransform = value;
+  }
+
   addTo(element) {
     this.widget.addTo(element);
   }

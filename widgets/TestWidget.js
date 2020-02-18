@@ -8,8 +8,8 @@ class TestWidget extends BaseWidget {
       .css('position', 'absolute')
       .css('left', `${x}px`)
       .css('top', `${y}px`)
-      .width(100)
-      .height(100)
+      .width(this.width)
+      .height(this.height)
       .css('background', 'blue');
   }
 }

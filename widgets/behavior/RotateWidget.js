@@ -1,12 +1,11 @@
 import Behavior from './Behavior';
 import Point from '../../src/utils/Point';
 
-class ZoomWidget extends Behavior {
+class RotateWidget extends Behavior {
   constructor(widget) {
     super(widget);
-    this._lastTouchesValues = {};
-    this.scale = 1;
-    this.domElem.addClass(this.id);
+    this._currentAngle = 0;
+    this._lastTouchesValues = [];
   }
 
   /**
@@ -19,7 +18,6 @@ class ZoomWidget extends Behavior {
     super.onTouchCreation(tuioTouch);
     if (!this._isInStack) {
       if (this.isTouched(tuioTouch.x, tuioTouch.y)) {
-        console.log('Register touch event');
         this._lastTouchesValues = {
           ...this._lastTouchesValues,
           [tuioTouch.id]: {
@@ -27,13 +25,8 @@ class ZoomWidget extends Behavior {
             y: tuioTouch.y,
           },
         };
-        this._lastTouchesValues.pinchDistance = 0;
-        if (this._lastTouchesValues.scale == null) {
-          this._lastTouchesValues.scale = this.scale
-        }
       }
     }
-    console.log(this._lastTouchesValues);
   }
 
   /**
@@ -44,40 +37,40 @@ class ZoomWidget extends Behavior {
    */
   onTouchUpdate(tuioTouch) {
     super.onTouchUpdate(tuioTouch);
-    console.log('New touch', tuioTouch);
     if (this._lastTouchesValues[tuioTouch.id] !== undefined) {
       this._lastTouchesValues[tuioTouch.id].x = tuioTouch.x;
       this._lastTouchesValues[tuioTouch.id].y = tuioTouch.y;
       const touchesWidgets = [];
       Object.keys(this._lastTouchesValues)
         .forEach((key) => {
-          if (key !== 'scale' && key !== 'pinchDistance') {
-            touchesWidgets.push({
-              ...this._lastTouchesValues[key],
-            });
-          }
+          touchesWidgets.push({
+            ...this._lastTouchesValues[key],
+          });
         });
-      console.log('TOUCHES', touchesWidgets);
+      console.log('Touches', touchesWidgets);
       if (touchesWidgets.length === 2) {
+        console.log('Could rotate');
         const touch1 = new Point(touchesWidgets[0].x, touchesWidgets[0].y);
         const touch2 = new Point(touchesWidgets[1].x, touchesWidgets[1].y);
-        let newscale = this._lastTouchesValues.scale;
-        // Resize d'une image
-        const c = touch1.distanceTo(touch2);
-        if (c > this._lastTouchesValues.pinchDistance) {
-          newscale = this._lastTouchesValues.scale * 1.018; // new scale is 1.5 times the old scale
-          this._lastTouchesValues.scale = newscale //  We save the scale
-        } else if (c < this._lastTouchesValues.pinchDistance) {
-          newscale = this._lastTouchesValues.scale * 0.985; // new scale is 1.5 times the old scale
-          this._lastTouchesValues.scale = newscale //  We save the scale
+
+        // Rotation d'une image
+        if (!this.lastAngle) {
+          this.lastAngle = touch1.angleWith(touch2)
+        } else {
+          if (this.lastAngle < touch1.angleWith(touch2)) {
+            this._currentAngle += touch1.angleWith(touch2) - this.lastAngle
+          } else {
+            this._currentAngle -= this.lastAngle - touch1.angleWith(touch2)
+          }
+          this._currentAngle %= 360;
+          this.lastAngle = touch1.angleWith(touch2)
         }
-        this.scale = newscale;
-        this._lastTouchesValues.pinchDistance = c;
-        const transformWithoutScale = this.currentTransform.replace(/scale\([0-9]*\.?[0-9]+\)/g, '');
-        this.currentTransform = `${transformWithoutScale} scale(${this.scale})`;
-        this.domElem.css('transform', this.currentTransform);
+        this.domElem.css('transform', `${this.currentTransform} rotate(360deg)`);
         this._width = this.domElem.width();
         this._height = this.domElem.height();
+        const valueWithoutRotate = this.currentTransform.replace(/rotate\([-+]?[0-9]*\.?[0-9]+deg\)/g, '');
+        this.currentTransform = `${valueWithoutRotate} rotate(${this._currentAngle}deg)`;
+        this.domElem.css('transform', this.currentTransform);
         this._x = this.domElem.position().left;
         this._y = this.domElem.position().top
       }
@@ -98,4 +91,4 @@ class ZoomWidget extends Behavior {
   }
 }
 
-export default ZoomWidget;
+export default RotateWidget;
