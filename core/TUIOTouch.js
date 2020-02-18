@@ -22,7 +22,6 @@ class TUIOTouch extends TUIOObject {
    */
   update(x, y) {
     super.update(x, y)
-    this.notifyWidgets('onTouchUpdate')
   }
 }
 
