@@ -62,6 +62,8 @@ class ElementWidget extends TUIOWidget {
 
     this.isDisabled = false;
     this.tagDuplicate = '';
+
+    this.hasBeenWrapped = false;
   }// constructor
 
   /**
@@ -70,6 +72,10 @@ class ElementWidget extends TUIOWidget {
    * @returns {JQuery Object} ImageWidget's domElem.
    */
   get domElem() {
+    if (!this.hasBeenWrapped) {
+      this._domElem.attr('id', this.id);
+      this.hasBeenWrapped = true;
+    }
     return this._domElem
   }
 
@@ -95,17 +101,19 @@ class ElementWidget extends TUIOWidget {
    * @param {number} y - Point's ordinate to test.
    */
   isTouched(x, y) {
-    this._domElem.css('transform', `rotate(360deg) scale(${this.scale})`);
-    const nx = this._domElem[0].getBoundingClientRect().left;
-    const ny = this._domElem[0].getBoundingClientRect().top;
-    const width = this._domElem.width();
-    const height = this._domElem.height();
-    const ox = (nx + (width / 2));
-    const oy = (ny + (height / 2));
-    const p = new Point(x, y);
-    p.rotate((360 - this._currentAngle), ox, oy);
-    this._domElem.css('transform', `rotate(${this._currentAngle}deg) scale(${this.scale})`);
-    return (p.x >= nx && p.x <= nx + width && p.y >= ny && p.y <= ny + height) && !this.isDisabled
+    let onDomElem = document.elementFromPoint(x, y);
+    if (onDomElem) {
+      // Reach all parents
+      let init = onDomElem.id === this.id;
+      while (onDomElem.parentElement && !init) {
+        onDomElem = onDomElem.parentElement;
+        init = init || onDomElem.id === this.id;
+      }
+      if (init) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
@@ -177,7 +185,6 @@ class ElementWidget extends TUIOWidget {
         const lastTouchValue = this._lastTouchesValues[tuioTouch.id];
         const diffX = tuioTouch.x - lastTouchValue.x;
         const diffY = tuioTouch.y - lastTouchValue.y;
-
         const newX = this.internX + diffX;
         const newY = this.internY + diffY;
         this._x = this.x + diffX;

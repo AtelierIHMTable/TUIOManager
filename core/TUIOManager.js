@@ -190,6 +190,7 @@ class TUIOManager {
       case TOUCH_SOCKETIO_TYPE: {
         if (typeof (this._touches[socketData.id]) !== 'undefined') {
           this._touches[socketData.id].update(socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT);
+          this.notifyWidgets('onTouchUpdate', this._touches[socketData.id]);
           if (this._showInteractions) this._updatePointer(socketData.id, socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT);
         }
         break
@@ -197,6 +198,7 @@ class TUIOManager {
       case TAG_SOCKETIO_TYPE: {
         if (typeof (this._tags[socketData.id]) !== 'undefined') {
           this._tags[socketData.id].update(socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT, socketData.angle);
+          this.notifyWidgets('onTouchUpdate', this._tags[socketData.id]);
           if (this._showInteractions) this._updatePointer(socketData.id, socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT);
         }
         break
