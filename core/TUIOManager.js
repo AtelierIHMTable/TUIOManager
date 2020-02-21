@@ -11,9 +11,13 @@ import TUIOTouch from './TUIOTouch'
 import TUIOTag from './TUIOTag'
 
 import {
-  CREATE_SOCKETIO_ACTION, UPDATE_SOCKETIO_ACTION, DELETE_SOCKETIO_ACTION,
-  TOUCH_SOCKETIO_TYPE, TAG_SOCKETIO_TYPE,
-  WINDOW_WIDTH, WINDOW_HEIGHT,
+  CREATE_SOCKETIO_ACTION,
+  DELETE_SOCKETIO_ACTION,
+  TAG_SOCKETIO_TYPE,
+  TOUCH_SOCKETIO_TYPE,
+  UPDATE_SOCKETIO_ACTION,
+  WINDOW_HEIGHT,
+  WINDOW_WIDTH,
 } from './constants'
 
 /**
@@ -190,6 +194,7 @@ class TUIOManager {
       case TOUCH_SOCKETIO_TYPE: {
         if (typeof (this._touches[socketData.id]) !== 'undefined') {
           this._touches[socketData.id].update(socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT);
+          this.notifyWidgets('onTouchUpdate', this._touches[socketData.id]);
           if (this._showInteractions) this._updatePointer(socketData.id, socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT);
         }
         break
@@ -197,6 +202,7 @@ class TUIOManager {
       case TAG_SOCKETIO_TYPE: {
         if (typeof (this._tags[socketData.id]) !== 'undefined') {
           this._tags[socketData.id].update(socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT, socketData.angle);
+          this.notifyWidgets('onTagUpdate', this._tags[socketData.id]);
           if (this._showInteractions) this._updatePointer(socketData.id, socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT);
         }
         break
