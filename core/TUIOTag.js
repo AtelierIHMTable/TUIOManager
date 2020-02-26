@@ -23,7 +23,7 @@ class TUIOTag extends TUIOObject {
    * @param {string/number} angle - TUIOTag's angle.
    */
   constructor(id, x, y, angle) {
-    super(id, x, y)
+    super(id, x, y);
     this._angle = angle
   }
 
@@ -43,9 +43,8 @@ class TUIOTag extends TUIOObject {
    * @param {string/number} angle - New TUIOTag's angle.
    */
   update(x, y, angle) {
-    super.update(x, y)
+    super.update(x, y);
     this._angle = angle
-    this.notifyWidgets('onTagUpdate')
   }
 }
 
