@@ -1,3 +1,6 @@
+/**
+ * @author Lucas Oms <lucas.oms@hotmail.fr>
+ */
 import TUIOWidget from '../../core/TUIOWidget';
 
 class BaseWidget extends TUIOWidget {
@@ -12,7 +15,7 @@ class BaseWidget extends TUIOWidget {
    */
   constructor(x, y, width, height) {
     if (new.target === BaseWidget) {
-      throw new TypeError('ElementWidget is an abstract class. It cannot be instanciated')
+      throw new TypeError('BaseWidget is an abstract class. It cannot be instanciated')
     }
     super(x, y, width, height);
     BaseWidget.zIndexGlobal += 1;

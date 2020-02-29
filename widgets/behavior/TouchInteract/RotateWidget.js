@@ -1,5 +1,10 @@
-import Behavior from './Behavior';
-import Point from '../../src/utils/Point';
+/**
+ * @author Kevin Duglue <kevin.duglue@gmail.com> (Base code)
+ * @author Rémy Kaloustian <remy.kaloustian@gmail.com> (Base code)
+ * @author Lucas Oms <lucas.oms@hotmail.fr> (Refactoring into widget decorator)
+ */
+import Behavior from '../Behavior';
+import Point from '../../../src/utils/Point';
 
 class RotateWidget extends Behavior {
   constructor(widget) {
@@ -47,9 +52,7 @@ class RotateWidget extends Behavior {
             ...this._lastTouchesValues[key],
           });
         });
-      console.log('Touches', touchesWidgets);
       if (touchesWidgets.length === 2) {
-        console.log('Could rotate');
         const touch1 = new Point(touchesWidgets[0].x, touchesWidgets[0].y);
         const touch2 = new Point(touchesWidgets[1].x, touchesWidgets[1].y);
 

@@ -1,4 +1,9 @@
-import Behavior from './Behavior';
+/**
+ * @author Kevin Duglue <kevin.duglue@gmail.com> (Base code)
+ * @author Rémy Kaloustian <remy.kaloustian@gmail.com> (Base code)
+ * @author Lucas Oms <lucas.oms@hotmail.fr> (Refactoring into widget decorator)
+ */
+import Behavior from '../Behavior';
 
 class MoveWidget extends Behavior {
   constructor(widget) {
@@ -6,6 +11,7 @@ class MoveWidget extends Behavior {
     this.internX = widget.x;
     this.internY = widget.y;
     this.domElem.css('position', 'absolute');
+    this._lastTouchesValues = {};
   }
 
   /**
@@ -16,20 +22,17 @@ class MoveWidget extends Behavior {
    */
   onTouchCreation(tuioTouch) {
     super.onTouchCreation(tuioTouch);
-    if (!this._isInStack) {
-      super.onTouchCreation(tuioTouch);
-      if (this.isTouched(tuioTouch.x, tuioTouch.y)) {
-        this._lastTouchesValues = {
-          ...this._lastTouchesValues,
-          [tuioTouch.id]: {
-            x: tuioTouch.x,
-            y: tuioTouch.y,
-          },
-        };
-        this._lastTouchesValues.pinchDistance = 0;
-        if (this._lastTouchesValues.scale == null) {
-          this._lastTouchesValues.scale = this.scale
-        }
+    if (this.isTouched(tuioTouch.x, tuioTouch.y)) {
+      this._lastTouchesValues = {
+        ...this._lastTouchesValues,
+        [tuioTouch.id]: {
+          x: tuioTouch.x,
+          y: tuioTouch.y,
+        },
+      };
+      this._lastTouchesValues.pinchDistance = 0;
+      if (this._lastTouchesValues.scale == null) {
+        this._lastTouchesValues.scale = this.scale
       }
     }
   }
@@ -69,8 +72,10 @@ class MoveWidget extends Behavior {
         const diffX = tuioTouch.x - lastTouchValue.x;
         const diffY = tuioTouch.y - lastTouchValue.y;
 
-        const newX = this.internX + diffX;
-        const newY = this.internY + diffY;
+        const newX = parseFloat(this.domElem.css('left')
+          .replace(/px/g, '')) + diffX;
+        const newY = parseFloat(this.domElem.css('top')
+          .replace(/px/g, '')) + diffY;
         this._x = this.x + diffX;
         this._y = this.y + diffY;
 

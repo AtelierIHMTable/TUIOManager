@@ -1,7 +1,10 @@
+/**
+ * @author Lucas Oms <lucas.oms@hotmail.fr>
+ */
 import TUIOManager from '../../core/TUIOManager';
-import TUIOWidget from '../../core/TUIOWidget';
+import BaseWidget from '../ElementWidget/BaseWidget';
 
-class Behavior extends TUIOWidget {
+class Behavior extends BaseWidget {
   /**
    * @param {TUIOWidget} widget to add behavior
    */

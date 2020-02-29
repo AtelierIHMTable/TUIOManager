@@ -1,5 +1,10 @@
-import Behavior from './Behavior';
-import Point from '../../src/utils/Point';
+/**
+ * @author Kevin Duglue <kevin.duglue@gmail.com> (Base code)
+ * @author Rémy Kaloustian <remy.kaloustian@gmail.com> (Base code)
+ * @author Lucas Oms <lucas.oms@hotmail.fr> (Refactoring into widget decorator)
+ */
+import Behavior from '../Behavior';
+import Point from '../../../src/utils/Point';
 
 class ZoomWidget extends Behavior {
   constructor(widget) {
@@ -19,7 +24,6 @@ class ZoomWidget extends Behavior {
     super.onTouchCreation(tuioTouch);
     if (!this._isInStack) {
       if (this.isTouched(tuioTouch.x, tuioTouch.y)) {
-        console.log('Register touch event');
         this._lastTouchesValues = {
           ...this._lastTouchesValues,
           [tuioTouch.id]: {
@@ -33,7 +37,6 @@ class ZoomWidget extends Behavior {
         }
       }
     }
-    console.log(this._lastTouchesValues);
   }
 
   /**
@@ -44,7 +47,6 @@ class ZoomWidget extends Behavior {
    */
   onTouchUpdate(tuioTouch) {
     super.onTouchUpdate(tuioTouch);
-    console.log('New touch', tuioTouch);
     if (this._lastTouchesValues[tuioTouch.id] !== undefined) {
       this._lastTouchesValues[tuioTouch.id].x = tuioTouch.x;
       this._lastTouchesValues[tuioTouch.id].y = tuioTouch.y;
@@ -57,7 +59,6 @@ class ZoomWidget extends Behavior {
             });
           }
         });
-      console.log('TOUCHES', touchesWidgets);
       if (touchesWidgets.length === 2) {
         const touch1 = new Point(touchesWidgets[0].x, touchesWidgets[0].y);
         const touch2 = new Point(touchesWidgets[1].x, touchesWidgets[1].y);

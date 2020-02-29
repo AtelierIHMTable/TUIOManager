@@ -2,7 +2,7 @@ import $ from 'jquery/dist/jquery.min';
 import BaseWidget from './ElementWidget/BaseWidget';
 
 class TestWidget extends BaseWidget {
-  constructor(x, y, width, height) {
+  constructor(x, y, width, height, color = 'blue') {
     super(x, y, width, height);
     this._domElem = $('<div></div>')
       .css('position', 'absolute')
@@ -10,7 +10,7 @@ class TestWidget extends BaseWidget {
       .css('top', `${y}px`)
       .width(this.width)
       .height(this.height)
-      .css('background', 'blue');
+      .css('background', color);
   }
 }
 
