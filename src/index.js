@@ -14,6 +14,7 @@ import TouchCenterRotateWidget from '../widgets/behavior/touch-interact/TouchCen
 import WrapperWidget from '../widgets/WrapperWidget';
 import TagDeleteWidget from '../widgets/behavior/tag-interact/TagDeleteWidget';
 import TagMoveWidget from '../widgets/behavior/tag-interact/TagMoveWidget';
+import TagCenterZoomWidget from '../widgets/behavior/tag-interact/TagCenterZoomWidget';
 
 const tuioManager = new TUIOManager();
 
@@ -97,7 +98,7 @@ function testForTagInteractions() {
   // new TagDeleteWidget(new TouchMoveWidget(new TestWidget(500 - 300, 500 - 300, 300, 300, 'pink')), 9).addTo(root);
   // test with middle wrapper
   // new TouchMoveWidget(new TagDeleteWidget(new TestWidget(500 + 100, 500 - 300, 300, 300, 'blue'), 10)).addTo(root);
-  new TagMoveWidget(new TagDeleteWidget(new TestWidget(500 + 100, 500 - 300, 300, 300, 'blue'), 10), 9).addTo(root);
+  new TagCenterZoomWidget(new TagMoveWidget(new TagDeleteWidget(new TestWidget(500 + 100, 500 - 300, 300, 300, 'blue'), 10), 9), 8).addTo(root);
 }
 
 $(window)
