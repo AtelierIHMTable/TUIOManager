@@ -1,3 +1,8 @@
+/**
+ * @author Kevin Duglue <kevin.duglue@gmail.com> (Base code)
+ * @author Rémy Kaloustian <remy.kaloustian@gmail.com> (Base code)
+ * @author Lucas Oms <lucas.oms@hotmail.fr> (Refactoring into widget decorator)
+ */
 import Behavior from '../Behavior';
 import Point from '../../../src/utils/Point';
 
@@ -5,12 +10,12 @@ import Point from '../../../src/utils/Point';
  * @class TagCenterRotateWidget
  *
  * Use a tag to rotate the widget. Doesn't work with another tag interact with the same id,
- * use one tag to zoom and another to move for example
+ * use one tag to rotate and another to move for example
  */
 class TagCenterRotateWidget extends Behavior {
   /**
    * @param {BaseWidget} widget
-   * @param {number} idTag to delete widget
+   * @param {number} idTag to rotate widget
    */
   constructor(widget, idTag) {
     super(widget);

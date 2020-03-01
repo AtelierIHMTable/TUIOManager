@@ -1,7 +1,5 @@
 /**
- * @author Kevin Duglue <kevin.duglue@gmail.com> (Base code)
- * @author Rémy Kaloustian <remy.kaloustian@gmail.com> (Base code)
- * @author Lucas Oms <lucas.oms@hotmail.fr> (Refactoring into widget decorator)
+ * @author Lucas Oms <lucas.oms@hotmail.fr>
  */
 import Behavior from '../Behavior';
 

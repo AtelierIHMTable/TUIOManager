@@ -1,3 +1,6 @@
+/**
+ * @author Lucas Oms <lucas.oms@hotmail.fr>
+ */
 import Behavior from '../Behavior';
 
 /**

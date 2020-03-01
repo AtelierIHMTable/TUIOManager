@@ -1,3 +1,8 @@
+/**
+ * @author Kevin Duglue <kevin.duglue@gmail.com> (Base code)
+ * @author Rémy Kaloustian <remy.kaloustian@gmail.com> (Base code)
+ * @author Lucas Oms <lucas.oms@hotmail.fr> (Refactoring into widget decorator)
+ */
 import Behavior from '../Behavior';
 import Point from '../../../src/utils/Point';
 
@@ -10,7 +15,7 @@ import Point from '../../../src/utils/Point';
 class TagCenterZoomWidget extends Behavior {
   /**
    * @param {BaseWidget} widget
-   * @param {number} idTag to delete widget
+   * @param {number} idTag to zoom widget
    */
   constructor(widget, idTag) {
     super(widget);
