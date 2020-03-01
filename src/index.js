@@ -5,9 +5,8 @@ import $ from 'jquery/dist/jquery.min'
 // Import TUIOManager
 import TUIOManager from '../core/TUIOManager'
 import TestWidget from '../widgets/TestWidget';
-import ClickWidget from '../widgets/behavior/TouchInteract/ClickWidget';
-import WrapperWidget from '../widgets/ElementWidget/WrapperWidget';
-import CenterRotateWidget from '../widgets/behavior/TouchInteract/CenterRotateWidget';
+import DragWidget from '../widgets/behavior/TouchInteract/DragWidget';
+import DropWidget from '../widgets/behavior/TouchInteract/DropWidget';
 
 const tuioManager = new TUIOManager();
 
@@ -24,24 +23,35 @@ $(window)
     //   (clic) => {
     //     console.log(clic);
     //   });
-    const list = [];
-    const offsetX = 300;
-    const offsetY = 50;
-    const width = 80;
-    const margin = 10;
-    for (let i = 0; i < 10; i += 1) {
-      for (let j = 0; j < 10; j += 1) {
-        list.push(
-          new ClickWidget(
-            new TestWidget(offsetX + i * width + ((i - 1) * margin) + margin, offsetY + j * width + ((j - 1) * margin),
-              width, width, 'blue'),
-            () => {
-              console.log(`${i + 1}, ${j + 1}`);
-            },
-          ),
-        )
-      }
-    }
-    const widget3 = new CenterRotateWidget(new WrapperWidget(...list));
-    widget3.addTo(root)
+    // const list = [];
+    // const offsetX = 300;
+    // const offsetY = 50;
+    // const width = 80;
+    // const margin = 10;
+    // for (let i = 0; i < 10; i += 1) {
+    //   for (let j = 0; j < 10; j += 1) {
+    //     list.push(
+    //       new ClickWidget(
+    //         new TestWidget(offsetX + i * width + ((i - 1) * margin) + margin, offsetY + j * width + ((j - 1) * margin),
+    //           width, width, 'blue'),
+    //         () => {
+    //           console.log(`${i + 1}, ${j + 1}`);
+    //         },
+    //       ),
+    //     )
+    //   }
+    // }
+    // const widget3 = new CenterRotateWidget(new WrapperWidget(...list));
+    // widget3.addTo(root)
+
+    const widget = new DragWidget(new TestWidget(50, 50, 100, 100), ['TEST'], ((name) => {
+      console.log(name);
+    }));
+    const widget2 = new DropWidget(new TestWidget(500, 500, 300, 300, 'red'), 'TEST', (w) => {
+      w.domElem.css('background', 'green')
+    }, (w) => {
+      w.domElem.css('background', 'red')
+    });
+    widget2.addTo(root);
+    widget.addTo(root);
   });

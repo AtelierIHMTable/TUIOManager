@@ -6,7 +6,7 @@ import BaseWidget from '../ElementWidget/BaseWidget';
 
 class Behavior extends BaseWidget {
   /**
-   * @param {TUIOWidget} widget to add behavior
+   * @param {BaseWidget} widget to add behavior
    */
   constructor(widget) {
     super(widget.x, widget.y, widget.width, widget.height);

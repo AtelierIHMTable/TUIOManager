@@ -6,6 +6,11 @@
 import Behavior from '../Behavior';
 
 class ClickWidget extends Behavior {
+  /**
+   *
+   * @param { BaseWidget } widget
+   * @param { function(widget): void } callback
+   */
   constructor(widget, callback) {
     super(widget);
     this._clicCallback = callback;
@@ -42,7 +47,7 @@ class ClickWidget extends Behavior {
     super.onTouchDeletion(tuioTouchId);
     const touchIndex = this.touchesId.indexOf(tuioTouchId);
     if (touchIndex > -1 && this._shouldTriggerClic) {
-      this._clicCallback();
+      this._clicCallback(this);
     }
     this.touchesId.splice(touchIndex, 1);
     if (this.touchesId.length === 0) {
