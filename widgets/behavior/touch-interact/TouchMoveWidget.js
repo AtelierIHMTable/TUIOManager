@@ -6,12 +6,12 @@
 import Behavior from '../Behavior';
 
 /**
- * @class MoveWidget
+ * @class TouchMoveWidget
  * @extends Behavior
  *
  * Allow a widget to be moved with touch events
  */
-class MoveWidget extends Behavior {
+class TouchMoveWidget extends Behavior {
   /**
    * @param {BaseWidget} widget
    */
@@ -97,4 +97,4 @@ class MoveWidget extends Behavior {
   }
 }
 
-export default MoveWidget;
+export default TouchMoveWidget;

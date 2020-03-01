@@ -1,21 +1,21 @@
 /**
  * @author Lucas Oms <lucas.oms@hotmail.fr>
  */
-import MoveWidget from './MoveWidget';
+import TouchMoveWidget from './TouchMoveWidget';
 import DragNDropManager from '../utils/DragNDropManager';
 
 /**
- * @class DragWidget
- * @extends MoveWidget
+ * @class TouchDragWidget
+ * @extends TouchMoveWidget
  *
  * Add touch move interaction on the widget.
- * When the DragWidget is dropped on a DropWidget calls a callback with the dropzone name
+ * When the TouchDragWidget is dropped on a DropWidget calls a callback with the dropzone name
  *
  * You can supply dropzoneNames that the widget will listen to allow DropWidget highlight itself
  * to show to the user the future interaction
  * @see {DropWidget}
  */
-class DragWidget extends MoveWidget {
+class TouchDragWidget extends TouchMoveWidget {
   /**
    *
    * @param {BaseWidget} widget
@@ -23,7 +23,7 @@ class DragWidget extends MoveWidget {
    * @param {string[]} zoneForInteractions allows to higlight dropzone when move this widget
    *
    * If you supply zoneForInteractions, DropWidget with the name of these dropzones will highlight
-   * when this DragWidget would interact on drop
+   * when this TouchDragWidget would interact on drop
    */
   constructor(widget, dropCallback = () => {
   }, zoneForInteractions = []) {
@@ -57,4 +57,4 @@ class DragWidget extends MoveWidget {
   }
 }
 
-export default DragWidget;
+export default TouchDragWidget;

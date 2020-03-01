@@ -5,13 +5,15 @@ import $ from 'jquery/dist/jquery.min'
 // Import TUIOManager
 import TUIOManager from '../core/TUIOManager'
 import TestWidget from '../widgets/TestWidget';
-import DragWidget from '../widgets/behavior/TouchInteract/DragWidget';
-import DropWidget from '../widgets/behavior/TouchInteract/DropWidget';
-import ClickWidget from '../widgets/behavior/TouchInteract/ClickWidget';
-import MoveWidget from '../widgets/behavior/TouchInteract/MoveWidget';
-import GoOnTopWidget from '../widgets/behavior/TouchInteract/GoOnTopWidget';
-import CenterRotateWidget from '../widgets/behavior/TouchInteract/CenterRotateWidget';
+import TouchDragWidget from '../widgets/behavior/touch-interact/TouchDragWidget';
+import DropWidget from '../widgets/behavior/utils/DropWidget';
+import TouchInteractWidget from '../widgets/behavior/touch-interact/TouchInteractWidget';
+import TouchMoveWidget from '../widgets/behavior/touch-interact/TouchMoveWidget';
+import TouchGoOnTopWidget from '../widgets/behavior/touch-interact/TouchGoOnTopWidget';
+import TouchCenterRotateWidget from '../widgets/behavior/touch-interact/TouchCenterRotateWidget';
 import WrapperWidget from '../widgets/WrapperWidget';
+import TagDeleteWidget from '../widgets/behavior/tag-interact/TagDeleteWidget';
+import TagMoveWidget from '../widgets/behavior/tag-interact/TagMoveWidget';
 
 const tuioManager = new TUIOManager();
 
@@ -31,7 +33,7 @@ function testForComplexInteractions() {
   for (let i = 0; i < 10; i += 1) {
     for (let j = 0; j < 10; j += 1) {
       list.push(
-        new ClickWidget(
+        new TouchInteractWidget(
           new TestWidget(offsetX + i * width + ((i - 1) * margin) + margin, offsetY + j * width + ((j - 1) * margin),
             width, width, color),
           (widget) => {
@@ -46,7 +48,7 @@ function testForComplexInteractions() {
       )
     }
   }
-  const widget3 = new CenterRotateWidget(new WrapperWidget(...list));
+  const widget3 = new TouchCenterRotateWidget(new WrapperWidget(...list));
   widget3.addTo(root)
 }
 
@@ -59,7 +61,7 @@ function testForDragNDrop() {
   }, (w) => {
     w.domElem.css('background', 'red')
   });
-  const widget = new ClickWidget(new DragWidget(new TestWidget(50, 50, 100, 100), ((name) => {
+  const widget = new TouchInteractWidget(new TouchDragWidget(new TestWidget(50, 50, 100, 100), ((name) => {
     if (name === 'TEST') {
       widget2.domElem.css('background', 'orange')
     }
@@ -82,13 +84,23 @@ function testForDragNDrop() {
 // eslint-disable-next-line no-unused-vars
 function testForGoOnTop() {
   const root = $('body');
-  new GoOnTopWidget(new MoveWidget(new TestWidget(500 - 300, 500 - 300, 300, 300, 'pink'))).addTo(root);
-  new GoOnTopWidget(new MoveWidget(new TestWidget(900 - 300, 500 - 300, 300, 300, 'orange'))).addTo(root);
-  new GoOnTopWidget(new MoveWidget(new TestWidget(500 - 300, 900 - 300, 300, 300, 'blue'))).addTo(root);
-  new GoOnTopWidget(new MoveWidget(new TestWidget(900 - 300, 900 - 300, 300, 300, 'green'))).addTo(root);
+  new TouchGoOnTopWidget(new TouchMoveWidget(new TestWidget(500 - 300, 500 - 300, 300, 300, 'pink'))).addTo(root);
+  new TouchGoOnTopWidget(new TouchMoveWidget(new TestWidget(900 - 300, 500 - 300, 300, 300, 'orange'))).addTo(root);
+  new TouchGoOnTopWidget(new TouchMoveWidget(new TestWidget(500 - 300, 900 - 300, 300, 300, 'blue'))).addTo(root);
+  new TouchGoOnTopWidget(new TouchMoveWidget(new TestWidget(900 - 300, 900 - 300, 300, 300, 'green'))).addTo(root);
+}
+
+// eslint-disable-next-line no-unused-vars
+function testForTagInteractions() {
+  const root = $('body');
+  // test with final wrapper
+  // new TagDeleteWidget(new TouchMoveWidget(new TestWidget(500 - 300, 500 - 300, 300, 300, 'pink')), 9).addTo(root);
+  // test with middle wrapper
+  // new TouchMoveWidget(new TagDeleteWidget(new TestWidget(500 + 100, 500 - 300, 300, 300, 'blue'), 10)).addTo(root);
+  new TagMoveWidget(new TagDeleteWidget(new TestWidget(500 + 100, 500 - 300, 300, 300, 'blue'), 10), 9).addTo(root);
 }
 
 $(window)
   .ready(() => {
-    testForGoOnTop();
+    testForTagInteractions();
   });

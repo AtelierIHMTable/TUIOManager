@@ -4,7 +4,7 @@ import TUIOManager from '../../../core/TUIOManager';
 /**
  * On a touch creation, the widget will go on top of other based on other BaseWidget indexes
  */
-class GoOnTopWidget extends Behavior {
+class TouchGoOnTopWidget extends Behavior {
   onTouchCreation(tuioTouch) {
     super.onTouchCreation(tuioTouch);
     if (this.isTouched(tuioTouch.x, tuioTouch.y)) {
@@ -26,4 +26,4 @@ class GoOnTopWidget extends Behavior {
   }
 }
 
-export default GoOnTopWidget;
+export default TouchGoOnTopWidget;

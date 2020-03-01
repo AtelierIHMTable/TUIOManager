@@ -7,12 +7,12 @@ import Behavior from '../Behavior';
 import Point from '../../../src/utils/Point';
 
 /**
- * @class ZoomWidget
+ * @class TouchZoomWidget
  * @extends Behavior
  *
  * Allow a widget to be zoomed using two fingers
  */
-class ZoomWidget extends Behavior {
+class TouchZoomWidget extends Behavior {
   /**
    * @param {BaseWidget} widget
    */
@@ -108,4 +108,4 @@ class ZoomWidget extends Behavior {
   }
 }
 
-export default ZoomWidget;
+export default TouchZoomWidget;

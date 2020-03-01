@@ -3,18 +3,16 @@
  * @author Rémy Kaloustian <remy.kaloustian@gmail.com> (Base code)
  * @author Lucas Oms <lucas.oms@hotmail.fr> (Refactoring into widget decorator)
  */
-import Point from '../../../src/utils/Point';
 import Behavior from '../Behavior';
+import Point from '../../../src/utils/Point';
 
 /**
- * @class CenterRotateWidget
- * @extends Behavior and not RotateWidget because it totally redefines behavior
+ * @class TouchRotateWidget
+ * @extends Behavior
  *
- * Allow a widget to be rotate using only one finger
- *
- * Decorated widget, should not be a widget having a single touch interaction, or try with caution
+ * Allow a widget to be rotate using two fingers
  */
-class CenterRotateWidget extends Behavior {
+class TouchRotateWidget extends Behavior {
   /**
    * @param {BaseWidget} widget
    */
@@ -63,21 +61,21 @@ class CenterRotateWidget extends Behavior {
             ...this._lastTouchesValues[key],
           });
         });
-      if (touchesWidgets.length === 1) {
+      if (touchesWidgets.length === 2) {
         const touch1 = new Point(touchesWidgets[0].x, touchesWidgets[0].y);
-        const center = new Point(this.domElem.width() / 2, this.domElem.height() / 2);
+        const touch2 = new Point(touchesWidgets[1].x, touchesWidgets[1].y);
 
         // Rotation d'une image
         if (!this.lastAngle) {
-          this.lastAngle = touch1.angleWith(center)
+          this.lastAngle = touch1.angleWith(touch2)
         } else {
-          if (this.lastAngle < touch1.angleWith(center)) {
-            this._currentAngle += touch1.angleWith(center) - this.lastAngle
+          if (this.lastAngle < touch1.angleWith(touch2)) {
+            this._currentAngle += touch1.angleWith(touch2) - this.lastAngle
           } else {
-            this._currentAngle -= this.lastAngle - touch1.angleWith(center)
+            this._currentAngle -= this.lastAngle - touch1.angleWith(touch2)
           }
           this._currentAngle %= 360;
-          this.lastAngle = touch1.angleWith(center)
+          this.lastAngle = touch1.angleWith(touch2)
         }
         this.domElem.css('transform', `${this.currentTransform} rotate(360deg)`);
         this._width = this.domElem.width();
@@ -105,4 +103,4 @@ class CenterRotateWidget extends Behavior {
   }
 }
 
-export default CenterRotateWidget;
+export default TouchRotateWidget;

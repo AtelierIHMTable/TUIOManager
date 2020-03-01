@@ -198,7 +198,7 @@ class TUIOManager {
       case TAG_SOCKETIO_TYPE: {
         if (typeof (this._tags[socketData.id]) !== 'undefined') {
           this._tags[socketData.id].update(socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT, socketData.angle);
-          this.notifyWidgets('onTouchUpdate', this._tags[socketData.id]);
+          this.notifyWidgets('onTagUpdate', this._tags[socketData.id]);
           if (this._showInteractions) this._updatePointer(socketData.id, socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT);
         }
         break

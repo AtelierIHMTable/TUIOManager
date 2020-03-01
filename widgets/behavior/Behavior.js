@@ -74,4 +74,4 @@ class Behavior extends BaseWidget {
   }
 }
 
-export default Behavior
+export default Behavior;
