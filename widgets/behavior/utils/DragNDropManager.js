@@ -10,6 +10,9 @@
  */
 let instance = null;
 
+/**
+ * Used to trigger drop events and highlight/unhihhlight DropWidgets
+ */
 class DragNDropManager {
   constructor() {
     if (instance !== null) {

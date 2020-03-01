@@ -6,7 +6,16 @@
 import Behavior from '../Behavior';
 import Point from '../../../src/utils/Point';
 
+/**
+ * @class RotateWidget
+ * @extends Behavior
+ *
+ * Allow a widget to be rotate using two fingers
+ */
 class RotateWidget extends Behavior {
+  /**
+   * @param {BaseWidget} widget
+   */
   constructor(widget) {
     super(widget);
     this._currentAngle = 0;

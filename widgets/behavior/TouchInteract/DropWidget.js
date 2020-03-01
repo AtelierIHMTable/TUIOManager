@@ -1,6 +1,14 @@
 import Behavior from '../Behavior';
 import DragNDropManager from '../utils/DragNDropManager';
 
+/**
+ * @class DropWidget
+ * @extends Behavior
+ *
+ * Only define a widget as drop zone
+ * Can define how to highlight and remove highlight to the component to make user
+ * understand that drop the DragWidget moving will trigger something
+ */
 class DropWidget extends Behavior {
   /**
    *

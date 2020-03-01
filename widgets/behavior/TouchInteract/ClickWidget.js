@@ -5,11 +5,17 @@
  */
 import Behavior from '../Behavior';
 
+/**
+ * @class ClickWidget
+ * @extends Behavior
+ *
+ * Add a callback on simple touch. The callback won't trigger
+ * if there was a touch update (touch move) to prevent triggering with other actions
+ */
 class ClickWidget extends Behavior {
   /**
-   *
-   * @param { BaseWidget } widget
-   * @param { function(widget: BaseWidget): void } callback
+   * @param {BaseWidget} widget
+   * @param {function(widget: BaseWidget): void} callback to execute on click, pass widget as parameter
    */
   constructor(widget, callback) {
     super(widget);

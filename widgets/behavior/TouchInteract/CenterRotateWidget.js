@@ -7,11 +7,17 @@ import Point from '../../../src/utils/Point';
 import Behavior from '../Behavior';
 
 /**
+ * @class CenterRotateWidget
+ * @extends Behavior and not RotateWidget because it totally redefines behavior
+ *
  * Allow a widget to be rotate using only one finger
  *
  * Decorated widget, should not be a widget having a single touch interaction, or try with caution
  */
 class CenterRotateWidget extends Behavior {
+  /**
+   * @param {BaseWidget} widget
+   */
   constructor(widget) {
     super(widget);
     this._currentAngle = 0;

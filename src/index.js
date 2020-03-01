@@ -79,5 +79,6 @@ function testForDragNDrop() {
 
 $(window)
   .ready(() => {
-    testForComplexInteractions();
+    // testForComplexInteractions();
+    testForDragNDrop();
   });

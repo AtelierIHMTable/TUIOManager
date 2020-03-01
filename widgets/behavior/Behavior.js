@@ -4,6 +4,14 @@
 import TUIOManager from '../../core/TUIOManager';
 import BaseWidget from '../ElementWidget/BaseWidget';
 
+/**
+ * @class Behavior
+ * @extends BaseWidget
+ *
+ * Decorator, delegates all method to widget it decorates
+ * When extended, dont forget to call super.function() on overrides functions to allows decorator
+ * to do his job by calling nested decorators or widget react to events
+ */
 class Behavior extends BaseWidget {
   /**
    * @param {BaseWidget} widget to add behavior

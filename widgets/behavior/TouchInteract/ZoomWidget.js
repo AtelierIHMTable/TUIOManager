@@ -6,7 +6,16 @@
 import Behavior from '../Behavior';
 import Point from '../../../src/utils/Point';
 
+/**
+ * @class ZoomWidget
+ * @extends Behavior
+ *
+ * Allow a widget to be zoomed using two fingers
+ */
 class ZoomWidget extends Behavior {
+  /**
+   * @param {BaseWidget} widget
+   */
   constructor(widget) {
     super(widget);
     this._lastTouchesValues = {};

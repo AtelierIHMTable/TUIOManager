@@ -5,11 +5,18 @@
  */
 import Behavior from '../Behavior';
 
+/**
+ * @class MoveWidget
+ * @extends Behavior
+ *
+ * Allow a widget to be moved with touch events
+ */
 class MoveWidget extends Behavior {
+  /**
+   * @param {BaseWidget} widget
+   */
   constructor(widget) {
     super(widget);
-    this.internX = widget.x;
-    this.internY = widget.y;
     this.domElem.css('position', 'absolute');
     this._lastTouchesValues = {};
   }
@@ -45,8 +52,6 @@ class MoveWidget extends Behavior {
    * @param {string/number} y - New ImageWidget's ordinate.
    */
   moveTo(x, y) {
-    this.internX = x;
-    this.internY = y;
     this.domElem.css('left', `${x}px`);
     this.domElem.css('top', `${y}px`);
   }
