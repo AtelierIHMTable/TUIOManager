@@ -1,11 +1,14 @@
 /**
+ * @author Lucas Oms <lucas.oms@hotmail.fr>
+ */
+
+/**
  * Manage DragNDropManager singleton class.
  *
  * @type DragNDropManager
  * @private
  */
 let instance = null;
-
 
 class DragNDropManager {
   constructor() {
@@ -44,7 +47,6 @@ class DragNDropManager {
       } else if (this._dropWidgets[i].isHighlight) {
         this._dropWidgets[i].unhighlight(this._dropWidgets[i]);
         this._dropWidgets[i].isHighlight = false;
-        console.log('Unhighlight');
       }
     }
     return res;

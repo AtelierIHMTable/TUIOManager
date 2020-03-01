@@ -1,3 +1,6 @@
+/**
+ * @author Lucas Oms <lucas.oms@hotmail.fr>
+ */
 import MoveWidget from './MoveWidget';
 import DragNDropManager from '../utils/DragNDropManager';
 
@@ -5,11 +8,14 @@ class DragWidget extends MoveWidget {
   /**
    *
    * @param {BaseWidget} widget
-   * @param {string[]} zoneForInteractions
    * @param {function(zoneDroppedOn: string):void} dropCallback
+   * @param {string[]} zoneForInteractions allows to higlight dropzone when move this widget
+   *
+   * If you supply zoneForInteractions, DropWidget with the name of these dropzones will highlight
+   * when this DragWidget would interact on drop
    */
-  constructor(widget, zoneForInteractions, dropCallback = () => {
-  }) {
+  constructor(widget, dropCallback = () => {
+  }, zoneForInteractions = []) {
     super(widget);
     this.onDrop = dropCallback;
     this.zones = zoneForInteractions;

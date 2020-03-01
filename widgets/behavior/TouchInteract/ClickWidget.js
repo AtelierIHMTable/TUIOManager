@@ -9,7 +9,7 @@ class ClickWidget extends Behavior {
   /**
    *
    * @param { BaseWidget } widget
-   * @param { function(widget): void } callback
+   * @param { function(widget: BaseWidget): void } callback
    */
   constructor(widget, callback) {
     super(widget);
@@ -39,7 +39,6 @@ class ClickWidget extends Behavior {
     super.onTouchUpdate(tuioTouch);
     if (this.touchesId.indexOf(tuioTouch.id) > -1) {
       this._shouldTriggerClic = false;
-      console.log('disable clic');
     }
   }
 
@@ -47,7 +46,7 @@ class ClickWidget extends Behavior {
     super.onTouchDeletion(tuioTouchId);
     const touchIndex = this.touchesId.indexOf(tuioTouchId);
     if (touchIndex > -1 && this._shouldTriggerClic) {
-      this._clicCallback(this);
+      this._clicCallback(this); // Not sure of this line, maybe this.widget is better
     }
     this.touchesId.splice(touchIndex, 1);
     if (this.touchesId.length === 0) {
