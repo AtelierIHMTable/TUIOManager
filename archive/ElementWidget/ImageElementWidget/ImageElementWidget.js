@@ -30,18 +30,18 @@ class ImageElementWidget extends ElementWidget {
    * @param {string} src - Source of the image
    */
   constructor(x, y, width, height, initialRotation, initialScale, src) {
-    super(x, y, width, height, initialRotation, initialScale)
-    this.src = src
-    this._domElem = $('<img>')
-    this._domElem.attr('src', src)
-    this._domElem.css('width', `${this.width}px`)
-    this._domElem.css('height', `${this.height}px`)
-    this._domElem.css('position', 'absolute')
-    this._domElem.css('z-index', `${this.zIndex}`)
-    this._domElem.css('left', `${x}px`)
-    this._domElem.css('top', `${y}px`)
-    this._domElem.css('transform', `rotate(${initialRotation}deg)`)
-    this._domElem.css('transform-origin', `scale(${initialScale})`)
+    super(x, y, width, height, initialRotation, initialScale);
+    this.src = src;
+    this._domElem = $('<img>');
+    this._domElem.attr('src', src);
+    this._domElem.css('width', `${this.width}px`);
+    this._domElem.css('height', `${this.height}px`);
+    this._domElem.css('position', 'absolute');
+    this._domElem.css('z-index', `${this.zIndex}`);
+    this._domElem.css('left', `${x}px`);
+    this._domElem.css('top', `${y}px`);
+    this._domElem.css('transform', `rotate(${initialRotation}deg)`);
+    this._domElem.css('transform-origin', `scale(${initialScale})`);
     this.hasDuplicate = false
   } // constructor
 
@@ -52,14 +52,14 @@ class ImageElementWidget extends ElementWidget {
    * @param {TUIOTag} tuioTag - A TUIOTag instance.
    */
   onTagUpdate(tuioTag) {
-    super.onTagUpdate(tuioTag)
+    super.onTagUpdate(tuioTag);
     if (typeof (this._lastTagsValues[tuioTag.id]) !== 'undefined') {
       if (tuioTag.id === this.tagDuplicate && !this.hasDuplicate) {
-        const clone = new ImageElementWidget(this.x + 10, this.y + 10, this.width, this.height, this._currentAngle, 1, this.src, this.tagMove, this.tagDelete, this.tagZoom, this.tagDuplicate)
+        const clone = new ImageElementWidget(this.x + 10, this.y + 10, this.width, this.height, this._currentAngle, 1, this.src, this.tagMove, this.tagDelete, this.tagZoom, this.tagDuplicate);
         TUIOManager.getInstance()
-          .addWidget(clone)
+          .addWidget(clone);
         this._domElem.parent()
-          .append(clone.domElem)
+          .append(clone.domElem);
         this.hasDuplicate = true
       }
     }
@@ -72,7 +72,7 @@ class ImageElementWidget extends ElementWidget {
    * @param {number/string} tuioTagId - TUIOTag's id to delete.
    */
   onTagDeletion(tuioTagId) {
-    super.onTagDeletion(tuioTagId)
+    super.onTagDeletion(tuioTagId);
     if (typeof (this._lastTagsValues[tuioTagId]) !== 'undefined') {
       if (tuioTagId === this.tagDuplicate) {
         this.hasDuplicate = false

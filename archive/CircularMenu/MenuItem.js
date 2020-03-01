@@ -11,20 +11,20 @@
  */
 class MenuItem {
   constructor(item, backgroundcolor, color, isIcon) {
-    this._isIcon = isIcon
+    this._isIcon = isIcon;
     if (isIcon) {
       this._icon = item
     } else {
       this._name = item
     }
-    this._backgroundcolor = backgroundcolor
-    this._color = color
+    this._backgroundcolor = backgroundcolor;
+    this._color = color;
 
     this._childs = []
   }
 
   addChild(child) {
-    child.setParent(this)
+    child.setParent(this);
     this._childs.push(child)
   }
 

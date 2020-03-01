@@ -1,7 +1,7 @@
 /**
  * @author Lucas Oms <lucas.oms@hotmail.fr>
  */
-import TUIOWidget from '../../core/TUIOWidget';
+import TUIOWidget from '../core/TUIOWidget';
 
 class BaseWidget extends TUIOWidget {
   /**

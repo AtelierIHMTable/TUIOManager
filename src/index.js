@@ -8,10 +8,10 @@ import TestWidget from '../widgets/TestWidget';
 import DragWidget from '../widgets/behavior/TouchInteract/DragWidget';
 import DropWidget from '../widgets/behavior/TouchInteract/DropWidget';
 import ClickWidget from '../widgets/behavior/TouchInteract/ClickWidget';
-import CenterRotateWidget from '../widgets/behavior/TouchInteract/CenterRotateWidget';
-import WrapperWidget from '../widgets/ElementWidget/WrapperWidget';
 import MoveWidget from '../widgets/behavior/TouchInteract/MoveWidget';
 import GoOnTopWidget from '../widgets/behavior/TouchInteract/GoOnTopWidget';
+import CenterRotateWidget from '../widgets/behavior/TouchInteract/CenterRotateWidget';
+import WrapperWidget from '../widgets/WrapperWidget';
 
 const tuioManager = new TUIOManager();
 

@@ -1,7 +1,7 @@
 /* eslint-disable no-use-before-define,no-plusplus */
 import $ from 'jquery/dist/jquery.min';
 import BaseWidget from './BaseWidget';
-import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../core/constants';
+import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../core/constants';
 
 class WrapperWidget extends BaseWidget {
   constructor(...widgets) {

@@ -1,5 +1,5 @@
 import $ from 'jquery/dist/jquery.min';
-import BaseWidget from './ElementWidget/BaseWidget';
+import BaseWidget from './BaseWidget';
 
 class TestWidget extends BaseWidget {
   constructor(x, y, width, height, color = 'blue') {

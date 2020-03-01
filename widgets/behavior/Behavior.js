@@ -2,7 +2,7 @@
  * @author Lucas Oms <lucas.oms@hotmail.fr>
  */
 import TUIOManager from '../../core/TUIOManager';
-import BaseWidget from '../ElementWidget/BaseWidget';
+import BaseWidget from '../BaseWidget';
 
 /**
  * @class Behavior
