@@ -16,6 +16,7 @@ import TagDeleteWidget from '../widgets/behavior/tag-interact/TagDeleteWidget';
 import TagMoveWidget from '../widgets/behavior/tag-interact/TagMoveWidget';
 import TagCenterZoomWidget from '../widgets/behavior/tag-interact/TagCenterZoomWidget';
 import TagCenterRotateWidget from '../widgets/behavior/tag-interact/TagCenterRotateWidget';
+import TouchRotateWidget from '../widgets/behavior/touch-interact/TouchRotateWidget';
 
 const tuioManager = new TUIOManager();
 
@@ -114,7 +115,57 @@ function testForTagInteractions() {
   ).addTo(root);
 }
 
+/**
+ * Construct a 2 * 2 of 2 * 2 squares (8*8 square total).
+ * Each square goes cyan on touch and goes back to default on retouch
+ * Each square can be deleted with tag 10
+ * 2*2 inner squares can rotates with one finger interaction
+ * 2*2 inner square goes on top on interact with touch
+ * 8*8 square can rotate using tag 9
+ *
+ * Allows to test : deletion, compound widgets inside compound widgets, interactions combining tags and touches
+ */
+function demo() {
+  function createSquare(x, y, width, height, color) {
+    const defaultColor = color;
+    return new TagDeleteWidget(new TouchInteractWidget(new TestWidget(x, y, width, height, color), (widget) => {
+      if (widget.domElem.css('background-color') === defaultColor) {
+        widget.domElem.css('background-color', 'cyan')
+      } else {
+        widget.domElem.css('background-color', defaultColor)
+      }
+    }), 10);
+  }
+
+  function create2x2Square(startX, startY) {
+    return new TouchGoOnTopWidget(new TouchRotateWidget(new WrapperWidget(
+      createSquare(startX, startY, 125, 125, 'rgb(0, 0, 255)'),
+      createSquare(startX + 135, startY, 125, 125, 'rgb(105,25,128)'),
+      createSquare(startX, startY + 135, 125, 125, 'rgb(255, 165, 0)'),
+      createSquare(startX + 135, startY + 135, 125, 125, 'rgb(255, 123, 146)'),
+    )));
+  }
+
+  const root = $('body');
+  const offsetX = 700;
+  const offsetY = 280;
+  const square1 = create2x2Square(offsetX, offsetY);
+  const square2 = create2x2Square(offsetX + 270, offsetY);
+  const square3 = create2x2Square(offsetX, offsetY + 270);
+  const square4 = create2x2Square(offsetX + 270, offsetY + 270);
+  const finalWidget = new TagCenterRotateWidget(
+    new WrapperWidget(
+      square1,
+      square2,
+      square3,
+      square4,
+    ),
+    9,
+  );
+  finalWidget.addTo(root);
+}
+
 $(window)
   .ready(() => {
-    testForTagInteractions();
+    demo();
   });

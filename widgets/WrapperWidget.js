@@ -10,10 +10,11 @@ class WrapperWidget extends BaseWidget {
     const width = computeWidth(widgets) - minX;
     const height = computeHeight(widgets) - minY;
     super(minX, minY, width, height);
+    this._widgets = widgets;
     this.internX = minX;
     this.internY = minY;
     this._domElem = $('<div/>')
-      .css('position', 'relative')
+      .css('position', 'absolute')
       .css('left', `${this.x}px`)
       .css('top', `${this.y}px`)
       .css('width', `${this.width}px`)
@@ -86,6 +87,14 @@ class WrapperWidget extends BaseWidget {
       .css('left')
       .replace(/px/g, ''));
     widget.domElem.css('left', `${left - this.internX}px`);
+  }
+
+
+  deleteWidget() {
+    for (let i = 0; i < this._widgets.length; i++) {
+      this._widgets[i].deleteWidget();
+    }
+    super.deleteWidget();
   }
 }
 

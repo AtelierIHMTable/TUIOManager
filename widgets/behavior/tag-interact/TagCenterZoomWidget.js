@@ -33,8 +33,8 @@ class TagCenterZoomWidget extends Behavior {
         x: tuioTag.x,
         y: tuioTag.y,
       };
-      const center = new Point(this.domElem.position().left + this.domElem.width() / 2,
-        this.domElem.position().top + this.domElem.height() / 2);
+      const center = new Point(this.domElem.offset().left + this.domElem.width() / 2,
+        this.domElem.offset().top + this.domElem.height() / 2);
       const tagPosition = new Point(this._tagLastPosition.x, this._tagLastPosition.y);
       this._distanceToCenter = center.distanceTo(tagPosition);
     }

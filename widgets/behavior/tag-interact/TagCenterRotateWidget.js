@@ -44,8 +44,8 @@ class TagCenterRotateWidget extends Behavior {
   onTagUpdate(tuioTag) {
     super.onTagUpdate(tuioTag);
     if (this._tagLastPosition && tuioTag.id === this._idTag) {
-      const center = new Point(this.domElem.position().left + this.domElem.width() / 2,
-        this.domElem.position().top + this.domElem.height() / 2);
+      const center = new Point(this.domElem.offset().left + this.domElem.width() / 2,
+        this.domElem.offset().top + this.domElem.height() / 2);
       const tagPosition = new Point(this._tagLastPosition.x, this._tagLastPosition.y);
       if (!this._lastAngle) {
         this._lastAngle = tagPosition.angleWith(center)

@@ -65,8 +65,8 @@ class TouchCenterRotateWidget extends Behavior {
         });
       if (touchesWidgets.length === 1) {
         const touch1 = new Point(touchesWidgets[0].x, touchesWidgets[0].y);
-        const center = new Point(this.domElem.width() / 2, this.domElem.height() / 2);
-
+        const center = new Point(this.domElem.offset().left + this.domElem.width() / 2,
+          this.domElem.offset().top + this.domElem.height() / 2);
         // Rotation d'une image
         if (!this.lastAngle) {
           this.lastAngle = touch1.angleWith(center)
