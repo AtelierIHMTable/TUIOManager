@@ -5,7 +5,9 @@ import TUIOWidget from '../../core/TUIOWidget';
 
 class BaseWidget extends TUIOWidget {
   /**
-   * ElementWidget constructor.
+   * BaseWidget constructor.
+   *
+   * Note : z-index is defined on Widget creation and not Widget addition to DOM
    *
    * @constructor
    * @param {number} x - ElementWidget's upperleft coin abscissa.
@@ -21,6 +23,7 @@ class BaseWidget extends TUIOWidget {
     BaseWidget.zIndexGlobal += 1;
     this.zIndex = BaseWidget.zIndexGlobal;
     this._currentTransform = '';
+    this._isSetZindex = false;
   }// constructor
 
   get currentTransform() {
@@ -29,6 +32,14 @@ class BaseWidget extends TUIOWidget {
 
   set currentTransform(value) {
     this._currentTransform = value;
+  }
+
+  get domElem() {
+    if (!this._isSetZindex) {
+      super.domElem.css('z-index', this.zIndex);
+      this._isSetZindex = true;
+    }
+    return super.domElem;
   }
 }
 

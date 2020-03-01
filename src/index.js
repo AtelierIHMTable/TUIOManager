@@ -10,6 +10,8 @@ import DropWidget from '../widgets/behavior/TouchInteract/DropWidget';
 import ClickWidget from '../widgets/behavior/TouchInteract/ClickWidget';
 import CenterRotateWidget from '../widgets/behavior/TouchInteract/CenterRotateWidget';
 import WrapperWidget from '../widgets/ElementWidget/WrapperWidget';
+import MoveWidget from '../widgets/behavior/TouchInteract/MoveWidget';
+import GoOnTopWidget from '../widgets/behavior/TouchInteract/GoOnTopWidget';
 
 const tuioManager = new TUIOManager();
 
@@ -77,8 +79,16 @@ function testForDragNDrop() {
   }).addTo(root);
 }
 
+// eslint-disable-next-line no-unused-vars
+function testForGoOnTop() {
+  const root = $('body');
+  new GoOnTopWidget(new MoveWidget(new TestWidget(500 - 300, 500 - 300, 300, 300, 'pink'))).addTo(root);
+  new GoOnTopWidget(new MoveWidget(new TestWidget(900 - 300, 500 - 300, 300, 300, 'orange'))).addTo(root);
+  new GoOnTopWidget(new MoveWidget(new TestWidget(500 - 300, 900 - 300, 300, 300, 'blue'))).addTo(root);
+  new GoOnTopWidget(new MoveWidget(new TestWidget(900 - 300, 900 - 300, 300, 300, 'green'))).addTo(root);
+}
+
 $(window)
   .ready(() => {
-    // testForComplexInteractions();
-    testForDragNDrop();
+    testForGoOnTop();
   });
