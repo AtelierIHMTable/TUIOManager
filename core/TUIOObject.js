@@ -19,9 +19,9 @@ class TUIOObject {
    * @param {string/number} y - TUIOObject's ordinate.
    */
   constructor(id, x, y) {
-    this._id = id
-    this._x = x
-    this._y = y
+    this._id = id;
+    this._x = x;
+    this._y = y;
 
     this._widgets = {}
   }
@@ -62,14 +62,14 @@ class TUIOObject {
   }
 
   /**
-   * Notify all widgets/observers.
+   * Notify all concrete-widgets/observers.
    *
    * @method notifyWidgets
    * @param {string} methodToCall - TUIOWidget method name to call.
    */
   notifyWidgets(methodToCall) {
     Object.keys(this._widgets).forEach((widgetId) => {
-      const currentWidget = this._widgets[widgetId]
+      const currentWidget = this._widgets[widgetId];
       currentWidget[methodToCall](this)
     })
   }
@@ -103,7 +103,7 @@ class TUIOObject {
    * @param {string/number} y - New TUIOObject's ordinate.
    */
   update(x, y) {
-    this._x = x
+    this._x = x;
     this._y = y
   }
 }

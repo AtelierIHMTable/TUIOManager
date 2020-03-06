@@ -119,7 +119,7 @@ class TUIOManager {
   }
 
   /**
-   * Notify all widgets/observers.
+   * Notify all concrete-widgets/observers.
    *
    * @method notifyWidgets
    * @param {string} methodToCall - TUIOWidget method name to call.

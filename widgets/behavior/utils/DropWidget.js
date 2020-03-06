@@ -13,7 +13,7 @@ class DropWidget extends Behavior {
   /**
    *
    * @param {BaseWidget} widget
-   * @param {String} dropzoneName to handle onDrop on draggable widgets
+   * @param {String} dropzoneName to handle onDrop on draggable concrete-widgets
    * @param {function(widget: BaseWidget):void} highlightMethod to highlight that an interaction will occurs
    * @param {function(widget: BaseWidget):void} unhighlightMethod to remove the highlight
    */
