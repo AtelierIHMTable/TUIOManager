@@ -10,10 +10,10 @@ class BaseWidget extends TUIOWidget {
    * Note : z-index is defined on Widget creation and not Widget addition to DOM
    *
    * @constructor
-   * @param {number} x - ElementWidget's upperleft coin abscissa.
-   * @param {number} y - ElementWidget's upperleft coin ordinate.
-   * @param {number} width - ElementWidget's width.
-   * @param {number} height - ElementWidget's height.
+   * @param {number} x - BaseWidget's upperleft coin abscissa.
+   * @param {number} y - BaseWidget's upperleft coin ordinate.
+   * @param {number} width - BaseWidget's width.
+   * @param {number} height - BaseWidget's height.
    */
   constructor(x, y, width, height) {
     if (new.target === BaseWidget) {
