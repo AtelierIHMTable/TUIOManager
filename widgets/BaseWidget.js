@@ -6,7 +6,7 @@ import TUIOWidget from '../core/TUIOWidget';
 class BaseWidget extends TUIOWidget {
   /**
    * BaseWidget constructor.
-   *
+   * /!\ Set x, y, width and height will not bind it to the domElem, this is the responsibility of the subclass
    * Note : z-index is defined on Widget creation and not Widget addition to DOM
    *
    * @constructor

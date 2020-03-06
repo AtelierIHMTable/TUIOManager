@@ -21,7 +21,7 @@ class Behavior extends BaseWidget {
     TUIOManager.getInstance()
       .removeWidget(widget);
     this.widget = widget;
-    this.domElem.addClass(this.id);
+    // this.domElem.addClass(this.id);
   }
 
   get domElem() {

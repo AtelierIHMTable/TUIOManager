@@ -7,6 +7,7 @@ import Behavior from '../Behavior';
  * @class InitialRotationWidget
  *
  * Use to add rotate effect on the widget (only set the rotation for widget creation)
+ * Can change the x,y position resulting
  */
 class InitialRotationWidget extends Behavior {
   /**
