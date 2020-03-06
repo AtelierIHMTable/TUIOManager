@@ -1,7 +1,7 @@
 import $ from 'jquery/dist/jquery.min';
-import BaseWidget from './BaseWidget';
+import BaseWidget from '../BaseWidget';
 
-class TestWidget extends BaseWidget {
+class PlaceholderWidget extends BaseWidget {
   constructor(x, y, width, height, color = 'blue') {
     super(x, y, width, height);
     this._domElem = $('<div></div>')
@@ -14,4 +14,4 @@ class TestWidget extends BaseWidget {
   }
 }
 
-export default TestWidget
+export default PlaceholderWidget

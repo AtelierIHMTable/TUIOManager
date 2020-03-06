@@ -4,14 +4,14 @@
 import $ from 'jquery/dist/jquery.min'
 // Import TUIOManager
 import TUIOManager from '../core/TUIOManager'
-import TestWidget from '../widgets/TestWidget';
+import PlaceholderWidget from '../widgets/widgets/PlaceholderWidget';
 import TouchDragWidget from '../widgets/behavior/touch-interact/TouchDragWidget';
 import DropWidget from '../widgets/behavior/utils/DropWidget';
 import TouchInteractWidget from '../widgets/behavior/touch-interact/TouchInteractWidget';
 import TouchMoveWidget from '../widgets/behavior/touch-interact/TouchMoveWidget';
 import TouchGoOnTopWidget from '../widgets/behavior/touch-interact/TouchGoOnTopWidget';
 import TouchCenterRotateWidget from '../widgets/behavior/touch-interact/TouchCenterRotateWidget';
-import WrapperWidget from '../widgets/WrapperWidget';
+import WrapperWidget from '../widgets/widgets/WrapperWidget';
 import TagDeleteWidget from '../widgets/behavior/tag-interact/TagDeleteWidget';
 import TagMoveWidget from '../widgets/behavior/tag-interact/TagMoveWidget';
 import TagCenterZoomWidget from '../widgets/behavior/tag-interact/TagCenterZoomWidget';
@@ -40,7 +40,7 @@ function testForComplexInteractions() {
     for (let j = 0; j < 10; j += 1) {
       list.push(
         new TouchInteractWidget(
-          new TestWidget(offsetX + i * width + ((i - 1) * margin) + margin, offsetY + j * width + ((j - 1) * margin),
+          new PlaceholderWidget(offsetX + i * width + ((i - 1) * margin) + margin, offsetY + j * width + ((j - 1) * margin),
             width, width, color),
           (widget) => {
             console.log(`${i + 1}, ${j + 1}`);
@@ -62,12 +62,12 @@ function testForComplexInteractions() {
 function testForDragNDrop() {
   const root = $('body');
 
-  const widget2 = new DropWidget(new TestWidget(500, 500, 300, 300, 'red'), 'TEST', (w) => {
+  const widget2 = new DropWidget(new PlaceholderWidget(500, 500, 300, 300, 'red'), 'TEST', (w) => {
     w.domElem.css('background', 'green')
   }, (w) => {
     w.domElem.css('background', 'red')
   });
-  const widget = new TouchInteractWidget(new TouchDragWidget(new TestWidget(50, 50, 100, 100), ((name) => {
+  const widget = new TouchInteractWidget(new TouchDragWidget(new PlaceholderWidget(50, 50, 100, 100), ((name) => {
     if (name === 'TEST') {
       widget2.domElem.css('background', 'orange')
     }
@@ -80,7 +80,7 @@ function testForDragNDrop() {
   });
   widget2.addTo(root);
   widget.addTo(root);
-  new DropWidget(new TestWidget(500, 700, 300, 300, 'orange'), 'TEST2', (w) => {
+  new DropWidget(new PlaceholderWidget(500, 700, 300, 300, 'orange'), 'TEST2', (w) => {
     w.domElem.css('background', 'pink')
   }, (w) => {
     w.domElem.css('background', 'orange')
@@ -90,24 +90,24 @@ function testForDragNDrop() {
 // eslint-disable-next-line no-unused-vars
 function testForGoOnTop() {
   const root = $('body');
-  new TouchGoOnTopWidget(new TouchMoveWidget(new TestWidget(500 - 300, 500 - 300, 300, 300, 'pink'))).addTo(root);
-  new TouchGoOnTopWidget(new TouchMoveWidget(new TestWidget(900 - 300, 500 - 300, 300, 300, 'orange'))).addTo(root);
-  new TouchGoOnTopWidget(new TouchMoveWidget(new TestWidget(500 - 300, 900 - 300, 300, 300, 'blue'))).addTo(root);
-  new TouchGoOnTopWidget(new TouchMoveWidget(new TestWidget(900 - 300, 900 - 300, 300, 300, 'green'))).addTo(root);
+  new TouchGoOnTopWidget(new TouchMoveWidget(new PlaceholderWidget(500 - 300, 500 - 300, 300, 300, 'pink'))).addTo(root);
+  new TouchGoOnTopWidget(new TouchMoveWidget(new PlaceholderWidget(900 - 300, 500 - 300, 300, 300, 'orange'))).addTo(root);
+  new TouchGoOnTopWidget(new TouchMoveWidget(new PlaceholderWidget(500 - 300, 900 - 300, 300, 300, 'blue'))).addTo(root);
+  new TouchGoOnTopWidget(new TouchMoveWidget(new PlaceholderWidget(900 - 300, 900 - 300, 300, 300, 'green'))).addTo(root);
 }
 
 // eslint-disable-next-line no-unused-vars
 function testForTagInteractions() {
   const root = $('body');
   // test with final wrapper
-  // new TagDeleteWidget(new TouchMoveWidget(new TestWidget(500 - 300, 500 - 300, 300, 300, 'pink')), 9).addTo(root);
+  // new TagDeleteWidget(new TouchMoveWidget(new PlaceholderWidget(500 - 300, 500 - 300, 300, 300, 'pink')), 9).addTo(root);
   // test with middle wrapper
-  // new TouchMoveWidget(new TagDeleteWidget(new TestWidget(500 + 100, 500 - 300, 300, 300, 'blue'), 10)).addTo(root);
+  // new TouchMoveWidget(new TagDeleteWidget(new PlaceholderWidget(500 + 100, 500 - 300, 300, 300, 'blue'), 10)).addTo(root);
   new TagCenterRotateWidget(
     new TagCenterZoomWidget(
       new TagMoveWidget(
         new TagDeleteWidget(
-          new TestWidget(500 + 100, 500 - 300, 300, 300, 'blue'),
+          new PlaceholderWidget(500 + 100, 500 - 300, 300, 300, 'blue'),
           10,
         ),
         9,
@@ -132,7 +132,7 @@ function testForTagInteractions() {
 function demo() {
   function createSquare(x, y, width, height, color) {
     const defaultColor = color;
-    return new TagDeleteWidget(new TouchInteractWidget(new TestWidget(x, y, width, height, color), (widget) => {
+    return new TagDeleteWidget(new TouchInteractWidget(new PlaceholderWidget(x, y, width, height, color), (widget) => {
       if (widget.domElem.css('background-color') === defaultColor) {
         widget.domElem.css('background-color', 'cyan')
       } else {
