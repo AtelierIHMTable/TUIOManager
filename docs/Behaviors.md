@@ -139,3 +139,10 @@ const withBehavior = new DropWidget(widget,
     },
 ); // Pour activer la bordure rouge, le TouchDragWidget doit avoir 'TEST' dans sa liste zoneForInteractions
 ```
+
+### InitialRotationWidget
+Ajoute une rotation initiale à un élément. Prend en compte la position x, y AVANT rotation.
+```typescript
+const widget = new PlaceholderWidget(50, 50, 500, 500, 'blue');
+const withBehavior = new InitialRotationWidget(widget, 90) // Tourne le widget à 90°
+```
