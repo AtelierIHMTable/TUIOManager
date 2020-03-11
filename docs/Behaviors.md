@@ -94,35 +94,35 @@ const withBehavior = new TagInteractWidget(widget, (widget) => {
     // Il est possible ici d'utiliser la référence du widget
     // pour agir sur son dom
     // Le widget référencé est le widget décoré.
-}, 9) // Réagit au tag 9;
+}, '9') // Réagit au tag 9;
 ```
 
 ### Move
 Permet de déplacer un Widget avec un élément tangible
 ```typescript
 const widget = new PlaceholderWidget(50, 50, 500, 500, 'blue');
-const withBehavior = new TagMoveWidget(widget, 9) // Réagit au tag 9;
+const withBehavior = new TagMoveWidget(widget, '9') // Réagit au tag 9;
 ```
 
 ### CenterZoom
 Permet de tourner un Widget avec avec un élément tangible par rapport au centre
 ```typescript
 const widget = new PlaceholderWidget(50, 50, 500, 500, 'blue');
-const withBehavior = new TagCenterZoomWidget(widget, 9) // Réagit au tag 9;
+const withBehavior = new TagCenterZoomWidget(widget, '9') // Réagit au tag 9;
 ```
 
 ### CenterRotate
 Permet de tourner un Widget avec avec un élément tangible par rapport au centre
 ```typescript
 const widget = new PlaceholderWidget(50, 50, 500, 500, 'blue');
-const withBehavior = new TagCenterRotateWidget(widget, 9) // Réagit au tag 9;
+const withBehavior = new TagCenterRotateWidget(widget, '9') // Réagit au tag 9;
 ```
 
 ### Delete
 Supprime le widget au toucher
 ```typescript
 const widget = new PlaceholderWidget(50, 50, 500, 500, 'blue');
-const withBehavior = new TagDeleteWidget(widget, 9) // Réagit au tag 9;
+const withBehavior = new TagDeleteWidget(widget, '9') // Réagit au tag 9;
 ```
 
 ## Utils

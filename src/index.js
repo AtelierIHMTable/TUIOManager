@@ -108,13 +108,13 @@ function testForTagInteractions() {
       new TagMoveWidget(
         new TagDeleteWidget(
           new PlaceholderWidget(500 + 100, 500 - 300, 300, 300, 'blue'),
-          10,
+          '10',
         ),
-        9,
+        '9',
       ),
-      8,
+      '8',
     ),
-    7,
+    '7',
   ).addTo(root);
 }
 
@@ -138,7 +138,7 @@ function demo() {
       } else {
         widget.domElem.css('background-color', defaultColor)
       }
-    }), 10);
+    }), '10');
   }
 
   function create2x2Square(startX, startY) {
@@ -164,7 +164,7 @@ function demo() {
       square3,
       square4,
     ),
-    9,
+    '9',
   );
   finalWidget.addTo(root);
 }

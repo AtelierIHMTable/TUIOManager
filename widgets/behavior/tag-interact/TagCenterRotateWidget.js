@@ -15,7 +15,7 @@ import Point from '../../../src/utils/Point';
 class TagCenterRotateWidget extends Behavior {
   /**
    * @param {BaseWidget} widget
-   * @param {number} idTag to rotate widget
+   * @param {string} idTag to rotate widget
    */
   constructor(widget, idTag) {
     super(widget);
@@ -27,7 +27,7 @@ class TagCenterRotateWidget extends Behavior {
 
   onTagCreation(tuioTag) {
     super.onTagCreation(tuioTag);
-    if (tuioTag.id === this._idTag && this.isTouched(tuioTag.x, tuioTag.y)) {
+    if (tuioTag.id.toString() === this._idTag.toString() && this.isTouched(tuioTag.x, tuioTag.y)) {
       this._tagLastPosition = {
         x: tuioTag.x,
         y: tuioTag.y,
@@ -43,7 +43,7 @@ class TagCenterRotateWidget extends Behavior {
    */
   onTagUpdate(tuioTag) {
     super.onTagUpdate(tuioTag);
-    if (this._tagLastPosition && tuioTag.id === this._idTag) {
+    if (this._tagLastPosition && tuioTag.id.toString() === this._idTag.toString()) {
       const center = new Point(this.domElem.offset().left + this.domElem.width() / 2,
         this.domElem.offset().top + this.domElem.height() / 2);
       const tagPosition = new Point(this._tagLastPosition.x, this._tagLastPosition.y);

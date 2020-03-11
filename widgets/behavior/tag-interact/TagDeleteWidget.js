@@ -11,7 +11,7 @@ import TUIOManager from '../../../core/TUIOManager';
 class TagDeleteWidget extends Behavior {
   /**
    * @param {BaseWidget} widget
-   * @param {number} idTag to delete widget
+   * @param {string} idTag to delete widget
    */
   constructor(widget, idTag) {
     super(widget);
@@ -20,7 +20,7 @@ class TagDeleteWidget extends Behavior {
 
   onTagCreation(tuioTag) {
     super.onTagCreation(tuioTag);
-    if (tuioTag.id === this._idTag && this.isTouched(tuioTag.x, tuioTag.y)) {
+    if (tuioTag.id.toString() === this._idTag.toString() && this.isTouched(tuioTag.x, tuioTag.y)) {
       TUIOManager.getInstance()
         .removeWidget(this);
       this.domElem.remove();

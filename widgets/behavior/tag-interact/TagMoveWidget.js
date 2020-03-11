@@ -9,7 +9,7 @@ import Behavior from '../Behavior';
 class TagMoveWidget extends Behavior {
   /**
    * @param {BaseWidget} widget
-   * @param {number} idTag to delete widget
+   * @param {string} idTag to delete widget
    */
   constructor(widget, idTag) {
     super(widget);
@@ -20,7 +20,7 @@ class TagMoveWidget extends Behavior {
 
   onTagCreation(tuioTag) {
     super.onTagCreation(tuioTag);
-    if (tuioTag.id === this._idTag && this.isTouched(tuioTag.x, tuioTag.y)) {
+    if (tuioTag.id.toString() === this._idTag.toString() && this.isTouched(tuioTag.x, tuioTag.y)) {
       this._tagLastPosition = {
         x: tuioTag.x,
         y: tuioTag.y,

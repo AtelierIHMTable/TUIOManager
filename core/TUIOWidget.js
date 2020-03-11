@@ -24,16 +24,16 @@ class TUIOWidget {
    * @param {number} height - TUIOWidget's height.
    */
   constructor(x, y, width, height) {
-    this._id = uuidV4()
-    this._x = x
-    this._y = y
-    this._width = width
-    this._height = height
+    this._id = uuidV4();
+    this._x = x;
+    this._y = y;
+    this._width = width;
+    this._height = height;
 
-    this._touches = {}
-    this._tags = {}
+    this._touches = {};
+    this._tags = {};
     TUIOManager.getInstance()
-      .addWidget(this)
+      .addWidget(this);
     this.wrapped = false;
   }
 
@@ -144,7 +144,7 @@ class TUIOWidget {
       this._touches = {
         ...this._touches,
         [tuioTouch.id]: tuioTouch,
-      }
+      };
       this._touches[tuioTouch.id].addWidget(this)
     }
   }
@@ -160,7 +160,7 @@ class TUIOWidget {
       this._tags = {
         ...this._tags,
         [tuioTag.id]: tuioTag,
-      }
+      };
       this._tags[tuioTag.id].addWidget(this)
     }
   }
@@ -181,7 +181,7 @@ class TUIOWidget {
    * Call after a TUIOTag deletion.
    *
    * @method onTagDeletion
-   * @param {number/string} tuioTagId - TUIOTag's id to delete.
+   * @param {number | string} tuioTagId - TUIOTag's id to delete.
    */
   onTagDeletion(tuioTagId) {
     if (typeof (this._tags[tuioTagId]) !== 'undefined') {
