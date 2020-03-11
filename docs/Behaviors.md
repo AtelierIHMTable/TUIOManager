@@ -10,6 +10,7 @@ Tous les Behavior sont suffixés par `Widget`, pour la lisibilité, le suffixe s
 ## Interactions tactiles
 Tous les Behaviors tactiles sont préffixés par `Touch`, pour la lisibilité, le préfixe sera homis dans les titres.
 
+_Note : les interactions impliquant un suivi de l'objet tangible (déplacement, rotation, etc) ne réagissent bien que si l'objet tangible est déplacé doucement. Évitez de baser votre interaction sur de grand mouvements d'objets tangibles._ 
 ### Interact
 Permet d'ajouter un comportement après un touché simple. Ne fonctionne pas si un deplacement est fait après l'appui.
 ```typescript
