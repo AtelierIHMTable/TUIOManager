@@ -2,6 +2,7 @@
  * @author Lucas Oms <lucas.oms@hotmail.fr>
  */
 import Behavior from '../Behavior';
+import Point from '../../../src/utils/Point';
 
 /**
  * @class TouchInteractWidget
@@ -20,6 +21,7 @@ class TouchInteractWidget extends Behavior {
     this._clicCallback = callback;
     this.touchesId = [];
     this._shouldTriggerClic = true;
+    this._initialTouchPosition = null;
   }
 
   /**
@@ -32,6 +34,7 @@ class TouchInteractWidget extends Behavior {
     super.onTouchCreation(tuioTouch);
     if (this.isTouched(tuioTouch.x, tuioTouch.y)) {
       this.touchesId.push(tuioTouch.id);
+      this._initialTouchPosition = new Point(tuioTouch.x, tuioTouch.y);
     }
   }
 
@@ -41,7 +44,7 @@ class TouchInteractWidget extends Behavior {
    */
   onTouchUpdate(tuioTouch) {
     super.onTouchUpdate(tuioTouch);
-    if (this.touchesId.indexOf(tuioTouch.id) > -1) {
+    if (this.touchesId.indexOf(tuioTouch.id) > -1 && this._initialTouchPosition.distanceTo(tuioTouch) > 10) {
       this._shouldTriggerClic = false;
     }
   }
