@@ -70,8 +70,10 @@ Permet de déplacer le widget, réagit lorsqu'il est drop dans une zone (voir Dr
 
 ```typescript
 const widget = new PlaceholderWidget(50, 50, 500, 500, 'blue');
-const withBehavior = new TouchDragWidget(widget, (zoneName) => {
+const withBehavior = new TouchDragWidget(widget, (zoneName, dropWidget) => {
         // Régir en fonction de la zone
+        // Possibilité d'interagir sur le dropzoneWidget directement 
+        //  (pour changer son visuel une fois le drag n drop effectué par exemple)
     }, 
     ['TEST'], // Permet de mettre en avant le DropWidget ayant pour nom de zone 'TEST' si celui-ci implémente les méthodes associés
 );

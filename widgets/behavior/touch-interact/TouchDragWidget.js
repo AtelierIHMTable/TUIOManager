@@ -19,7 +19,7 @@ class TouchDragWidget extends TouchMoveWidget {
   /**
    *
    * @param {BaseWidget} widget
-   * @param {function(zoneDroppedOn: string):void} dropCallback to call, pass dropzoneName as parameter
+   * @param {function(zoneDroppedOn: string, dropWidget: BaseWidget):void} dropCallback to call, pass dropzoneName and dropwidget as parameter
    * @param {string[]} zoneForInteractions allows to higlight dropzone when move this widget
    *
    * If you supply zoneForInteractions, DropWidget with the name of these dropzones will highlight
@@ -50,7 +50,7 @@ class TouchDragWidget extends TouchMoveWidget {
 
     if (dropOnWidgets.length > 0) {
       for (let i = 0; i < dropOnWidgets.length; i += 1) {
-        this.onDrop(dropOnWidgets[i].dropzoneName);
+        this.onDrop(dropOnWidgets[i].dropzoneName, dropOnWidgets[i]);
       }
     }
     super.onTouchDeletion(tuioTouchId);
