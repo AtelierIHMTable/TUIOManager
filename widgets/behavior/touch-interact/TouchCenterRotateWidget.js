@@ -101,6 +101,7 @@ class TouchCenterRotateWidget extends Behavior {
     super.onTouchDeletion(tuioTouchId);
     if (this._lastTouchesValues[tuioTouchId] !== undefined) {
       delete this._lastTouchesValues[tuioTouchId];
+      this.lastAngle = undefined;
     }
   }
 }

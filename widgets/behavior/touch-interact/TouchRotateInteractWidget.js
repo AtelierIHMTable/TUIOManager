@@ -1,25 +1,27 @@
 /**
- * @author Kevin Duglue <kevin.duglue@gmail.com> (Base code)
- * @author Rémy Kaloustian <remy.kaloustian@gmail.com> (Base code)
- * @author Lucas Oms <lucas.oms@hotmail.fr> (Refactoring into widget decorator)
+ * @author Lucas Oms <lucas.oms@hotmail.fr>
  */
 import Behavior from '../Behavior';
 import Point from '../../../src/utils/Point';
 
 /**
- * @class TouchRotateWidget
+ * @class TouchRotateInteractWidget
  * @extends Behavior
  *
- * Allow a widget to be rotate using two fingers
+ * Allow a widget to have interaction on rotate behavior
+ *
+ * @example Rotating button
  */
-class TouchRotateWidget extends Behavior {
+class TouchRotateInteractWidget extends Behavior {
   /**
    * @param {BaseWidget} widget
+   * @param {function(deltaAngle: number, currentAngle): void} callback with angle delta as parameter
    */
-  constructor(widget) {
+  constructor(widget, callback) {
     super(widget);
     this._currentAngle = 0;
     this._lastTouchesValues = [];
+    this._callback = callback
   }
 
   /**
@@ -64,23 +66,18 @@ class TouchRotateWidget extends Behavior {
       if (touchesWidgets.length === 2) {
         const touch1 = new Point(touchesWidgets[0].x, touchesWidgets[0].y);
         const touch2 = new Point(touchesWidgets[1].x, touchesWidgets[1].y);
-
-        // Rotation d'une image
         if (!this.lastAngle) {
           this.lastAngle = touch1.angleWith(touch2)
         } else {
-          this._currentAngle += touch1.angleWith(touch2) - this.lastAngle;
+          this._currentAngle += touch1.angleWith(touch2) - this.lastAngle + 360;
           this._currentAngle %= 360;
+          if (this.lastAngle < touch1.angleWith(touch2)) {
+            this._callback(touch1.angleWith(touch2) - this.lastAngle, this._currentAngle);
+          } else {
+            this._callback(this.lastAngle - touch1.angleWith(touch2), this._currentAngle);
+          }
           this.lastAngle = touch1.angleWith(touch2)
         }
-        this.domElem.css('transform', `${this.currentTransform} rotate(360deg)`);
-        this._width = this.domElem.width();
-        this._height = this.domElem.height();
-        const valueWithoutRotate = this.currentTransform.replace(/rotate\([-+]?[0-9]*\.?[0-9]+deg\)/g, '');
-        this.currentTransform = `${valueWithoutRotate} rotate(${this._currentAngle}deg)`;
-        this.domElem.css('transform', this.currentTransform);
-        this._x = this.domElem.position().left;
-        this._y = this.domElem.position().top
       }
     }
   }
@@ -100,4 +97,4 @@ class TouchRotateWidget extends Behavior {
   }
 }
 
-export default TouchRotateWidget;
+export default TouchRotateInteractWidget;

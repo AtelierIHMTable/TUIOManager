@@ -76,6 +76,7 @@ class TagCenterRotateWidget extends Behavior {
   onTagDeletion(tuioTagId) {
     super.onTagDeletion(tuioTagId);
     this._tagLastPosition = null;
+    this._lastAngle = undefined;
   }
 }
 

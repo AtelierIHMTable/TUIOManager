@@ -81,8 +81,19 @@ const withBehavior = new TouchDragWidget(widget, (zoneName, dropWidget) => {
     ['TEST'], // Permet de mettre en avant le DropWidget ayant pour nom de zone 'TEST' si celui-ci implémente les méthodes associés
 );
 ```
+### RotateInteract
+Permet d'intéragir avec deux doigts et le comportement des rotations. Il est possible d'utiliser l'angle actuel ou le delta dans la fonction de callback
 
+Delta won't be higher than 360
 
+_Warning, on 360 gap you can have delta > 3XX_ 
+
+```typescript
+const widget = new PlaceholderWidget(50, 50, 500, 500, 'blue');
+const withBehavior = new TouchRotateInteractWidget(widget, (delta, angle) => {
+    console.log(`angle : ${angle}; delta : ${delta}`);
+  });
+```
 ## Interactions tangibles
 Tous les Behaviors tactiles sont préffixés par `Tag`, pour la lisibilité, le préfixe sera homis dans les titres.
 
