@@ -248,14 +248,14 @@ class TUIOManager {
     // noinspection CssInvalidPropertyValue
     document.getElementsByTagName('body')[0]
       .insertAdjacentHTML('beforeend',
-        `<div id="${id}" style="z-index: 1000; background: ${color}; height: 25px; width: 25px; position: absolute; border-radius: 50%; left: ${x}px; top: ${y}px"></div>`);
+        `<div id="${id}" style="z-index: 1000; background: ${color}; height: 25px; width: 25px; position: absolute; border-radius: 50%; left: ${x - 12.5}px; top: ${y - 12.5}px"></div>`);
   }
 
   _updatePointer(id, x, y) {
     const elem = document.getElementById(id);
     if (elem) {
-      elem.style.top = `${y}px`;
-      elem.style.left = `${x}px`;
+      elem.style.top = `${y - 12.5}px`;
+      elem.style.left = `${x - 12.5}px`;
     }
   }
 
