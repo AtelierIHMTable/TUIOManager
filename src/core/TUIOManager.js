@@ -5,10 +5,10 @@
  * @author Lucas Oms <lucas.oms@hotmail.fr>
  */
 
-import io from 'socket.io-client'
+import io from "socket.io-client";
 
-import TUIOTouch from './TUIOTouch'
-import TUIOTag from './TUIOTag'
+import { TUIOTouch } from "./TUIOTouch";
+import { TUIOTag } from "./TUIOTag";
 
 import {
   CREATE_SOCKETIO_ACTION,
@@ -17,8 +17,8 @@ import {
   TOUCH_SOCKETIO_TYPE,
   UPDATE_SOCKETIO_ACTION,
   WINDOW_HEIGHT,
-  WINDOW_WIDTH,
-} from './constants'
+  WINDOW_WIDTH
+} from "./constants";
 
 /**
  * Manage TUIOManager singleton class.
@@ -33,7 +33,7 @@ let tuioManagerInstance = null;
  *
  * @class TUIOManager
  */
-class TUIOManager {
+export class TUIOManager {
   /**
    * TUIOManager constructor.
    *
@@ -41,7 +41,7 @@ class TUIOManager {
    */
   constructor() {
     if (tuioManagerInstance !== null) {
-      return tuioManagerInstance
+      return tuioManagerInstance;
     }
     this._touches = {};
     this._tags = {};
@@ -50,7 +50,8 @@ class TUIOManager {
 
     tuioManagerInstance = this;
     this._showInteractions = true;
-    document.getElementsByTagName('head')[0].insertAdjacentHTML('beforeend',
+    document.getElementsByTagName("head")[0].insertAdjacentHTML(
+      "beforeend",
       `<style>
         .fadeout {
             animation: fadeout .3s forwards;
@@ -65,9 +66,10 @@ class TUIOManager {
                 opacity: 0;
             }
         }
-           </style>`);
+           </style>`,
+    );
 
-    return tuioManagerInstance
+    return tuioManagerInstance;
   }
 
   /**
@@ -92,7 +94,7 @@ class TUIOManager {
    * @returns {TUIOManager} The TUIOManager instance.
    */
   static getInstance() {
-    return new TUIOManager()
+    return new TUIOManager();
   }
 
   /**
@@ -102,11 +104,11 @@ class TUIOManager {
    * @param {TUIOWidget} widget - TUIOWidget instance to add as observer of TUIOManager.
    */
   addWidget(widget) {
-    if (typeof (this._widgets[widget.id]) === 'undefined') {
+    if (typeof this._widgets[widget.id] === "undefined") {
       this._widgets = {
         ...this._widgets,
         [widget.id]: widget,
-      }
+      };
     }
   }
 
@@ -117,8 +119,8 @@ class TUIOManager {
    * @param {TUIOWidget} widget - TUIOWidget instance to remove from TUIOManager's observers.
    */
   removeWidget(widget) {
-    if (typeof (this._widgets[widget.id]) !== 'undefined') {
-      delete this._widgets[widget.id]
+    if (typeof this._widgets[widget.id] !== "undefined") {
+      delete this._widgets[widget.id];
     }
   }
 
@@ -130,11 +132,10 @@ class TUIOManager {
    * @param {any} param - Param for method call.
    */
   notifyWidgets(methodToCall, param) {
-    Object.keys(this._widgets)
-      .forEach((widgetId) => {
-        const currentWidget = this._widgets[widgetId];
-        currentWidget[methodToCall](param)
-      })
+    Object.keys(this._widgets).forEach((widgetId) => {
+      const currentWidget = this._widgets[widgetId];
+      currentWidget[methodToCall](param);
+    });
   }
 
   /**
@@ -143,17 +144,17 @@ class TUIOManager {
    * @method start
    * @param {string} socketIOUrl - Socket IO Server's url. Default : 'http://localhost:9000/'
    */
-  start(socketIOUrl = 'http://localhost:9000/') {
+  start(socketIOUrl = "http://localhost:9000/") {
     const socketIOClient = io(socketIOUrl);
     socketIOClient.on(CREATE_SOCKETIO_ACTION, (data) => {
-      this.handleCreate(data)
+      this.handleCreate(data);
     });
     socketIOClient.on(UPDATE_SOCKETIO_ACTION, (data) => {
-      this.handleUpdate(data)
+      this.handleUpdate(data);
     });
     socketIOClient.on(DELETE_SOCKETIO_ACTION, (data) => {
-      this.handleDelete(data)
-    })
+      this.handleDelete(data);
+    });
   }
 
   /**
@@ -165,21 +166,48 @@ class TUIOManager {
   handleCreate(socketData) {
     switch (socketData.type) {
       case TOUCH_SOCKETIO_TYPE: {
-        this._touches[socketData.id] = new TUIOTouch(socketData.id, socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT);
-        this.notifyWidgets('onTouchCreation', this._touches[socketData.id]);
-        this._touches[socketData.id].update(socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT);
-        if (this._showInteractions) this._drawPointer(socketData.id, socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT);
-        break
+        this._touches[socketData.id] = new TUIOTouch(
+          socketData.id,
+          socketData.x * WINDOW_WIDTH,
+          socketData.y * WINDOW_HEIGHT,
+        );
+        this.notifyWidgets("onTouchCreation", this._touches[socketData.id]);
+        this._touches[socketData.id].update(
+          socketData.x * WINDOW_WIDTH,
+          socketData.y * WINDOW_HEIGHT,
+        );
+        if (this._showInteractions)
+          this._drawPointer(
+            socketData.id,
+            socketData.x * WINDOW_WIDTH,
+            socketData.y * WINDOW_HEIGHT,
+          );
+        break;
       }
       case TAG_SOCKETIO_TYPE: {
-        this._tags[socketData.id] = new TUIOTag(socketData.id, socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT, socketData.angle);
-        this.notifyWidgets('onTagCreation', this._tags[socketData.id]);
-        this._tags[socketData.id].update(socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT, socketData.angle);
-        if (this._showInteractions) this._drawPointer(socketData.id, socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT, 'green');
-        break
+        this._tags[socketData.id] = new TUIOTag(
+          socketData.id,
+          socketData.x * WINDOW_WIDTH,
+          socketData.y * WINDOW_HEIGHT,
+          socketData.angle,
+        );
+        this.notifyWidgets("onTagCreation", this._tags[socketData.id]);
+        this._tags[socketData.id].update(
+          socketData.x * WINDOW_WIDTH,
+          socketData.y * WINDOW_HEIGHT,
+          socketData.angle,
+        );
+        if (this._showInteractions)
+          this._drawPointer(
+            socketData.id,
+            socketData.x * WINDOW_WIDTH,
+            socketData.y * WINDOW_HEIGHT,
+            "green",
+          );
+        break;
       }
       default:
-        break
+        break;
     }
   }
 
@@ -192,23 +220,40 @@ class TUIOManager {
   handleUpdate(socketData) {
     switch (socketData.type) {
       case TOUCH_SOCKETIO_TYPE: {
-        if (typeof (this._touches[socketData.id]) !== 'undefined') {
-          this._touches[socketData.id].update(socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT);
-          this.notifyWidgets('onTouchUpdate', this._touches[socketData.id]);
-          if (this._showInteractions) this._updatePointer(socketData.id, socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT);
+        if (typeof this._touches[socketData.id] !== "undefined") {
+          this._touches[socketData.id].update(
+            socketData.x * WINDOW_WIDTH,
+            socketData.y * WINDOW_HEIGHT,
+          );
+          this.notifyWidgets("onTouchUpdate", this._touches[socketData.id]);
+          if (this._showInteractions)
+            this._updatePointer(
+              socketData.id,
+              socketData.x * WINDOW_WIDTH,
+              socketData.y * WINDOW_HEIGHT,
+            );
         }
-        break
+        break;
       }
       case TAG_SOCKETIO_TYPE: {
-        if (typeof (this._tags[socketData.id]) !== 'undefined') {
-          this._tags[socketData.id].update(socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT, socketData.angle);
-          this.notifyWidgets('onTagUpdate', this._tags[socketData.id]);
-          if (this._showInteractions) this._updatePointer(socketData.id, socketData.x * WINDOW_WIDTH, socketData.y * WINDOW_HEIGHT);
+        if (typeof this._tags[socketData.id] !== "undefined") {
+          this._tags[socketData.id].update(
+            socketData.x * WINDOW_WIDTH,
+            socketData.y * WINDOW_HEIGHT,
+            socketData.angle,
+          );
+          this.notifyWidgets("onTagUpdate", this._tags[socketData.id]);
+          if (this._showInteractions)
+            this._updatePointer(
+              socketData.id,
+              socketData.x * WINDOW_WIDTH,
+              socketData.y * WINDOW_HEIGHT,
+            );
         }
-        break
+        break;
       }
       default:
-        break
+        break;
     }
   }
 
@@ -221,23 +266,23 @@ class TUIOManager {
   handleDelete(socketData) {
     switch (socketData.type) {
       case TOUCH_SOCKETIO_TYPE: {
-        if (typeof (this._touches[socketData.id]) !== 'undefined') {
-          this.notifyWidgets('onTouchDeletion', socketData.id);
+        if (typeof this._touches[socketData.id] !== "undefined") {
+          this.notifyWidgets("onTouchDeletion", socketData.id);
           if (this._showInteractions) this._removePointer(socketData.id);
-          delete this._touches[socketData.id]
+          delete this._touches[socketData.id];
         }
-        break
+        break;
       }
       case TAG_SOCKETIO_TYPE: {
-        if (typeof (this._tags[socketData.id]) !== 'undefined') {
-          this.notifyWidgets('onTagDeletion', socketData.id);
+        if (typeof this._tags[socketData.id] !== "undefined") {
+          this.notifyWidgets("onTagDeletion", socketData.id);
           if (this._showInteractions) this._removePointer(socketData.id);
-          delete this._tags[socketData.id]
+          delete this._tags[socketData.id];
         }
-        break
+        break;
       }
       default:
-        break
+        break;
     }
   }
 
@@ -248,11 +293,14 @@ class TUIOManager {
    * @param {string} color
    * @private
    */
-  _drawPointer(id, x, y, color = 'red') {
+  _drawPointer(id, x, y, color = "red") {
     // noinspection CssInvalidPropertyValue
-    document.getElementsByTagName('body')[0]
-      .insertAdjacentHTML('beforeend',
-        `<div id="${id}" style="z-index: 1000; background: ${color}; height: 25px; width: 25px; position: absolute; border-radius: 50%; left: ${x}px; top: ${y}px"></div>`);
+    document
+      .getElementsByTagName("body")[0]
+      .insertAdjacentHTML(
+        "beforeend",
+        `<div id="${id}" style="z-index: 1000; background: ${color}; height: 25px; width: 25px; position: absolute; border-radius: 50%; left: ${x}px; top: ${y}px">div>`,
+      );
   }
 
   _updatePointer(id, x, y) {
@@ -266,12 +314,10 @@ class TUIOManager {
   _removePointer(id) {
     const elem = document.getElementById(id);
     if (elem) {
-      elem.classList.add('fadeout');
+      elem.classList.add("fadeout");
       setTimeout(() => {
         elem.remove();
-      }, 300)
+      }, 300);
     }
   }
 }
-
-export default TUIOManager

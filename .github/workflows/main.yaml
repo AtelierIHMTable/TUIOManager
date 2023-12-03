@@ -1,0 +1,55 @@
+name: 'CI/CD Pipeline'
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  bump-npm-version:
+    permissions:
+      contents: write
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - if: github.actor == 'dependabot[bot]'
+        name: Enable auto-merge 🍾
+        run: gh pr merge --auto --merge "$PR_URL"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - id: check
+        name: Check for version change 📝
+        uses: EndBug/version-check@v2
+      - name: Get the output 🖨
+        run: echo "The output was ${{ steps.check.outputs.changed }}"
+      - if: github.event_name == 'pull_request' && steps.check.outputs.changed == 'false'
+        name: Version bump 👊
+        uses: phips28/gh-action-bump-version@master
+        with:
+          minor-wording: 'MINOR'
+          major-wording: 'MAJOR'
+          tag-prefix: 'v'
+          commit-message: "CI: bumps version to {{version}}"
+  build-n-publish:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install dependencies 💿
+        run: npm ci
+      - name: Build 🏗
+        run: npm run build
+      - name: Publish to NPM 📦
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

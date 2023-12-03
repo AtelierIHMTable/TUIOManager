@@ -1,16 +1,26 @@
 {
-  "name": "tuiomanager",
-  "version": "1.5.0",
+  "name": "@dj256/tuiomanager",
+  "version": "1.5.1",
+  "type": "module",
   "scripts": {
-    "devMode": "node initTUIOManagerDevMode.js",
-    "build": "node dev-webpack-compiler.js",
-    "dist": "node prod-webpack-compiler.js"
+    "lint": "eslint src --ext .js --fix",
+    "format": "prettier --write src/**/*.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/AtelierIHMTable/TUIOManager.git"
+    "url": "git+https://github.com/dj-256/TUIOManager.git"
   },
-  "main": "dist/index.js",
+  "files": [
+    "src",
+    "widgets",
+    "package.json",
+    "README.md"
+  ],
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./widgets": "./src/widgets/index.js"
+  },
   "dependencies": {
     "jquery": "3.4.1",
     "socket.io-client": "2.3.0",
@@ -21,11 +31,10 @@
     "@babel/preset-env": "7.8.3",
     "babel-eslint": "10.0.3",
     "babel-loader": "8.0.6",
-    "eslint-loader": "3.0.3",
-    "eslint": "6.8.0",
-    "eslint-config-airbnb-base": "14.0.0",
-    "eslint-plugin-import": "2.20.0",
+    "eslint": "^8.55.0",
+    "eslint-config-prettier": "^9.1.0",
     "fs-extra": "7.0.1",
+    "prettier": "3.1.0",
     "webpack": "4.41.5"
   }
 }
