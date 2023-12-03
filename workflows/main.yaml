@@ -37,7 +37,6 @@ jobs:
           commit-message: "CI: bumps version to {{version}}"
   build-n-publish:
     if: github.event_name == 'push'
-    needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
