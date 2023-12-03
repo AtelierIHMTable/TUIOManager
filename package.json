@@ -12,6 +12,7 @@
   },
   "files": [
     "src",
+    "widgets",
     "package.json",
     "README.md"
   ],
