@@ -22,7 +22,7 @@
     "./widgets": "./src/widgets/index.js"
   },
   "dependencies": {
-    "jquery": "3.4.1",
+    "jquery": "3.5.0",
     "socket.io-client": "2.5.0",
     "uuid": "3.3.3"
   },
