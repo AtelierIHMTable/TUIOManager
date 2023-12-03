@@ -4,10 +4,8 @@
  * @author Lucas Oms <lucas.oms@hotmail.fr>
  */
 
-import { TUIOWidget } from "../../src/core/TUIOWidget";
-import { TUIOManager } from "../../src/index.js";
+import { Point, TUIOManager, TUIOWidget } from "../../src/index.js";
 import { radToDeg } from "../../src/core/helpers";
-import { Point } from "../../src/utils/Point";
 
 /**
  * Abstract class
@@ -30,7 +28,7 @@ export class ElementWidget extends TUIOWidget {
   constructor(x, y, width, height, initialRotation, initialScale) {
     if (new.target === ElementWidget) {
       throw new TypeError(
-        "ElementWidget is an abstract class. It cannot be instanciated"
+        "ElementWidget is an abstract class. It cannot be instanciated",
       );
     }
     super(x, y, width, height);
@@ -158,7 +156,7 @@ export class ElementWidget extends TUIOWidget {
     if (angle !== null) {
       this._domElem.css(
         "transform",
-        `rotate(${angle}deg) scale(${this.scale})`
+        `rotate(${angle}deg) scale(${this.scale})`,
       );
     }
   }
@@ -238,7 +236,7 @@ export class ElementWidget extends TUIOWidget {
         this._height = this._domElem.height();
         this._domElem.css(
           "transform",
-          `rotate(${this._currentAngle}deg) scale(${this.scale})`
+          `rotate(${this._currentAngle}deg) scale(${this.scale})`,
         );
         this._x = this._domElem.position().left;
         this._y = this._domElem.position().top;
@@ -267,16 +265,16 @@ export class ElementWidget extends TUIOWidget {
               this.isInBounds(
                 TUIOManager.getInstance()._widgets[widgetId],
                 x,
-                y
+                y,
               ) &&
               !TUIOManager.getInstance()._widgets[widgetId].isDisabled &&
               TUIOManager.getInstance()._widgets[widgetId].isAllowedElement(
-                this
+                this,
               )
             ) {
               this._isInStack = true;
               TUIOManager.getInstance()._widgets[widgetId].addElementWidget(
-                this
+                this,
               );
               return null;
             }
@@ -371,7 +369,7 @@ export class ElementWidget extends TUIOWidget {
           this._lastTagsValues.angle = tuioTag.angle; // We save the new angle
           this._domElem.css(
             "transform",
-            `rotate(${this._currentAngle}deg) scale(${newscale})`
+            `rotate(${this._currentAngle}deg) scale(${newscale})`,
           ); // We set the dom element scale
           this._lastTagsValues.scale = newscale; //  We save the scale
         } else if (tuioTag.angle < this._lastTagsValues.angle) {

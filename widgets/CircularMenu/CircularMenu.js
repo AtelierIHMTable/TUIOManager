@@ -4,7 +4,7 @@
  */
 
 import $ from "jquery/dist/jquery.min";
-import TUIOWidget from "../../src/core/TUIOWidget";
+import { TUIOWidget } from "../../src/index.js";
 import { radToDeg } from "../../src/core/helpers";
 
 /**

@@ -6,8 +6,7 @@
 /**
  * Class for a circular menu.
  *
- * @class CircularMenu
- * @extends TUIOWidget
+ * @class MenuItem
  */
 export class MenuItem {
   constructor(item, backgroundcolor, color, isIcon) {

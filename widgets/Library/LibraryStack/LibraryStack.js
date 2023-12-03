@@ -5,9 +5,8 @@
 // Import JQuery
 import $ from "jquery/dist/jquery.min";
 
-import { TUIOWidget } from "../../../src/core/TUIOWidget";
+import { Point, TUIOWidget } from "../../../src/index.js";
 import { radToDeg } from "../../../src/core/helpers";
-import { Point } from "../../../src/utils/Point";
 
 /**
  * Main class to manage LibraryStack.
@@ -19,7 +18,7 @@ import { Point } from "../../../src/utils/Point";
  * @class LibraryStack
  * @extends TUIOWidget
  */
-class LibraryStack extends TUIOWidget {
+export class LibraryStack extends TUIOWidget {
   /**
    * Constructor LibraryStack
    *

@@ -220,5 +220,3 @@ export class TUIOWidget {
 
   /* eslint-enable no-unused-vars,class-methods-use-this */
 }
-
-export default TUIOWidget;

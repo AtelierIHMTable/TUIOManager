@@ -7,3 +7,4 @@ export { TUIOObject } from "./core/TUIOObject";
 export { TUIOTag } from "./core/TUIOTag";
 export { TUIOTouch } from "./core/TUIOTouch";
 export { TUIOWidget } from "./core/TUIOWidget";
+export { Point } from "./utils/Point";
