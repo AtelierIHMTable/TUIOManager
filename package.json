@@ -1,6 +1,6 @@
 {
   "name": "@dj256/tuiomanager",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "type": "module",
   "scripts": {
     "lint": "eslint src --ext .js --fix",
