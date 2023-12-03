@@ -4,17 +4,17 @@
  * @author Nicolas Forget
  * @author Lucas Oms <lucas.oms@hotmail.fr>
  */
-import $ from 'jquery/dist/jquery.min'
-import uuidV4 from 'uuid/v4'
+import $ from "jquery/dist/jquery.min";
+import uuidV4 from "uuid/v4";
 
-import TUIOManager from './TUIOManager'
+import { TUIOManager } from "./TUIOManager";
 
 /**
  * Main class to manage TUIOWidget.
  *
  * @class TUIOWidget
  */
-class TUIOWidget {
+export class TUIOWidget {
   /**
    * TUIOWidget constructor.
    *
@@ -25,16 +25,15 @@ class TUIOWidget {
    * @param {number} height - TUIOWidget's height.
    */
   constructor(x, y, width, height) {
-    this._id = uuidV4()
-    this._x = x
-    this._y = y
-    this._width = width
-    this._height = height
+    this._id = uuidV4();
+    this._x = x;
+    this._y = y;
+    this._width = width;
+    this._height = height;
 
-    this._touches = {}
-    this._tags = {}
-    TUIOManager.getInstance()
-      .addWidget(this)
+    this._touches = {};
+    this._tags = {};
+    TUIOManager.getInstance().addWidget(this);
   }
 
   /**
@@ -43,14 +42,14 @@ class TUIOWidget {
    * @returns {string} TUIOWidget's id.
    */
   get id() {
-    return this._id
+    return this._id;
   }
 
   /**
    * TUIOWidget's DOM element.
    */
   get domElem() {
-    return this._domElem
+    return this._domElem;
   }
 
   /**
@@ -59,7 +58,7 @@ class TUIOWidget {
    * @returns {number} TUIOWidget's upperleft corner abscissa.
    */
   get x() {
-    return this._x
+    return this._x;
   }
 
   /**
@@ -68,7 +67,7 @@ class TUIOWidget {
    * @returns {number} TUIOWidget's upperleft corner ordinate.
    */
   get y() {
-    return this._y
+    return this._y;
   }
 
   /**
@@ -77,7 +76,7 @@ class TUIOWidget {
    * @returns {number} TUIOWidget's width.
    */
   get width() {
-    return this._width
+    return this._width;
   }
 
   /**
@@ -86,7 +85,7 @@ class TUIOWidget {
    * @returns {number} TUIOWidget's height.
    */
   get height() {
-    return this._height
+    return this._height;
   }
 
   /**
@@ -95,7 +94,7 @@ class TUIOWidget {
    * @returns {Object} TUIOWidget's touches.
    */
   get touches() {
-    return this._touches
+    return this._touches;
   }
 
   /**
@@ -104,7 +103,7 @@ class TUIOWidget {
    * @returns {Object} TUIOWidget's tags.
    */
   get tags() {
-    return this._tags
+    return this._tags;
   }
 
   /**
@@ -115,7 +114,12 @@ class TUIOWidget {
    * @param {number} y - Point's ordinate to test.
    */
   isTouched(x, y) {
-    return (x >= this._x && x <= this._x + this._width && y >= this._y && y <= this._y + this._height)
+    return (
+      x >= this._x &&
+      x <= this._x + this._width &&
+      y >= this._y &&
+      y <= this._y + this._height
+    );
   }
 
   /**
@@ -129,8 +133,8 @@ class TUIOWidget {
       this._touches = {
         ...this._touches,
         [tuioTouch.id]: tuioTouch,
-      }
-      this._touches[tuioTouch.id].addWidget(this)
+      };
+      this._touches[tuioTouch.id].addWidget(this);
     }
   }
 
@@ -145,8 +149,8 @@ class TUIOWidget {
       this._tags = {
         ...this._tags,
         [tuioTag.id]: tuioTag,
-      }
-      this._tags[tuioTag.id].addWidget(this)
+      };
+      this._tags[tuioTag.id].addWidget(this);
     }
   }
 
@@ -157,8 +161,8 @@ class TUIOWidget {
    * @param {number/string} tuioTouchId - TUIOTouch's id to delete.
    */
   onTouchDeletion(tuioTouchId) {
-    if (typeof (this._touches[tuioTouchId]) !== 'undefined') {
-      delete this._touches[tuioTouchId]
+    if (typeof this._touches[tuioTouchId] !== "undefined") {
+      delete this._touches[tuioTouchId];
     }
   }
 
@@ -169,8 +173,8 @@ class TUIOWidget {
    * @param {number/string} tuioTagId - TUIOTag's id to delete.
    */
   onTagDeletion(tuioTagId) {
-    if (typeof (this._tags[tuioTagId]) !== 'undefined') {
-      delete this._tags[tuioTagId]
+    if (typeof this._tags[tuioTagId] !== "undefined") {
+      delete this._tags[tuioTagId];
     }
   }
 
@@ -201,22 +205,20 @@ class TUIOWidget {
    * @method deleteWidget
    */
   deleteWidget() {
-    TUIOManager.getInstance()
-      .removeWidget(this)
+    TUIOManager.getInstance().removeWidget(this);
   }
 
   /**
    * Call to add the widget to a DOM element
    *
    * @method addTo
-   * @param {DOM-Elem} element - A TUIOTag instance.
+   * @param {HTMLElement} element - A TUIOTag instance.
    */
   addTo(element) {
-    $(element)
-      .append(this.domElem)
+    $(element).append(this.domElem);
   }
 
   /* eslint-enable no-unused-vars,class-methods-use-this */
 }
 
-export default TUIOWidget
+export default TUIOWidget;

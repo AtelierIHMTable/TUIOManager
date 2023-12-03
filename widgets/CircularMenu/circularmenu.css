@@ -1,10 +1,9 @@
-
 .selector {
   position: absolute;
   width: 100px;
   height: 100px;
 }
-  
+
 .selector .ulmenu {
   position: absolute;
   list-style: none;
@@ -23,8 +22,10 @@
   margin: 0 50%;
   -webkit-transform: rotate(-360deg);
 }
-  
-.selector .limenu input { display: none; }
+
+.selector .limenu input {
+  display: none;
+}
 
 .selector .limenu input + label {
   position: absolute;
@@ -50,5 +51,4 @@
   word-wrap: break-word;
   display: table-cell;
   vertical-align: middle;
-
 }

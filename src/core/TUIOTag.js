@@ -4,7 +4,7 @@
  * @author Nicolas Forget
  */
 
-import TUIOObject from './TUIOObject'
+import { TUIOObject } from "./TUIOObject";
 
 /**
  * Main class to manage TUIOTag.
@@ -12,7 +12,7 @@ import TUIOObject from './TUIOObject'
  * @class TUIOTag
  * @extends TUIOObject
  */
-class TUIOTag extends TUIOObject {
+export class TUIOTag extends TUIOObject {
   /**
    * TUIOTag constructor.
    *
@@ -24,7 +24,7 @@ class TUIOTag extends TUIOObject {
    */
   constructor(id, x, y, angle) {
     super(id, x, y);
-    this._angle = angle
+    this._angle = angle;
   }
 
   /**
@@ -32,7 +32,9 @@ class TUIOTag extends TUIOObject {
    *
    * @returns {string|number} TUIOTag's angle.
    */
-  get angle() { return this._angle }
+  get angle() {
+    return this._angle;
+  }
 
   /**
    * Update TUIOTag.
@@ -44,8 +46,6 @@ class TUIOTag extends TUIOObject {
    */
   update(x, y, angle) {
     super.update(x, y);
-    this._angle = angle
+    this._angle = angle;
   }
 }
-
-export default TUIOTag

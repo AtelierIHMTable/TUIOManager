@@ -1,11 +1,4 @@
-# Install
-`npm install`
+# TUIOManager
 
-# In Development
-`npm run devMode`
-
-# Build
-`npm run build`
-
-# Dist
-`npm run dist`
+This fork better encapsulates the library code into a node module.
+Every class has been added as a named export to the module.
