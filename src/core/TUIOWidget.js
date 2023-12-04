@@ -30,9 +30,17 @@ export class TUIOWidget {
     this._y = y;
     this._width = width;
     this._height = height;
-
     this._touches = {};
     this._tags = {};
+    /** @type {{[p: string]: ((any)=>any)[]}} */
+    this._callbacks = {
+      onTouchCreation: [],
+      onTagCreation: [],
+      onTouchDeletion: [],
+      onTagDeletion: [],
+      onTouchUpdate: [],
+      onTagUpdate: [],
+    };
     TUIOManager.getInstance().addWidget(this);
   }
 
@@ -123,80 +131,132 @@ export class TUIOWidget {
   }
 
   /**
+   * Called on touch creation on the widget.
+   * @param {(touch: TUIOTouch) => any} callback - Callback to call on touch creation.
+   */
+  onTouchCreation(callback) {
+    this._callbacks.onTouchCreation.push(callback);
+  }
+
+  /**
    * Call after a TUIOTouch creation.
    *
-   * @method onTouchCreation
+   * @protected @method _onTouchCreation
    * @param {TUIOTouch} tuioTouch - A TUIOTouch instance.
    */
-  onTouchCreation(tuioTouch) {
-    if (this.isTouched(tuioTouch.x, tuioTouch.y)) {
-      this._touches = {
-        ...this._touches,
-        [tuioTouch.id]: tuioTouch,
-      };
-      this._touches[tuioTouch.id].addWidget(this);
-    }
+  _onTouchCreation(tuioTouch) {
+    if (!this.isTouched(tuioTouch.x, tuioTouch.y)) return;
+    this._touches = {
+      ...this._touches,
+      [tuioTouch.id]: tuioTouch,
+    };
+    this._touches[tuioTouch.id].addWidget(this);
+    this._callbacks.onTouchCreation.forEach((callback) => callback(tuioTouch));
+  }
+
+  /**
+   * Called on tag creation on the widget.
+   * @param {(tag: TUIOTag) => any} callback - Callback to call on tag creation.
+   */
+  onTagCreation(callback) {
+    this._callbacks.onTagCreation.push(callback);
   }
 
   /**
    * Call after a TUIOTag creation.
    *
-   * @method onTagCreation
+   * @protected @method _onTagCreation
    * @param {TUIOTag} tuioTag - A TUIOTag instance.
    */
-  onTagCreation(tuioTag) {
-    if (this.isTouched(tuioTag.x, tuioTag.y)) {
-      this._tags = {
-        ...this._tags,
-        [tuioTag.id]: tuioTag,
-      };
-      this._tags[tuioTag.id].addWidget(this);
-    }
+  _onTagCreation(tuioTag) {
+    if (!this.isTouched(tuioTag.x, tuioTag.y)) return;
+    this._tags = {
+      ...this._tags,
+      [tuioTag.id]: tuioTag,
+    };
+    this._tags[tuioTag.id].addWidget(this);
+    this._callbacks.onTagCreation.forEach((callback) => callback(tuioTag));
+  }
+
+  /**
+   * Called on touch deletion on the widget.
+   * @param {(touchId: string) => any} callback - Callback to call on touch deletion.
+   */
+  onTouchDeletion(callback) {
+    this._callbacks.onTouchDeletion.push(callback);
   }
 
   /**
    * Call after a TUIOTouch deletion.
    *
-   * @method onTouchDeletion
+   * @protected @method _onTouchDeletion
    * @param {number/string} tuioTouchId - TUIOTouch's id to delete.
    */
-  onTouchDeletion(tuioTouchId) {
+  _onTouchDeletion(tuioTouchId) {
     if (typeof this._touches[tuioTouchId] !== "undefined") {
       delete this._touches[tuioTouchId];
+      this._callbacks.onTouchDeletion.forEach((callback) =>
+        callback(tuioTouchId),
+      );
     }
+  }
+
+  /**
+   * Called on tag deletion on the widget.
+   * @param {(tagId: string) => any} callback - Callback to call on tag deletion.
+   */
+  onTagDeletion(callback) {
+    this._callbacks.onTagDeletion.push(callback);
   }
 
   /**
    * Call after a TUIOTag deletion.
    *
-   * @method onTagDeletion
+   * @protected @method _onTagDeletion
    * @param {number/string} tuioTagId - TUIOTag's id to delete.
    */
-  onTagDeletion(tuioTagId) {
+  _onTagDeletion(tuioTagId) {
     if (typeof this._tags[tuioTagId] !== "undefined") {
       delete this._tags[tuioTagId];
+      this._callbacks.onTagDeletion.forEach((callback) => callback(tuioTagId));
     }
+  }
+
+  /**
+   * Called on touch update on the widget.
+   * @param {(touch: TUIOTouch) => any} callback - Callback to call on touch update.
+   */
+  onTouchUpdate(callback) {
+    this._callbacks.onTouchUpdate.push(callback);
   }
 
   /* eslint-disable no-unused-vars,class-methods-use-this */
   /**
    * Call after a TUIOTouch update.
    *
-   * @method onTouchUpdate
+   * @protected @method _onTouchUpdate
    * @param {TUIOTouch} tuioTouch - A TUIOTouch instance.
    */
-  onTouchUpdate(tuioTouch) {
-    // To override if needed.
+  _onTouchUpdate(tuioTouch) {
+    this._callbacks.onTouchUpdate.forEach((callback) => callback(tuioTouch));
+  }
+
+  /**
+   * Called on tag update on the widget.
+   * @param {(tag: TUIOTag) => any} callback - Callback to call on tag update.
+   */
+  onTagUpdate(callback) {
+    this._callbacks.onTagUpdate.push(callback);
   }
 
   /**
    * Call after a TUIOTag update.
    *
-   * @method onTagUpdate
+   * @protected @method _onTagUpdate
    * @param {TUIOTag} tuioTag - A TUIOTag instance.
    */
-  onTagUpdate(tuioTag) {
-    // To override if needed.
+  _onTagUpdate(tuioTag) {
+    this._callbacks.onTagUpdate.forEach((callback) => callback(tuioTag));
   }
 
   /**

@@ -118,12 +118,12 @@ export class ElementWidget extends TUIOWidget {
   /**
    * Call after a TUIOTouch creation.
    *
-   * @method onTouchCreation
+   * @protected @method _onTouchCreation
    * @param {TUIOTouch} tuioTouch - A TUIOTouch instance.
    */
-  onTouchCreation(tuioTouch) {
+  _onTouchCreation(tuioTouch) {
     if (!this._isInStack) {
-      super.onTouchCreation(tuioTouch);
+      super._onTouchCreation(tuioTouch);
       if (this.isTouched(tuioTouch.x, tuioTouch.y)) {
         this._lastTouchesValues = {
           ...this._lastTouchesValues,
@@ -164,94 +164,94 @@ export class ElementWidget extends TUIOWidget {
   /**
    * Call after a TUIOTouch update.
    *
-   * @method onTouchUpdate
+   * @protected @method _onTouchUpdate
    * @param {TUIOTouch} tuioTouch - A TUIOTouch instance.
    */
-  onTouchUpdate(tuioTouch) {
-    if (typeof this._lastTouchesValues[tuioTouch.id] !== "undefined") {
-      if (this.shouldGoOnTop) {
-        if (this.zIndex !== ElementWidget.zIndexGlobal) {
-          ElementWidget.zIndexGlobal += 1;
-          this.zIndex = ElementWidget.zIndexGlobal;
-        }
-        this._domElem.css("z-index", this.zIndex);
+  _onTouchUpdate(tuioTouch) {
+    if (typeof this._lastTouchesValues[tuioTouch.id] === "undefined") return;
+    super._onTouchUpdate(tuioTouch);
+    if (this.shouldGoOnTop) {
+      if (this.zIndex !== ElementWidget.zIndexGlobal) {
+        ElementWidget.zIndexGlobal += 1;
+        this.zIndex = ElementWidget.zIndexGlobal;
       }
-      const touchesWidgets = [];
-      const currentTouches = this.touches;
-      Object.keys(this.touches).forEach((key) => {
-        touchesWidgets.push(currentTouches[key]);
-      });
+      this._domElem.css("z-index", this.zIndex);
+    }
+    const touchesWidgets = [];
+    const currentTouches = this.touches;
+    Object.keys(this.touches).forEach((key) => {
+      touchesWidgets.push(currentTouches[key]);
+    });
 
-      if (touchesWidgets.length === 1 && this.canMoveTactile) {
-        const lastTouchValue = this._lastTouchesValues[tuioTouch.id];
-        const diffX = tuioTouch.x - lastTouchValue.x;
-        const diffY = tuioTouch.y - lastTouchValue.y;
-        const newX = this.internX + diffX;
-        const newY = this.internY + diffY;
-        this._x = this.x + diffX;
-        this._y = this.y + diffY;
+    if (touchesWidgets.length === 1 && this.canMoveTactile) {
+      const lastTouchValue = this._lastTouchesValues[tuioTouch.id];
+      const diffX = tuioTouch.x - lastTouchValue.x;
+      const diffY = tuioTouch.y - lastTouchValue.y;
+      const newX = this.internX + diffX;
+      const newY = this.internY + diffY;
+      this._x = this.x + diffX;
+      this._y = this.y + diffY;
 
-        this.moveTo(newX, newY);
-        this._lastTouchesValues = {
-          ...this._lastTouchesValues,
-          [tuioTouch.id]: {
-            x: tuioTouch.x,
-            y: tuioTouch.y,
-          },
-        };
-      } else if (touchesWidgets.length === 2) {
-        const touch1 = new Point(touchesWidgets[0].x, touchesWidgets[0].y);
-        const touch2 = new Point(touchesWidgets[1].x, touchesWidgets[1].y);
-        let newscale = this._lastTouchesValues.scale;
-        // Resize d'une image
-        if (this.canZoomTactile) {
-          const c = touch1.distanceTo(touch2);
-          if (c > this._lastTouchesValues.pinchDistance) {
-            newscale = this._lastTouchesValues.scale * 1.018; // new scale is 1.5 times the old scale
-            this._lastTouchesValues.scale = newscale; //  We save the scale
-          } else if (c < this._lastTouchesValues.pinchDistance) {
-            newscale = this._lastTouchesValues.scale * 0.985; // new scale is 1.5 times the old scale
-            this._lastTouchesValues.scale = newscale; //  We save the scale
-          }
-          this.scale = newscale;
-          this._lastTouchesValues.pinchDistance = c;
+      this.moveTo(newX, newY);
+      this._lastTouchesValues = {
+        ...this._lastTouchesValues,
+        [tuioTouch.id]: {
+          x: tuioTouch.x,
+          y: tuioTouch.y,
+        },
+      };
+    } else if (touchesWidgets.length === 2) {
+      const touch1 = new Point(touchesWidgets[0].x, touchesWidgets[0].y);
+      const touch2 = new Point(touchesWidgets[1].x, touchesWidgets[1].y);
+      let newscale = this._lastTouchesValues.scale;
+      // Resize d'une image
+      if (this.canZoomTactile) {
+        const c = touch1.distanceTo(touch2);
+        if (c > this._lastTouchesValues.pinchDistance) {
+          newscale = this._lastTouchesValues.scale * 1.018; // new scale is 1.5 times the old scale
+          this._lastTouchesValues.scale = newscale; //  We save the scale
+        } else if (c < this._lastTouchesValues.pinchDistance) {
+          newscale = this._lastTouchesValues.scale * 0.985; // new scale is 1.5 times the old scale
+          this._lastTouchesValues.scale = newscale; //  We save the scale
         }
+        this.scale = newscale;
+        this._lastTouchesValues.pinchDistance = c;
+      }
 
-        // Rotation d'une image
-        if (this.canRotateTactile) {
-          if (!this.lastAngle) {
-            this.lastAngle = touch1.angleWith(touch2);
+      // Rotation d'une image
+      if (this.canRotateTactile) {
+        if (!this.lastAngle) {
+          this.lastAngle = touch1.angleWith(touch2);
+        } else {
+          if (this.lastAngle < touch1.angleWith(touch2)) {
+            this._currentAngle += touch1.angleWith(touch2) - this.lastAngle;
           } else {
-            if (this.lastAngle < touch1.angleWith(touch2)) {
-              this._currentAngle += touch1.angleWith(touch2) - this.lastAngle;
-            } else {
-              this._currentAngle -= this.lastAngle - touch1.angleWith(touch2);
-            }
-            this._currentAngle %= 360;
-            this.lastAngle = touch1.angleWith(touch2);
+            this._currentAngle -= this.lastAngle - touch1.angleWith(touch2);
           }
+          this._currentAngle %= 360;
+          this.lastAngle = touch1.angleWith(touch2);
         }
-        this._domElem.css("transform", `rotate(360deg) scale(${this.scale})`);
-        this._width = this._domElem.width();
-        this._height = this._domElem.height();
-        this._domElem.css(
-          "transform",
-          `rotate(${this._currentAngle}deg) scale(${this.scale})`,
-        );
-        this._x = this._domElem.position().left;
-        this._y = this._domElem.position().top;
       }
+      this._domElem.css("transform", `rotate(360deg) scale(${this.scale})`);
+      this._width = this._domElem.width();
+      this._height = this._domElem.height();
+      this._domElem.css(
+        "transform",
+        `rotate(${this._currentAngle}deg) scale(${this.scale})`,
+      );
+      this._x = this._domElem.position().left;
+      this._y = this._domElem.position().top;
     }
   }
 
   /**
    * Call after a TUIOTouch deletion.
    *
-   * @method onTouchDeletion
+   * @protected @method _onTouchDeletion
    * @param {number/string} tuioTouchId - TUIOTouch's id to delete.
    */
-  onTouchDeletion(tuioTouchId) {
-    super.onTouchDeletion(tuioTouchId);
+  _onTouchDeletion(tuioTouchId) {
+    super._onTouchDeletion(tuioTouchId);
     if (typeof this._lastTouchesValues[tuioTouchId] !== "undefined") {
       const lastTouchValue = this._lastTouchesValues[tuioTouchId];
       const { x, y } = lastTouchValue;
@@ -290,12 +290,12 @@ export class ElementWidget extends TUIOWidget {
   /**
    * Call after a TUIOTag creation.
    *
-   * @method onTagCreation
+   * @protected @method _onTagCreation
    * @param {TUIOTag} tuioTag - A TUIOTag instance.
    */
-  onTagCreation(tuioTag) {
+  _onTagCreation(tuioTag) {
     if (!this._isInStack) {
-      super.onTagCreation(tuioTag);
+      super._onTagCreation(tuioTag);
       if (this.isTouched(tuioTag.x, tuioTag.y)) {
         this._lastTagsValues = {
           ...this._lastTagsValues,
@@ -318,87 +318,87 @@ export class ElementWidget extends TUIOWidget {
   /**
    * Call after a TUIOTag update.
    *
-   * @method onTagUpdate
+   * @protected @method _onTagUpdate
    * @param {TUIOTag} tuioTag - A TUIOTag instance.
    */
-  onTagUpdate(tuioTag) {
-    if (typeof this._lastTagsValues[tuioTag.id] !== "undefined") {
-      if (tuioTag.id === this.idTagDelete && this.canDeleteTangible) {
-        this._domElem.remove();
-        this.deleteWidget();
-      } else if (tuioTag.id === this.idTagMove && this.canMoveTangible) {
-        if (this.shouldGoOnTop) {
-          if (this.zIndex !== ElementWidget.zIndexGlobal) {
-            ElementWidget.zIndexGlobal += 1;
-            this.zIndex = ElementWidget.zIndexGlobal;
-          }
-          this._domElem.css("z-index", this.zIndex);
+  _onTagUpdate(tuioTag) {
+    if (typeof this._lastTagsValues[tuioTag.id] === "undefined") return;
+    super._onTagUpdate(tuioTag);
+    if (tuioTag.id === this.idTagDelete && this.canDeleteTangible) {
+      this._domElem.remove();
+      this.deleteWidget();
+    } else if (tuioTag.id === this.idTagMove && this.canMoveTangible) {
+      if (this.shouldGoOnTop) {
+        if (this.zIndex !== ElementWidget.zIndexGlobal) {
+          ElementWidget.zIndexGlobal += 1;
+          this.zIndex = ElementWidget.zIndexGlobal;
         }
-        const lastTagValue = this._lastTagsValues[tuioTag.id];
-        const diffX = tuioTag.x - lastTagValue.x;
-        const diffY = tuioTag.y - lastTagValue.y;
+        this._domElem.css("z-index", this.zIndex);
+      }
+      const lastTagValue = this._lastTagsValues[tuioTag.id];
+      const diffX = tuioTag.x - lastTagValue.x;
+      const diffY = tuioTag.y - lastTagValue.y;
 
-        const newX = this.internX + diffX;
-        const newY = this.internY + diffY;
+      const newX = this.internX + diffX;
+      const newY = this.internY + diffY;
 
-        if (this.canRotateTangible) {
-          this._currentAngle = radToDeg(tuioTag.angle);
-          this.moveTo(newX, newY, this._currentAngle);
-        } else {
-          this.moveTo(newX, newY);
-        }
+      if (this.canRotateTangible) {
+        this._currentAngle = radToDeg(tuioTag.angle);
+        this.moveTo(newX, newY, this._currentAngle);
+      } else {
+        this.moveTo(newX, newY);
+      }
 
-        this._lastTagsValues = {
-          ...this._lastTagsValues,
-          [tuioTag.id]: {
-            x: tuioTag.x,
-            y: tuioTag.y,
-          },
-        };
-        this._x = this._domElem.position().left;
-        this._y = this._domElem.position().top;
-        this._width = this._domElem.width();
-        this._height = this._domElem.height();
-      } else if (tuioTag.id === this.idTagZoom && this.canZoomTangible) {
-        //  When the zoom tag is recognized
-        let newscale;
-        if (tuioTag.angle > this._lastTagsValues.angle) {
-          // Increasing angle superior to last saved angle (clockwise)
-          newscale = this._lastTagsValues.scale * 1.5; // new scale is 1.5 times the old scale
-          this.scale = newscale;
-          this._lastTagsValues.angle = tuioTag.angle; // We save the new angle
-          this._domElem.css(
-            "transform",
-            `rotate(${this._currentAngle}deg) scale(${newscale})`,
-          ); // We set the dom element scale
-          this._lastTagsValues.scale = newscale; //  We save the scale
-        } else if (tuioTag.angle < this._lastTagsValues.angle) {
-          //  Decreasing angle inferior to the last saved angle(counterclockwise)
-          newscale = this._lastTagsValues.scale * 0.75; // new scale is 0.75 times the old scale
-          this.scale = newscale;
-          this._lastTagsValues.angle = tuioTag.angle; // We save the new angle
-          this._domElem.css(
-            "transform",
-            `rotate(${this._currentAngle}deg) scale(${newscale})`,
-          ); // We set the dom element scale
-          this._lastTagsValues.scale = newscale; // We save the scale
-        }
-        this._x = this._domElem.position().left;
-        this._y = this._domElem.position().top;
-        this._width = this._domElem.width();
-        this._height = this._domElem.height();
-      } //  else if
-    }
+      this._lastTagsValues = {
+        ...this._lastTagsValues,
+        [tuioTag.id]: {
+          x: tuioTag.x,
+          y: tuioTag.y,
+        },
+      };
+      this._x = this._domElem.position().left;
+      this._y = this._domElem.position().top;
+      this._width = this._domElem.width();
+      this._height = this._domElem.height();
+    } else if (tuioTag.id === this.idTagZoom && this.canZoomTangible) {
+      //  When the zoom tag is recognized
+      let newscale;
+      if (tuioTag.angle > this._lastTagsValues.angle) {
+        // Increasing angle superior to last saved angle (clockwise)
+        newscale = this._lastTagsValues.scale * 1.5; // new scale is 1.5 times the old scale
+        this.scale = newscale;
+        this._lastTagsValues.angle = tuioTag.angle; // We save the new angle
+        this._domElem.css(
+          "transform",
+          `rotate(${this._currentAngle}deg) scale(${newscale})`,
+        ); // We set the dom element scale
+        this._lastTagsValues.scale = newscale; //  We save the scale
+      } else if (tuioTag.angle < this._lastTagsValues.angle) {
+        //  Decreasing angle inferior to the last saved angle(counterclockwise)
+        newscale = this._lastTagsValues.scale * 0.75; // new scale is 0.75 times the old scale
+        this.scale = newscale;
+        this._lastTagsValues.angle = tuioTag.angle; // We save the new angle
+        this._domElem.css(
+          "transform",
+          `rotate(${this._currentAngle}deg) scale(${newscale})`,
+        ); // We set the dom element scale
+        this._lastTagsValues.scale = newscale; // We save the scale
+      }
+      this._x = this._domElem.position().left;
+      this._y = this._domElem.position().top;
+      this._width = this._domElem.width();
+      this._height = this._domElem.height();
+    } //  else if
   }
 
   /**
    * Call after a TUIOTag deletion.
    *
-   * @method onTagDeletion
+   * @protected @method _onTagDeletion
    * @param {number/string} tuioTagId - TUIOTag's id to delete.
    */
-  onTagDeletion(tuioTagId) {
-    super.onTagDeletion(tuioTagId);
+  _onTagDeletion(tuioTagId) {
+    super._onTagDeletion(tuioTagId);
   }
 
   /**

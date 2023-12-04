@@ -3,7 +3,7 @@
  * @author Rémy Kaloustian <remy.kaloustian@gmail.com>
  */
 
-import { TUIOWidget } from "../../../src/core/TUIOWidget";
+import { TUIOWidget } from "../../../src/index.js";
 
 /**
  * Class for a LibraryBar
@@ -45,40 +45,50 @@ export class LibraryBar extends TUIOWidget {
   /**
    * Call after a TUIOTouch creation.
    *
-   * @method onTouchCreation
+   * @protected @method _onTouchCreation
    * @param {TUIOTouch} tuioTouch - A TUIOTouch instance.
    */
-  onTouchCreation(tuioTouch) {}
+  _onTouchCreation(tuioTouch) {
+    super._onTouchCreation(tuioTouch);
+  }
 
   /**
    * Call after a TUIOTouch update.
    *
-   * @method onTouchUpdate
+   * @protected @method _onTouchUpdate
    * @param {TUIOTouch} tuioTouch - A TUIOTouch instance.
    */
-  onTouchUpdate(tuioTouch) {}
+  _onTouchUpdate(tuioTouch) {
+    super._onTouchUpdate(tuioTouch);
+  }
 
   /**
    * Call after a TUIOTag creation.
    *
-   * @method onTagCreation
+   * @protected @method _onTagCreation
    * @param {TUIOTag} tuioTag - A TUIOTag instance.
    */
-  onTagCreation(tuioTag) {}
+  _onTagCreation(tuioTag) {
+    super._onTagCreation(tuioTag);
+  }
 
   /**
    * Call after a TUIOTag update.
    *
-   * @method onTagUpdate
+   * @protected @method #onTagUpdate
    * @param {TUIOTag} tuioTag - A TUIOTag instance.
    */
-  onTagUpdate(tuioTag) {}
+  _onTagUpdate(tuioTag) {
+    super._onTagUpdate(tuioTag);
+  }
 
   /**
    * Call after a TUIOTag deletion.
    *
-   * @method onTagDeletion
+   * @protected @method _onTagDeletion
    * @param {number/string} tuioTagId - TUIOTag's id to delete.
    */
-  onTagDeletion(tuioTagId) {}
+  _onTagDeletion(tuioTagId) {
+    super._onTagDeletion(tuioTagId);
+  }
 }

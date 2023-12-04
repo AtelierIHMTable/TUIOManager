@@ -73,11 +73,11 @@ export class VideoElementWidget extends ElementWidget {
   /**
    * Call after a TUIOTouch creation.
    *
-   * @method onTouchCreation
+   * @protected @method _onTouchCreation
    * @param {TUIOTouch} tuioTouch - A TUIOTouch instance.
    */
-  onTouchCreation(tuioTouch) {
-    super.onTouchCreation(tuioTouch);
+  _onTouchCreation(tuioTouch) {
+    super._onTouchCreation(tuioTouch);
     this.timeInitTouchVideo = Date.now();
     this.touchInitX = tuioTouch.x;
     this.touchInitY = tuioTouch.y;
@@ -86,11 +86,11 @@ export class VideoElementWidget extends ElementWidget {
   /**
    * Call after a TUIOTouch update.
    *
-   * @method onTouchUpdate
+   * @protected @method _onTouchUpdate
    * @param {TUIOTouch} tuioTouch - A TUIOTouch instance.
    */
-  onTouchUpdate(tuioTouch) {
-    super.onTouchUpdate(tuioTouch);
+  _onTouchUpdate(tuioTouch) {
+    super._onTouchUpdate(tuioTouch);
     if (typeof this._lastTouchesValues[tuioTouch.id] !== "undefined") {
       const touchesWidgets = [];
       const currentTouches = this.touches;
@@ -110,7 +110,7 @@ export class VideoElementWidget extends ElementWidget {
       ) {
         this.canPlayPause = false;
         this.playPauseVideo();
-        super.onTouchDeletion(tuioTouch.id);
+        super._onTouchDeletion(tuioTouch.id);
         this.canRemove = false;
       }
     }
@@ -119,22 +119,22 @@ export class VideoElementWidget extends ElementWidget {
   /**
    * Call after a TUIOTouch update.
    *
-   * @method onTouchDeletion
+   * @protected @method _onTouchDeletion
    * @param {string} tuioTouchId - A TUIOTouch instance.
    */
-  onTouchDeletion(tuioTouchId) {
-    super.onTouchDeletion(tuioTouchId);
+  _onTouchDeletion(tuioTouchId) {
+    super._onTouchDeletion(tuioTouchId);
     this.canPlayPause = true;
   }
 
   /**
    * Call after a TUIOTag creation.
    *
-   * @method onTagCreation
+   * @protected  @method _onTagCreation
    * @param {TUIOTag} tuioTag - A TUIOTag instance.
    */
-  onTagCreation(tuioTag) {
-    super.onTagCreation(tuioTag);
+  _onTagCreation(tuioTag) {
+    super._onTagCreation(tuioTag);
     if (this.isTouched(tuioTag.x, tuioTag.y)) {
       if (tuioTag.id === this.idTagPlayPause && this.canPlayPauseTangible) {
         this.playPauseVideo();
@@ -204,4 +204,3 @@ export class VideoElementWidget extends ElementWidget {
     this.idTagPlayPause = tagPlayPause;
   }
 } // class ImageElementWidget
-

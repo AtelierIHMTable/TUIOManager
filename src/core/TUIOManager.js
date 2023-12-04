@@ -17,7 +17,7 @@ import {
   TOUCH_SOCKETIO_TYPE,
   UPDATE_SOCKETIO_ACTION,
   WINDOW_HEIGHT,
-  WINDOW_WIDTH
+  WINDOW_WIDTH,
 } from "./constants";
 
 /**
@@ -171,7 +171,7 @@ export class TUIOManager {
           socketData.x * WINDOW_WIDTH,
           socketData.y * WINDOW_HEIGHT,
         );
-        this.notifyWidgets("onTouchCreation", this._touches[socketData.id]);
+        this.notifyWidgets("_onTouchCreation", this._touches[socketData.id]);
         this._touches[socketData.id].update(
           socketData.x * WINDOW_WIDTH,
           socketData.y * WINDOW_HEIGHT,
@@ -191,7 +191,7 @@ export class TUIOManager {
           socketData.y * WINDOW_HEIGHT,
           socketData.angle,
         );
-        this.notifyWidgets("onTagCreation", this._tags[socketData.id]);
+        this.notifyWidgets("_onTagCreation", this._tags[socketData.id]);
         this._tags[socketData.id].update(
           socketData.x * WINDOW_WIDTH,
           socketData.y * WINDOW_HEIGHT,
@@ -225,7 +225,7 @@ export class TUIOManager {
             socketData.x * WINDOW_WIDTH,
             socketData.y * WINDOW_HEIGHT,
           );
-          this.notifyWidgets("onTouchUpdate", this._touches[socketData.id]);
+          this.notifyWidgets("_onTouchUpdate", this._touches[socketData.id]);
           if (this._showInteractions)
             this._updatePointer(
               socketData.id,
@@ -242,7 +242,7 @@ export class TUIOManager {
             socketData.y * WINDOW_HEIGHT,
             socketData.angle,
           );
-          this.notifyWidgets("onTagUpdate", this._tags[socketData.id]);
+          this.notifyWidgets("_onTagUpdate", this._tags[socketData.id]);
           if (this._showInteractions)
             this._updatePointer(
               socketData.id,
@@ -267,7 +267,7 @@ export class TUIOManager {
     switch (socketData.type) {
       case TOUCH_SOCKETIO_TYPE: {
         if (typeof this._touches[socketData.id] !== "undefined") {
-          this.notifyWidgets("onTouchDeletion", socketData.id);
+          this.notifyWidgets("_onTouchDeletion", socketData.id);
           if (this._showInteractions) this._removePointer(socketData.id);
           delete this._touches[socketData.id];
         }
@@ -275,7 +275,7 @@ export class TUIOManager {
       }
       case TAG_SOCKETIO_TYPE: {
         if (typeof this._tags[socketData.id] !== "undefined") {
-          this.notifyWidgets("onTagDeletion", socketData.id);
+          this.notifyWidgets("_onTagDeletion", socketData.id);
           if (this._showInteractions) this._removePointer(socketData.id);
           delete this._tags[socketData.id];
         }

@@ -134,11 +134,11 @@ export class LibraryStack extends TUIOWidget {
   /**
    * Call after a TUIOTouch creation.
    *
-   * @method onTouchCreation
+   * @protected @method _onTouchCreation
    * @param {TUIOTouch} tuioTouch - A TUIOTouch instance.
    */
-  onTouchCreation(tuioTouch) {
-    super.onTouchCreation(tuioTouch);
+  _onTouchCreation(tuioTouch) {
+    super._onTouchCreation(tuioTouch);
     if (this.isTouched(tuioTouch.x, tuioTouch.y)) {
       this._lastTouchesValues = {
         ...this._lastTouchesValues,
@@ -187,10 +187,10 @@ export class LibraryStack extends TUIOWidget {
   /**
    * Call after a TUIOTouch update.
    *
-   * @method onTouchUpdate
+   * @protected @method _onTouchUpdate
    * @param {TUIOTouch} tuioTouch - A TUIOTouch instance.
    */
-  onTouchUpdate(tuioTouch) {
+  _onTouchUpdate(tuioTouch) {
     if (typeof this._lastTouchesValues[tuioTouch.id] !== "undefined") {
       const touchesWidgets = [];
       const currentTouches = this.touches;
@@ -208,7 +208,7 @@ export class LibraryStack extends TUIOWidget {
         ) {
           if (this.canRemove) {
             const removedElem = this.removeElementWidget(tuioTouch);
-            super.onTouchDeletion(tuioTouch.id);
+            super._onTouchDeletion(tuioTouch.id);
             removedElem.onTouchCreation(tuioTouch);
             this.canRemove = false;
           }
@@ -280,11 +280,11 @@ export class LibraryStack extends TUIOWidget {
   /**
    * Call after a TUIOTouch deletion.
    *
-   * @method onTouchDeletion
+   * @protected @method _onTouchDeletion
    * @param {number/string} tuioTouchId - TUIOTouch's id to delete.
    */
-  onTouchDeletion(tuioTouchId) {
-    super.onTouchDeletion(tuioTouchId);
+  _onTouchDeletion(tuioTouchId) {
+    super._onTouchDeletion(tuioTouchId);
     if (typeof this._lastTouchesValues[tuioTouchId] !== "undefined") {
       const endTouch = Date.now();
       const delta = endTouch - this.touchedTimestamp;
@@ -301,10 +301,10 @@ export class LibraryStack extends TUIOWidget {
   /**
    * Call after a TUIOTag creation.
    *
-   * @method onTagCreation
+   * @protected @method _onTagCreation
    * @param {TUIOTag} tuioTag - A TUIOTag instance.
    */
-  onTagCreation(tuioTag) {
+  _onTagCreation(tuioTag) {
     if (tuioTag.id === this.showTag) {
       this._tags = {
         ...this._tags,
@@ -348,10 +348,10 @@ export class LibraryStack extends TUIOWidget {
   /**
    * Call after a TUIOTag update.
    *
-   * @method onTagUpdate
+   * @protected  @method _onTagUpdate
    * @param {TUIOTag} tuioTag - A TUIOTag instance.
    */
-  onTagUpdate(tuioTag) {
+  _onTagUpdate(tuioTag) {
     if (typeof this._lastTagsValues[tuioTag.id] !== "undefined") {
       const lastTagValue = this._lastTagsValues[tuioTag.id];
       const diffX = tuioTag.x - lastTagValue.x;
@@ -374,12 +374,12 @@ export class LibraryStack extends TUIOWidget {
   /**
    * Call after a TUIOTag deletion.
    *
-   * @method onTagUpdate
+   * @protected @method _onTagDeletion
    * @param {string} tuioTagId - A TUIOTag id.
    */
-  onTagDeletion(tuioTagId) {
+  _onTagDeletion(tuioTagId) {
     if (typeof this._lastTagsValues[tuioTagId] !== "undefined") {
-      super.onTagDeletion(tuioTagId);
+      super._onTagDeletion(tuioTagId);
       this.hide();
       this.isDisabled = true;
     }

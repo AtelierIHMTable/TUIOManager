@@ -136,10 +136,10 @@ export class CircularMenu extends TUIOWidget {
   /**
    * Call after a TUIOTouch creation.
    *
-   * @method onTouchCreation
+   * @protected @method _onTouchCreation
    * @param {TUIOTouch} tuioTouch - A TUIOTouch instance.
    */
-  onTouchCreation(tuioTouch) {
+  _onTouchCreation(tuioTouch) {
     if (this.isTouched(tuioTouch.x, tuioTouch.y)) {
       this._touches = {
         ...this._touches,
@@ -333,10 +333,10 @@ export class CircularMenu extends TUIOWidget {
   /**
    * Call after a TUIOTag creation.
    *
-   * @method onTagCreation
+   * @protected @method _onTagCreation
    * @param {TUIOTag} tuioTag - A TUIOTag instance.
    */
-  onTagCreation(tuioTag) {
+  _onTagCreation(tuioTag) {
     if (tuioTag.id === this.idTagMenu) {
       this._tags = {
         ...this._tags,
@@ -380,10 +380,10 @@ export class CircularMenu extends TUIOWidget {
   /**
    * Call after a TUIOTag update.
    *
-   * @method onTagUpdate
+   * @protected @method _onTagUpdate
    * @param {TUIOTag} tuioTag - A TUIOTag instance.
    */
-  onTagUpdate(tuioTag) {
+  _onTagUpdate(tuioTag) {
     if (typeof this._lastTagsValues[tuioTag.id] !== "undefined") {
       if (tuioTag.id === this.idTagMenu) {
         const lastTagValue = this._lastTagsValues[tuioTag.id];
@@ -424,12 +424,12 @@ export class CircularMenu extends TUIOWidget {
   /**
    * Call after a TUIOTag deletion.
    *
-   * @method onTagDeletion
+   * @protected @method _onTagDeletion
    * @param {number/string} tuioTagId - TUIOTag's id to delete.
    */
-  onTagDeletion(tuioTagId) {
+  _onTagDeletion(tuioTagId) {
     if (typeof this._lastTagsValues[tuioTagId] !== "undefined") {
-      super.onTagDeletion(tuioTagId);
+      super._onTagDeletion(tuioTagId);
       this._domElem.hide();
       this.toggleOptions(this.domElem);
       this.isHide = true;
