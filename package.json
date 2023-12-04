@@ -1,6 +1,6 @@
 {
   "name": "@dj256/tuiomanager",
-  "version": "1.5.8",
+  "version": "1.5.9",
   "type": "module",
   "scripts": {
     "lint": "eslint src --ext .js --fix",
@@ -29,7 +29,7 @@
   "devDependencies": {
     "eslint": "^8.55.0",
     "eslint-config-prettier": "^9.1.0",
-    "fs-extra": "7.0.1",
+    "fs-extra": "11.2.0",
     "prettier": "3.1.0"
   }
 }
