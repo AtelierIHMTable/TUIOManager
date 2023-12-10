@@ -15,9 +15,7 @@ import {
   DELETE_SOCKETIO_ACTION,
   TAG_SOCKETIO_TYPE,
   TOUCH_SOCKETIO_TYPE,
-  UPDATE_SOCKETIO_ACTION,
-  WINDOW_HEIGHT,
-  WINDOW_WIDTH,
+  UPDATE_SOCKETIO_ACTION
 } from "./constants";
 
 /**
@@ -27,6 +25,8 @@ import {
  * @private
  */
 let tuioManagerInstance = null;
+let WINDOW_WIDTH = window.innerWidth;
+let WINDOW_HEIGHT = window.innerHeight;
 
 /**
  * Main class to manage TUIOManager.
@@ -38,11 +38,22 @@ export class TUIOManager {
    * TUIOManager constructor.
    *
    * @constructor
+   * @param {HTMLElement} anchor - The HTML element to use as anchor for the TUIOManager.
    */
-  constructor() {
+  constructor(anchor = null) {
     if (tuioManagerInstance !== null) {
       return tuioManagerInstance;
     }
+
+    window.addEventListener("resize", () => {
+      if (anchor) {
+        WINDOW_WIDTH = anchor.clientWidth;
+        WINDOW_HEIGHT = anchor.clientHeight;
+      } else {
+        WINDOW_WIDTH = window.innerWidth;
+        WINDOW_HEIGHT = window.innerHeight;
+      }
+    });
     this._touches = {};
     this._tags = {};
 
