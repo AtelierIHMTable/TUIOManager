@@ -15,7 +15,7 @@ import {
   DELETE_SOCKETIO_ACTION,
   TAG_SOCKETIO_TYPE,
   TOUCH_SOCKETIO_TYPE,
-  UPDATE_SOCKETIO_ACTION
+  UPDATE_SOCKETIO_ACTION,
 } from "./constants";
 
 /**
@@ -25,8 +25,18 @@ import {
  * @private
  */
 let tuioManagerInstance = null;
-let WINDOW_WIDTH = window.innerWidth;
-let WINDOW_HEIGHT = window.innerHeight;
+let WINDOW_WIDTH;
+let WINDOW_HEIGHT;
+
+const updateWindowSize = (anchor) => {
+  if (anchor) {
+    WINDOW_WIDTH = anchor.clientWidth;
+    WINDOW_HEIGHT = anchor.clientHeight;
+  } else {
+    WINDOW_WIDTH = window.innerWidth;
+    WINDOW_HEIGHT = window.innerHeight;
+  }
+};
 
 /**
  * Main class to manage TUIOManager.
@@ -44,15 +54,9 @@ export class TUIOManager {
     if (tuioManagerInstance !== null) {
       return tuioManagerInstance;
     }
-
+    updateWindowSize(anchor);
     window.addEventListener("resize", () => {
-      if (anchor) {
-        WINDOW_WIDTH = anchor.clientWidth;
-        WINDOW_HEIGHT = anchor.clientHeight;
-      } else {
-        WINDOW_WIDTH = window.innerWidth;
-        WINDOW_HEIGHT = window.innerHeight;
-      }
+      updateWindowSize(anchor);
     });
     this._touches = {};
     this._tags = {};
