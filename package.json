@@ -1,6 +1,6 @@
 {
   "name": "@dj256/tuiomanager",
-  "version": "1.5.14",
+  "version": "1.5.15",
   "type": "module",
   "scripts": {
     "lint": "eslint src --ext .js --fix",
@@ -24,7 +24,7 @@
   "dependencies": {
     "jquery": "3.7.1",
     "socket.io-client": "4.7.2",
-    "uuid": "3.3.3"
+    "uuid": "9.0.1"
   },
   "devDependencies": {
     "eslint": "^8.56.0",
