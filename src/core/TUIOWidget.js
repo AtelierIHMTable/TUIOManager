@@ -5,7 +5,7 @@
  * @author Lucas Oms <lucas.oms@hotmail.fr>
  */
 import $ from "jquery/dist/jquery.min";
-import uuidV4 from "uuid/v4";
+import { v4 as uuidV4 } from "uuid";
 
 import { TUIOManager } from "./TUIOManager";
 
