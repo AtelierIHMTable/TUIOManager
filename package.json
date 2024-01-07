@@ -1,8 +1,9 @@
 {
   "name": "@dj256/tuiomanager",
-  "version": "1.5.15",
+  "version": "1.5.16",
   "type": "module",
   "scripts": {
+    "test": "echo \"No tests yet...\" && exit 0",
     "lint": "eslint src --ext .js --fix",
     "format": "prettier --write src/**/*.js"
   },
