@@ -1,6 +1,6 @@
 {
   "name": "@dj256/tuiomanager",
-  "version": "1.5.18",
+  "version": "1.5.19",
   "type": "module",
   "scripts": {
     "test": "echo \"No tests yet...\" && exit 0",

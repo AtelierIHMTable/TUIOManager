@@ -1,6 +1,19 @@
 import { v4 as uuidV4 } from "uuid";
 import { TUIOManager } from "../src/index.js";
 
+/** @typedef TagRecord {Map<string, {id: number, x: number, y: number, angle: number}>} */
+
+/**
+ * @class HTMLElementWidget
+ * @classdesc
+ * A wrapper for an HTML element to use with TUIOManager.
+ * You can simply call `new HTMLElementWidget(element)` to create a new widget.
+ * @example
+ * const widget = new HTMLElementWidget(document.getElementById("myElement"));
+ * widget.addOnTouchDownListener((touch) => {
+ *  console.log("Touch down on widget", touch);
+ *  }
+ */
 export class HTMLElementWidget {
   /**
    * @param {HTMLElement} element - The HTML element to use as anchor for the TUIOManager.
@@ -11,7 +24,7 @@ export class HTMLElementWidget {
 
     this._updateCoordinates();
     this._touches = {};
-    /** @type {Map<string, {id: number, x: number, y: number, angle: number}>} */
+    /** @type {Map<*|string,TagRecord>} */
     this._tags = new Map();
     this._callbacks = {
       onTouchCreation: [],
@@ -26,38 +39,74 @@ export class HTMLElementWidget {
     TUIOManager.getInstance().addWidget(this);
   }
 
+  /**
+   * Unique identifier of the widget.
+   * @returns {*|string}
+   */
   get id() {
     return this._id;
   }
 
+  /**
+   * HTML element wrapped by the widget.
+   * @returns {HTMLElement}
+   */
   get domElem() {
     return this._domElem;
   }
 
+  /**
+   * Widget's absolute position on x axis in pixels.
+   * @returns {number}
+   */
   get x() {
     return this._x;
   }
 
+  /**
+   * Widget's absolute position on y axis in pixels.
+   * @returns {number}
+   */
   get y() {
     return this._y;
   }
 
+  /**
+   * Widget's width in pixels.
+   * @returns {number}
+   */
   get width() {
     return this._width;
   }
 
+  /**
+   * Widget's height in pixels.
+   * @returns {number}
+   */
   get height() {
     return this._height;
   }
 
+  /**
+   * Widget's rotation in radians.
+   * @returns {number}
+   */
   get angle() {
     return this._angle;
   }
 
+  /**
+   * Widget's touches.
+   * @returns {*|{}}
+   */
   get touches() {
     return this._touches;
   }
 
+  /**
+   * Widget's tags.
+   * @returns {Map<*|string, TagRecord>}
+   */
   get tags() {
     return this._tags;
   }
