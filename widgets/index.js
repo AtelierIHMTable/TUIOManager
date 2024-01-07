@@ -5,3 +5,4 @@ export { ImageElementWidget } from "./ElementWidget/ImageElementWidget/ImageElem
 export { VideoElementWidget } from "./ElementWidget/VideoElementWidget/VideoElementWidget.js";
 export { LibraryBar } from "./Library/LibraryBar/LibraryBar.js";
 export { LibraryStack } from "./Library/LibraryStack/LibraryStack.js";
+export { HTMLElementWidget } from "./HTMLElementWidget.js";
