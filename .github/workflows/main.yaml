@@ -33,7 +33,7 @@ jobs:
         id: "tag_create"
         with:
           tag: v${{steps.get_npm_version.outputs.version}}
-  build-n-publish:
+  publish:
     needs: test
     runs-on: ubuntu-latest
     steps:
@@ -43,10 +43,6 @@ jobs:
           node-version: 20
           cache: 'npm'
           registry-url: 'https://registry.npmjs.org'
-      - name: Install dependencies 💿
-        run: npm ci
-      - name: Build 🏗
-        run: npm run build
       - name: Publish to NPM 📦
         run: npm publish
         env:
