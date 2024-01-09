@@ -31,10 +31,11 @@ import { ACTION_MAP, TUIO_EVENT_ACTION, TUIO_EVENT_SOURCE } from "./constants";
  * @class TUIOManager
  */
 export class TUIOManager {
-  /** @typedef TUIOManagerOptions
-   * @property {HTMLElement} anchor - The HTML element to use as anchor for the TUIOManager.
-   * @property {boolean} showInteractions - Show interactions on screen.
-   * @property {string} socketIOUrl - Socket IO Server's url. Default : 'http://localhost:9000/'
+  /**
+   * @typedef {Object} TUIOManagerOptions
+   * @property {HTMLElement|undefined} anchor - The HTML element to use as anchor for the TUIOManager.
+   * @property {boolean|undefined} showInteractions - Show interactions on screen.
+   * @property {string|undefined} socketIOUrl - Socket IO Server's url. Default : 'http://localhost:9000/'
    */
 
   /**
@@ -44,7 +45,7 @@ export class TUIOManager {
    * @param {TUIOManagerOptions} options - Options for the TUIOManager.
    */
   constructor({
-    anchor = null,
+    anchor = undefined,
     showInteractions = true,
     socketIOUrl = "http://localhost:9000/",
   } = {}) {
