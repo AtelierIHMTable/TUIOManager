@@ -1,6 +1,6 @@
 {
   "name": "@dj256/tuiomanager",
-  "version": "1.5.19",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
     "test": "echo \"No tests yet...\" && exit 0",
@@ -19,18 +19,14 @@
   ],
   "main": "src/index.js",
   "exports": {
-    ".": "./src/index.js",
-    "./widgets": "./widgets/index.js"
+    ".": "./src/index.js"
   },
   "dependencies": {
-    "jquery": "3.7.1",
-    "socket.io-client": "4.7.2",
-    "uuid": "9.0.1"
+    "socket.io-client": "4.7.2"
   },
   "devDependencies": {
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
-    "fs-extra": "11.2.0",
     "prettier": "3.1.1"
   }
 }
