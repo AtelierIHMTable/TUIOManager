@@ -1,6 +1,6 @@
 {
   "name": "@dj256/tuiomanager",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "type": "module",
   "scripts": {
     "test": "echo \"No tests yet...\" && exit 0",
@@ -22,7 +22,7 @@
     ".": "./src/index.js"
   },
   "dependencies": {
-    "socket.io-client": "4.7.2"
+    "socket.io-client": "4.7.3"
   },
   "devDependencies": {
     "eslint": "^8.56.0",
