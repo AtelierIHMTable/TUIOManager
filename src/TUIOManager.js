@@ -37,7 +37,7 @@ export class TUIOManager {
    * @typedef {Object} TUIOManagerOptions
    * @property {HTMLElement|undefined} anchor - The HTML element to use as anchor for the TUIOManager. If not provided, the window will be used.
    * @property {boolean|undefined} showInteractions - Show interactions on screen. Default : true
-   * @property {string|undefined} socketIOUrl - Socket IO Server's url. Default : 'http://localhost:9000/'
+   * @property {string|undefined} socketIOUrl - Socket IO Server's url. Default : 'http://localhost:9000'
    */
 
   /**
@@ -100,7 +100,7 @@ export class TUIOManager {
   static start(options = {}) {
     const optionsFilled = {
       showInteractions: true,
-      socketIOUrl: "http://localhost:9000/",
+      socketIOUrl: "http://localhost:9000",
       ...options,
     };
     if (!TUIOManager.instance) {
@@ -215,9 +215,9 @@ export class TUIOManager {
     );
     document.addEventListener(
       "tuiotouchup",
-      /** @param {number} touchId */
-      ({ detail: touchId }) => {
-        this.removePointer(touchId);
+      /** @param {TUIOTouch} touch */
+      ({ detail: touch }) => {
+        this.removePointer(touch.id);
       },
     );
 
@@ -245,9 +245,9 @@ export class TUIOManager {
     );
     document.addEventListener(
       "tuiotagup",
-      /** @param {number} tagId */
-      ({ detail: tagId }) => {
-        this.removePointer(tagId);
+      /** @param {TUIOTag} tag */
+      ({ detail: tag }) => {
+        this.removePointer(tag.id);
       },
     );
   }
@@ -268,20 +268,16 @@ export class TUIOManager {
     const map =
       socketData.type === TUIO_EVENT_SOURCE.TOUCH ? this.touches : this.tags;
     if (action !== TUIO_EVENT_ACTION.CREATE && !map.has(socketData.id)) return;
+    const eventData = { id, x, y, anchorX, anchorY, angle };
     if (action === TUIO_EVENT_ACTION.DELETE) map.delete(id);
-    else map.set(id, { id, x, y, anchorX, anchorY, angle });
+    else map.set(id, eventData);
     const eventName = this.getEventName(socketData.type, action);
-    document.dispatchEvent(
-      new CustomEvent(eventName, {
-        detail: map.get(id) ?? id,
-      }),
-    );
+    const event = new CustomEvent(eventName, {
+      detail: eventData,
+    });
+    document.dispatchEvent(event);
     document.elementsFromPoint(x, y).forEach((elem) => {
-      elem.dispatchEvent(
-        new CustomEvent(eventName, {
-          detail: map.get(id) ?? id,
-        }),
-      );
+      elem.dispatchEvent(event);
     });
   }
 
@@ -304,7 +300,7 @@ export class TUIOManager {
    */
   drawPointer(id, position, source) {
     const pointer = document.createElement("div");
-    pointer.id = id;
+    pointer.id = `${id}`;
     pointer.classList.add("tuio-pointer");
     pointer.classList.add(source.toLowerCase());
     pointer.classList.add("small");
