@@ -26,7 +26,6 @@ jobs:
         name: Check for force bump 📝
         run: |
           echo "force_bump=$(git log -1 HEAD ^origin/master --pretty=%B | grep -Eiom 1 '\[force_bump\]$' |  sed 's/[][]//g')" >> $GITHUB_OUTPUT
-          echo $(git log -1 HEAD ^origin/master --pretty=%B)
       - if: ${{ steps.check.outputs.changed == 'false' || steps.check-force.outputs.force_bump == 'force_bump' }}
         id: bump
         name: Version bump 👊

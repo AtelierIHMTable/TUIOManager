@@ -1,0 +1,87 @@
+<html>
+  <head>
+    <title>Pinch</title>
+    <style>
+      #myElement {
+        width: 200px;
+        height: 200px;
+        background-color: red;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@dj256/tuiomanager@2.1"></script>
+  </head>
+  <body>
+    <div id="myElement"></div>
+    <script>
+      TUIOManager.start();
+
+      const element = document.getElementById("myElement");
+      let pinching = false;
+      let touch1Id = null;
+      let touch2Id = null;
+      let touch1X = null;
+      let touch1Y = null;
+      let touch2X = null;
+      let touch2Y = null;
+      let initialDistance = null;
+      let initialScale = null;
+      let minimumScale = 0.5;
+
+      element.addEventListener("tuiotouchdown", (event) => {
+        if (touch1Id === null) {
+          touch1Id = event.detail.id;
+          touch1X = event.detail.x;
+          touch1Y = event.detail.y;
+        } else if (touch2Id === null) {
+          pinching = true;
+          touch2Id = event.detail.id;
+          touch2X = event.detail.x;
+          touch2Y = event.detail.y;
+          initialDistance = Math.sqrt(
+            Math.pow(touch2X - touch1X, 2) + Math.pow(touch2Y - touch1Y, 2),
+          );
+          initialScale =
+            parseFloat(
+              element.style.transform.replace("scale(", "").replace(")", ""),
+            ) || 1;
+        }
+      });
+
+      document.addEventListener("tuiotouchmove", (event) => {
+        if (pinching && event.detail.id === touch1Id) {
+          const deltaX = event.detail.x - touch1X;
+          const deltaY = event.detail.y - touch1Y;
+          const distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+          const scale = (distance / initialDistance) * initialScale;
+          element.style.transform = `scale(${scale})`;
+        } else if (pinching && event.detail.id === touch2Id) {
+          const deltaX = event.detail.x - touch2X;
+          const deltaY = event.detail.y - touch2Y;
+          const distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+          const scale = Math.max(
+            (distance / initialDistance) * initialScale,
+            minimumScale,
+          );
+          element.style.transform = `scale(${scale})`;
+        }
+      });
+
+      document.addEventListener("tuiotouchup", (event) => {
+        if (event.detail.id === touch1Id) {
+          pinching = false;
+          touch1Id = touch2Id;
+          touch1X = touch2X;
+          touch1Y = touch2Y;
+          touch2Id = null;
+          touch2X = null;
+          touch2Y = null;
+        } else if (event.detail.id === touch2Id) {
+          pinching = false;
+          touch2Id = null;
+          touch2X = null;
+          touch2Y = null;
+        }
+      });
+    </script>
+  </body>
+</html>
