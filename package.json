@@ -1,11 +1,12 @@
 {
   "name": "@dj256/tuiomanager",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "type": "module",
   "scripts": {
+    "build": "esbuild src/browser.js --bundle --minify --sourcemap --outfile=dist/tuiomanager.js",
     "test": "echo \"No tests yet...\" && exit 0",
-    "lint": "eslint src --ext .js --fix",
-    "format": "prettier --write src/**/*.js"
+    "lint": "eslint src --fix",
+    "format": "prettier --write src"
   },
   "repository": {
     "type": "git",
@@ -13,11 +14,12 @@
   },
   "files": [
     "src",
-    "widgets",
+    "dist",
     "package.json",
     "README.md"
   ],
   "main": "src/index.js",
+  "browser": "./dist/tuiomanager.js",
   "exports": {
     ".": "./src/index.js"
   },
@@ -25,6 +27,7 @@
     "socket.io-client": "4.7.3"
   },
   "devDependencies": {
+    "esbuild": "0.19.11",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "prettier": "3.1.1"
