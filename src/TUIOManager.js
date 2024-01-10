@@ -22,6 +22,8 @@ import { ACTION_MAP, TUIO_EVENT_ACTION, TUIO_EVENT_SOURCE } from "./constants";
  * @property {number} id - Touch or Tag id.
  * @property {number} x - X position of touch or tag.
  * @property {number} y - Y position of touch or tag.
+ * @property {number} anchorX - X position of touch or tag relative to the anchor.
+ * @property {number} anchorY - Y position of touch or tag relative to the anchor.
  * @property {number} angle - Angle of the tag.
  */
 
@@ -33,8 +35,8 @@ import { ACTION_MAP, TUIO_EVENT_ACTION, TUIO_EVENT_SOURCE } from "./constants";
 export class TUIOManager {
   /**
    * @typedef {Object} TUIOManagerOptions
-   * @property {HTMLElement|undefined} anchor - The HTML element to use as anchor for the TUIOManager.
-   * @property {boolean|undefined} showInteractions - Show interactions on screen.
+   * @property {HTMLElement|undefined} anchor - The HTML element to use as anchor for the TUIOManager. If not provided, the window will be used.
+   * @property {boolean|undefined} showInteractions - Show interactions on screen. Default : true
    * @property {string|undefined} socketIOUrl - Socket IO Server's url. Default : 'http://localhost:9000/'
    */
 
@@ -44,21 +46,27 @@ export class TUIOManager {
    * @constructor
    * @param {TUIOManagerOptions} options - Options for the TUIOManager.
    */
-  constructor({
-    anchor = undefined,
-    showInteractions = true,
-    socketIOUrl = "http://localhost:9000/",
-  } = {}) {
+  constructor({ anchor, showInteractions, socketIOUrl }) {
     /**
      * @type {number}
      * @description Width of the window.
      */
-    this.windowWidth = 0;
+    this.anchorWidth = 0;
     /**
      * @type {number}
      * @description Height of the window.
      */
-    this.windowHeight = 0;
+    this.anchorHeight = 0;
+    /**
+     * @type {number}
+     * @description Top position of the window.
+     */
+    this.anchorTop = 0;
+    /**
+     * @type {number}
+     * @description Left position of the window.
+     */
+    this.anchorLeft = 0;
     /**
      * @type {Map<number, TUIOTouch>}
      * @description Map of TUIOTouches.
@@ -89,9 +97,14 @@ export class TUIOManager {
    * Init and start TUIOManager.
    * @param {TUIOManagerOptions} options - Options for the TUIOManager.
    */
-  static start(options) {
+  static start(options = {}) {
+    const optionsFilled = {
+      showInteractions: true,
+      socketIOUrl: "http://localhost:9000/",
+      ...options,
+    };
     if (!TUIOManager.instance) {
-      TUIOManager.instance = new TUIOManager(options);
+      TUIOManager.instance = new TUIOManager(optionsFilled);
     }
   }
 
@@ -104,6 +117,10 @@ export class TUIOManager {
     window.addEventListener("resize", () => {
       this.updateWindowSize(anchor);
     });
+    anchor &&
+      new ResizeObserver(() => {
+        this.updateWindowSize(anchor);
+      }).observe(anchor);
   }
 
   /**
@@ -112,11 +129,13 @@ export class TUIOManager {
    */
   updateWindowSize(anchor) {
     if (anchor) {
-      this.windowWidth = anchor.clientWidth;
-      this.windowHeight = anchor.clientHeight;
+      this.anchorWidth = anchor.clientWidth;
+      this.anchorHeight = anchor.clientHeight;
+      this.anchorTop = anchor.offsetTop;
+      this.anchorLeft = anchor.offsetLeft;
     } else {
-      this.windowWidth = window.innerWidth;
-      this.windowHeight = window.innerHeight;
+      this.anchorWidth = window.innerWidth;
+      this.anchorHeight = window.innerHeight;
     }
   }
 
@@ -181,7 +200,7 @@ export class TUIOManager {
       /** @param {TUIOTouch } touch */
       ({ detail: touch }) => {
         this.drawPointer(
-          `${touch.id}`,
+          touch.id,
           { x: touch.x, y: touch.y },
           TUIO_EVENT_SOURCE.TOUCH,
         );
@@ -207,7 +226,7 @@ export class TUIOManager {
       /** @param {TUIOTag} tag */
       ({ detail: tag }) => {
         this.drawPointer(
-          `${tag.id}`,
+          tag.id,
           { x: tag.x, y: tag.y, angle: tag.angle },
           TUIO_EVENT_SOURCE.TAG,
         );
@@ -217,7 +236,7 @@ export class TUIOManager {
       "tuiotagmove",
       /** @param {TUIOTag} tag */
       ({ detail: tag }) => {
-        this.updatePointer(`${tag.id}`, {
+        this.updatePointer(tag.id, {
           x: tag.x,
           y: tag.y,
           angle: tag.angle,
@@ -228,7 +247,7 @@ export class TUIOManager {
       "tuiotagup",
       /** @param {number} tagId */
       ({ detail: tagId }) => {
-        this.removePointer(`${tagId}`);
+        this.removePointer(tagId);
       },
     );
   }
@@ -241,14 +260,16 @@ export class TUIOManager {
    */
   handleSocketEvent(socketData, action) {
     const id = socketData.id;
-    const x = Math.round(socketData.x * this.windowWidth);
-    const y = Math.round(socketData.y * this.windowHeight);
+    const anchorX = Math.round(socketData.x * this.anchorWidth);
+    const anchorY = Math.round(socketData.y * this.anchorHeight);
+    const x = Math.round(anchorX + this.anchorLeft);
+    const y = Math.round(anchorY + this.anchorTop);
     const angle = socketData.angle;
     const map =
       socketData.type === TUIO_EVENT_SOURCE.TOUCH ? this.touches : this.tags;
     if (action !== TUIO_EVENT_ACTION.CREATE && !map.has(socketData.id)) return;
     if (action === TUIO_EVENT_ACTION.DELETE) map.delete(id);
-    else map.set(id, { id, x, y, angle });
+    else map.set(id, { id, x, y, anchorX, anchorY, angle });
     const eventName = this.getEventName(socketData.type, action);
     document.dispatchEvent(
       new CustomEvent(eventName, {
@@ -277,7 +298,7 @@ export class TUIOManager {
 
   /**
    * Draw pointer on screen.
-   * @param {string} id - ID of the event
+   * @param {number} id - ID of the event
    * @param {Position} position - Position of the Touch object
    * @param {"TOUCH"|"TAG"} source - Source of the Touch object
    */
@@ -304,7 +325,7 @@ export class TUIOManager {
 
   /**
    * Update pointer position on screen.
-   * @param {string} id
+   * @param {number} id
    * @param {Position} position
    */
   updatePointer(id, position) {
@@ -318,7 +339,7 @@ export class TUIOManager {
 
   /**
    * Remove pointer from screen.
-   * @param {string} id
+   * @param {number} id
    */
   removePointer(id) {
     const elem = document.getElementById(id);
