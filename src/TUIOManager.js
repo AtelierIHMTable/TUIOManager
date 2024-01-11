@@ -168,23 +168,32 @@ export class TUIOManager {
       transition: scale 90ms ease-out;
       border-radius: 4px;
       box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+      transform: translate(-50%, -50%);
+      transform-origin: center;
+      opacity: 1;
     }
     
     .tuio-pointer.touch {
       border: 1px solid rgba(196,196,196,0.4);
-      height: 25px;
-      width: 25px;
+      height: 1rem;
+      width: 1rem;
       border-radius: 50%;
       background: rgba(59, 59, 59, 0.7);
     }
     
     .tuio-pointer.tag {
-      height: 30px;
-      width: 30px;
+      height: 1.5rem;
+      width: 1.5rem;
+    }
+    
+    .tuio-pointer svg {
+      height: 100%;
+      width: 100%;
     }
     
     .tuio-pointer.small {
-      scale: 0.5;
+      transform: translate(-50%, -50%) scale(0.5);
+      opacity: 0.7;
     }
     `;
     document.head.appendChild(style);
