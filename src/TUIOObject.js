@@ -26,6 +26,16 @@ export class TUIOObject {
    * The absolute y coordinate of the TUIOObject.
    */
   y;
+  /**
+   * @type {number}
+   * The initial absolute x coordinate of the TUIOObject.
+   */
+  initialX;
+  /**
+   * @type {number}
+   * The initial absolute y coordinate of the TUIOObject.
+   */
+  initialY;
 
   /**
    * TUIOObject constructor.
@@ -39,5 +49,7 @@ export class TUIOObject {
     this.id = id;
     this.x = x;
     this.y = y;
+    this.initialX = x;
+    this.initialY = y;
   }
 }

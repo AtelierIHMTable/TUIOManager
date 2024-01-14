@@ -17,11 +17,14 @@ import { ACTION_MAP, TUIO_EVENT_ACTION, TUIO_EVENT_SOURCE } from "./constants";
  * @property {number|undefined} [angle] - Angle.
  */
 
-/** @typedef TUIOEventData
+/**
+ * @typedef {Object} TUIOEventData
  * @property {"TOUCH"|"TAG"} type - Event type.
  * @property {number} id - Touch or Tag id.
  * @property {number} x - X position of touch or tag.
  * @property {number} y - Y position of touch or tag.
+ * @property {number} initialX - Initial X position of touch or tag.
+ * @property {number} initialY - Initial Y position of touch or tag.
  * @property {number} anchorX - X position of touch or tag relative to the anchor.
  * @property {number} anchorY - Y position of touch or tag relative to the anchor.
  * @property {number} angle - Angle of the tag.
@@ -33,6 +36,7 @@ import { ACTION_MAP, TUIO_EVENT_ACTION, TUIO_EVENT_SOURCE } from "./constants";
  * @class TUIOManager
  */
 export class TUIOManager {
+  static clickMaximumDistance = 10;
   /**
    * @typedef {Object} TUIOManagerOptions
    * @property {HTMLElement|undefined} anchor - The HTML element to use as anchor for the TUIOManager. If not provided, the window will be used.
@@ -68,12 +72,12 @@ export class TUIOManager {
      */
     this.anchorLeft = 0;
     /**
-     * @type {Map<number, TUIOTouch>}
+     * @type {Map<number, TUIOEventData>}
      * @description Map of TUIOTouches.
      */
     this.touches = new Map();
     /**
-     * @type {Map<number, TUIOTag>}
+     * @type {Map<number, TUIOEventData>}
      * @description Map of TUIOTags.
      */
     this.tags = new Map();
@@ -139,10 +143,29 @@ export class TUIOManager {
     const angle = socketData.angle;
     const map =
       socketData.type === TUIO_EVENT_SOURCE.TOUCH ? this.touches : this.tags;
-    if (action !== TUIO_EVENT_ACTION.CREATE && !map.has(socketData.id)) return;
     const eventData = { id, x, y, anchorX, anchorY, angle };
-    if (action === TUIO_EVENT_ACTION.DELETE) map.delete(id);
-    else map.set(id, eventData);
+    if (action !== TUIO_EVENT_ACTION.CREATE) {
+      if (!map.has(socketData.id)) return;
+    } else {
+      eventData.initialX = x;
+      eventData.initialY = y;
+    }
+    if (action === TUIO_EVENT_ACTION.DELETE) {
+      const { initialX, initialY } = map.get(id);
+      map.delete(id);
+      if (
+        Math.sqrt(Math.pow(x - initialX, 2) + Math.pow(y - initialY, 2)) <
+        TUIOManager.clickMaximumDistance
+      ) {
+        const event = new CustomEvent("tuioclick", {
+          detail: eventData,
+        });
+        document.dispatchEvent(event);
+        document.elementsFromPoint(x, y).forEach((elem) => {
+          elem.dispatchEvent(event);
+        });
+      }
+    } else map.set(id, eventData);
     const eventName = this.getEventName(socketData.type, action);
     const event = new CustomEvent(eventName, {
       detail: eventData,
