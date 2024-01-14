@@ -109,37 +109,6 @@ export class TUIOManager {
   }
 
   /**
-   * Init resize listener.
-   * @param {HTMLElement|null} anchor - The HTML element to use as anchor for the TUIOManager.
-   */
-  initResizeListener(anchor) {
-    this.updateWindowSize(anchor);
-    window.addEventListener("resize", () => {
-      this.updateWindowSize(anchor);
-    });
-    anchor &&
-      new ResizeObserver(() => {
-        this.updateWindowSize(anchor);
-      }).observe(anchor);
-  }
-
-  /**
-   * Update window size.
-   * @param {HTMLElement|null} anchor - The HTML element to use as anchor for the TUIOManager.
-   */
-  updateWindowSize(anchor) {
-    if (anchor) {
-      this.anchorWidth = anchor.clientWidth;
-      this.anchorHeight = anchor.clientHeight;
-      this.anchorTop = anchor.offsetTop;
-      this.anchorLeft = anchor.offsetLeft;
-    } else {
-      this.anchorWidth = window.innerWidth;
-      this.anchorHeight = window.innerHeight;
-    }
-  }
-
-  /**
    * Init socket IO listeners.
    */
   initSocketIOListeners() {
@@ -156,47 +125,74 @@ export class TUIOManager {
   }
 
   /**
-   * Add CSS for pointers to the document.
+   * Handle CREATE Action from socket.
+   * @method handleSocketEvent
+   * @param {TUIOEventData} socketData - 'Create' data from TUIOClient.
+   * @param {TUIOEventAction} action - Event type.
    */
-  addCss() {
-    const style = document.createElement("style");
-    style.innerHTML = `
-    .tuio-pointer {
-      position: absolute;
-      z-index: 1000;
-      backdrop-filter: blur(10px);
-      transition: scale 90ms ease-out;
-      border-radius: 4px;
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-      transform: translate(-50%, -50%);
-      transform-origin: center;
-      opacity: 1;
+  handleSocketEvent(socketData, action) {
+    const id = socketData.id;
+    const anchorX = Math.round(socketData.x * this.anchorWidth);
+    const anchorY = Math.round(socketData.y * this.anchorHeight);
+    const x = anchorX + this.anchorLeft;
+    const y = anchorY + this.anchorTop;
+    const angle = socketData.angle;
+    const map =
+      socketData.type === TUIO_EVENT_SOURCE.TOUCH ? this.touches : this.tags;
+    if (action !== TUIO_EVENT_ACTION.CREATE && !map.has(socketData.id)) return;
+    const eventData = { id, x, y, anchorX, anchorY, angle };
+    if (action === TUIO_EVENT_ACTION.DELETE) map.delete(id);
+    else map.set(id, eventData);
+    const eventName = this.getEventName(socketData.type, action);
+    const event = new CustomEvent(eventName, {
+      detail: eventData,
+    });
+    document.dispatchEvent(event);
+    document.elementsFromPoint(x, y).forEach((elem) => {
+      elem.dispatchEvent(event);
+    });
+  }
+
+  /**
+   * Get event name from source and type.
+   * @param {"TOUCH"|"TAG"} source
+   * @param {TUIOEventAction} eventType
+   * @returns {string}
+   * @private
+   */
+  getEventName(source, eventType) {
+    return `tuio${source.toLowerCase()}${ACTION_MAP[eventType]}`;
+  }
+
+  /**
+   * Init resize listener.
+   * @param {HTMLElement|undefined} anchor - The HTML element to use as anchor for the TUIOManager.
+   */
+  initResizeListener(anchor) {
+    this.updateWindowSize(anchor);
+    window.addEventListener("resize", () => {
+      this.updateWindowSize(anchor);
+    });
+    anchor &&
+      new ResizeObserver(() => {
+        this.updateWindowSize(anchor);
+      }).observe(anchor);
+  }
+
+  /**
+   * Update window size.
+   * @param {HTMLElement|undefined} anchor - The HTML element to use as anchor for the TUIOManager.
+   */
+  updateWindowSize(anchor) {
+    if (anchor) {
+      this.anchorWidth = anchor.clientWidth;
+      this.anchorHeight = anchor.clientHeight;
+      this.anchorTop = anchor.offsetTop;
+      this.anchorLeft = anchor.offsetLeft;
+    } else {
+      this.anchorWidth = window.innerWidth;
+      this.anchorHeight = window.innerHeight;
     }
-    
-    .tuio-pointer.touch {
-      border: 1px solid rgba(196,196,196,0.4);
-      height: 1rem;
-      width: 1rem;
-      border-radius: 50%;
-      background: rgba(59, 59, 59, 0.7);
-    }
-    
-    .tuio-pointer.tag {
-      height: 1.5rem;
-      width: 1.5rem;
-    }
-    
-    .tuio-pointer svg {
-      height: 100%;
-      width: 100%;
-    }
-    
-    .tuio-pointer.small {
-      transform: translate(-50%, -50%) scale(0.5);
-      opacity: 0.7;
-    }
-    `;
-    document.head.appendChild(style);
   }
 
   /**
@@ -262,46 +258,6 @@ export class TUIOManager {
   }
 
   /**
-   * Handle CREATE Action from socket.
-   * @method handleSocketEvent
-   * @param {TUIOEventData} socketData - 'Create' data from TUIOClient.
-   * @param {TUIOEventAction} action - Event type.
-   */
-  handleSocketEvent(socketData, action) {
-    const id = socketData.id;
-    const anchorX = Math.round(socketData.x * this.anchorWidth);
-    const anchorY = Math.round(socketData.y * this.anchorHeight);
-    const x = Math.round(anchorX + this.anchorLeft);
-    const y = Math.round(anchorY + this.anchorTop);
-    const angle = socketData.angle;
-    const map =
-      socketData.type === TUIO_EVENT_SOURCE.TOUCH ? this.touches : this.tags;
-    if (action !== TUIO_EVENT_ACTION.CREATE && !map.has(socketData.id)) return;
-    const eventData = { id, x, y, anchorX, anchorY, angle };
-    if (action === TUIO_EVENT_ACTION.DELETE) map.delete(id);
-    else map.set(id, eventData);
-    const eventName = this.getEventName(socketData.type, action);
-    const event = new CustomEvent(eventName, {
-      detail: eventData,
-    });
-    document.dispatchEvent(event);
-    document.elementsFromPoint(x, y).forEach((elem) => {
-      elem.dispatchEvent(event);
-    });
-  }
-
-  /**
-   * Get event name from source and type.
-   * @param {"TOUCH"|"TAG"} source
-   * @param {TUIOEventAction} eventType
-   * @returns {string}
-   * @private
-   */
-  getEventName(source, eventType) {
-    return `tuio${source.toLowerCase()}${ACTION_MAP[eventType]}`;
-  }
-
-  /**
    * Draw pointer on screen.
    * @param {number} id - ID of the event
    * @param {Position} position - Position of the Touch object
@@ -321,7 +277,7 @@ export class TUIOManager {
       svg.outerHTML = `<svg width="30" height="30" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path fill-rule="evenodd" clip-rule="evenodd"
               d="M10 0C4.47715 0 0 4.47715 0 10V70C0 75.5229 4.47715 80 10 80H70C75.5229 80 80 75.5229 80 70V10C80 4.47715 75.5229 0 70 0H10ZM22.1667 15.5C22.1667 19.1819 19.1819 22.1667 15.5 22.1667C11.8181 22.1667 8.83333 19.1819 8.83333 15.5C8.83333 11.8181 11.8181 8.83334 15.5 8.83334C19.1819 8.83334 22.1667 11.8181 22.1667 15.5ZM54.8333 15.5C54.8333 19.1819 51.8486 22.1667 48.1667 22.1667C44.4848 22.1667 41.5 19.1819 41.5 15.5C41.5 11.8181 44.4848 8.83334 48.1667 8.83334C51.8486 8.83334 54.8333 11.8181 54.8333 15.5ZM64.5 22.1667C68.1819 22.1667 71.1667 19.1819 71.1667 15.5C71.1667 11.8181 68.1819 8.83334 64.5 8.83334C60.8181 8.83334 57.8333 11.8181 57.8333 15.5C57.8333 19.1819 60.8181 22.1667 64.5 22.1667ZM71.1667 31.8333C71.1667 35.5152 68.1819 38.5 64.5 38.5C60.8181 38.5 57.8333 35.5152 57.8333 31.8333C57.8333 28.1514 60.8181 25.1667 64.5 25.1667C68.1819 25.1667 71.1667 28.1514 71.1667 31.8333ZM15.5 54.8333C19.1819 54.8333 22.1667 51.8486 22.1667 48.1667C22.1667 44.4848 19.1819 41.5 15.5 41.5C11.8181 41.5 8.83333 44.4848 8.83333 48.1667C8.83333 51.8486 11.8181 54.8333 15.5 54.8333ZM54.8333 48.1667C54.8333 51.8486 51.8486 54.8333 48.1667 54.8333C44.4848 54.8333 41.5 51.8486 41.5 48.1667C41.5 44.4848 44.4848 41.5 48.1667 41.5C51.8486 41.5 54.8333 44.4848 54.8333 48.1667ZM64.5 71.1667C68.1819 71.1667 71.1667 68.1819 71.1667 64.5C71.1667 60.8181 68.1819 57.8333 64.5 57.8333C60.8181 57.8333 57.8333 60.8181 57.8333 64.5C57.8333 68.1819 60.8181 71.1667 64.5 71.1667Z"
-              fill="#3B3B3B" fill-opacity="0.7" />
+              fill="#0D0D0D" fill-opacity="0.5" />
       </svg>`;
     }
     document.body.appendChild(pointer);
@@ -334,7 +290,7 @@ export class TUIOManager {
    * @param {Position} position
    */
   updatePointer(id, position) {
-    const elem = document.getElementById(id);
+    const elem = document.getElementById(`${id}`);
     if (elem) {
       elem.style.top = `${position.y}px`;
       elem.style.left = `${position.x}px`;
@@ -347,10 +303,56 @@ export class TUIOManager {
    * @param {number} id
    */
   removePointer(id) {
-    const elem = document.getElementById(id);
+    const elem = document.getElementById(`${id}`);
     if (elem) {
       elem.classList.add("small");
       setTimeout(() => elem.remove(), 20);
     }
+  }
+
+  /**
+   * Add CSS for pointers to the document.
+   */
+  addCss() {
+    const style = document.createElement("style");
+    style.innerHTML = `
+    .tuio-pointer {
+      position: absolute;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+      transition: scale 90ms ease-out;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+      transform: translate(-50%, -50%);
+      transform-origin: center;
+      opacity: 1;
+    }
+    
+    .tuio-pointer.touch {
+      border: 1px solid rgba(196,196,196,0.4);
+      height: 2.5rem;
+      width: 2.5rem;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      background: rgba(13, 13, 13, 0.5);
+    }
+    
+    .tuio-pointer.tag {
+      height: 2.5rem;
+      width: 2.5rem;
+      border-radius: 12%;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+    }
+    
+    .tuio-pointer svg {
+      height: 100%;
+      width: 100%;
+    }
+    
+    .tuio-pointer.small {
+      transform: translate(-50%, -50%) scale(0.5);
+      opacity: 0.7;
+    }
+    `;
+    document.head.appendChild(style);
   }
 }
