@@ -1,6 +1,6 @@
 {
   "name": "@dj256/tuiomanager",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "type": "module",
   "scripts": {
     "build": "esbuild src/browser.js --bundle --minify --sourcemap --outfile=dist/tuiomanager.js",
@@ -24,7 +24,7 @@
     ".": "./src/index.js"
   },
   "dependencies": {
-    "socket.io-client": "4.7.3"
+    "socket.io-client": "4.7.4"
   },
   "devDependencies": {
     "esbuild": "0.19.11",
