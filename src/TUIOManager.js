@@ -28,6 +28,7 @@ import { ACTION_MAP, TUIO_EVENT_ACTION, TUIO_EVENT_SOURCE } from "./constants";
  * @property {number} anchorX - X position of touch or tag relative to the anchor.
  * @property {number} anchorY - Y position of touch or tag relative to the anchor.
  * @property {number} angle - Angle of the tag.
+ * @property {number} startTime - Time of the event.
  */
 
 /**
@@ -36,12 +37,19 @@ import { ACTION_MAP, TUIO_EVENT_ACTION, TUIO_EVENT_SOURCE } from "./constants";
  * @class TUIOManager
  */
 export class TUIOManager {
-  static clickMaximumDistance = 10;
+  static clickMaximumDistance = 7;
+  static clickMaximumDuration = 300;
+  static deleteDelay = 100;
+  static pointerTransitionDuration = 50;
+  static updateDistanceThreshold = 5;
+  static updateRotationThreshold = 0.07;
+
   /**
    * @typedef {Object} TUIOManagerOptions
    * @property {HTMLElement|undefined} anchor - The HTML element to use as anchor for the TUIOManager. If not provided, the window will be used.
    * @property {boolean|undefined} showInteractions - Show interactions on screen. Default : true
    * @property {string|undefined} socketIOUrl - Socket IO Server's url. Default : 'http://localhost:9000'
+   * @property {boolean|undefined} displayTagId - Display tag id on screen. Default : false
    */
 
   /**
@@ -50,7 +58,7 @@ export class TUIOManager {
    * @constructor
    * @param {TUIOManagerOptions} options - Options for the TUIOManager.
    */
-  constructor({ anchor, showInteractions, socketIOUrl }) {
+  constructor({ anchor, showInteractions, socketIOUrl, displayTagId }) {
     /**
      * @type {number}
      * @description Width of the window.
@@ -91,6 +99,14 @@ export class TUIOManager {
      * @description Socket IO Server's url.
      */
     this.socketIOUrl = socketIOUrl;
+    /**
+     * @type {Map<number, number>}
+     */
+    this.deleteTimeouts = new Map();
+    /**
+     * @type {boolean}
+     */
+    this.displayTagId = displayTagId;
     this.initResizeListener(anchor);
     this.initSocketIOListeners();
     this.addPointerDrawingListeners();
@@ -133,9 +149,23 @@ export class TUIOManager {
    * @method handleSocketEvent
    * @param {TUIOEventData} socketData - 'Create' data from TUIOClient.
    * @param {TUIOEventAction} action - Event type.
+   * @param {boolean} [afterTimeout=false] - If true, the event is handled after the timeout.
    */
-  handleSocketEvent(socketData, action) {
+  handleSocketEvent(socketData, action, afterTimeout = false) {
     const id = socketData.id;
+    if (action === TUIO_EVENT_ACTION.DELETE && !afterTimeout) {
+      clearTimeout(this.deleteTimeouts.get(id));
+      this.deleteTimeouts.set(
+        id,
+        setTimeout(
+          () => this.handleSocketEvent(socketData, action, true),
+          TUIOManager.deleteDelay,
+        ),
+      );
+      return;
+    } else if (action === TUIO_EVENT_ACTION.CREATE) {
+      clearTimeout(this.deleteTimeouts.get(id));
+    }
     const anchorX = Math.round(socketData.x * this.anchorWidth);
     const anchorY = Math.round(socketData.y * this.anchorHeight);
     const x = anchorX + this.anchorLeft;
@@ -146,16 +176,27 @@ export class TUIOManager {
     const eventData = { id, x, y, anchorX, anchorY, angle };
     if (action !== TUIO_EVENT_ACTION.CREATE) {
       if (!map.has(socketData.id)) return;
+      eventData.initialX = map.get(id).initialX;
+      eventData.initialY = map.get(id).initialY;
+      eventData.startTime = map.get(id).startTime;
     } else {
+      if (map.has(socketData.id)) {
+        return;
+      }
       eventData.initialX = x;
       eventData.initialY = y;
+      eventData.startTime = Date.now();
     }
-    if (action === TUIO_EVENT_ACTION.DELETE) {
+    // click event
+    if (action === TUIO_EVENT_ACTION.DELETE && socketData.type === "TOUCH") {
       const { initialX, initialY } = map.get(id);
-      map.delete(id);
+      const clickDistance = Math.sqrt(
+        Math.pow(x - initialX, 2) + Math.pow(y - initialY, 2),
+      );
+      const duration = Date.now() - map.get(id).startTime;
       if (
-        Math.sqrt(Math.pow(x - initialX, 2) + Math.pow(y - initialY, 2)) <
-        TUIOManager.clickMaximumDistance
+        clickDistance < TUIOManager.clickMaximumDistance &&
+        duration < TUIOManager.clickMaximumDuration
       ) {
         const event = new CustomEvent("tuioclick", {
           detail: eventData,
@@ -165,7 +206,24 @@ export class TUIOManager {
           elem.dispatchEvent(event);
         });
       }
-    } else map.set(id, eventData);
+      // respect thresholds for update events
+    } else if (action === TUIO_EVENT_ACTION.UPDATE) {
+      const { x: lastX, y: lastY, angle: lastAngle } = map.get(id);
+      const distance = Math.sqrt(
+        Math.pow(x - lastX, 2) + Math.pow(y - lastY, 2),
+      );
+      const rotation = Math.abs(angle - lastAngle);
+      if (
+        distance < TUIOManager.updateDistanceThreshold &&
+        rotation < TUIOManager.updateRotationThreshold
+      )
+        return;
+    }
+    if (action === TUIO_EVENT_ACTION.DELETE) {
+      map.delete(id);
+    } else {
+      map.set(id, eventData);
+    }
     const eventName = this.getEventName(socketData.type, action);
     const event = new CustomEvent(eventName, {
       detail: eventData,
@@ -302,6 +360,12 @@ export class TUIOManager {
               d="M10 0C4.47715 0 0 4.47715 0 10V70C0 75.5229 4.47715 80 10 80H70C75.5229 80 80 75.5229 80 70V10C80 4.47715 75.5229 0 70 0H10ZM22.1667 15.5C22.1667 19.1819 19.1819 22.1667 15.5 22.1667C11.8181 22.1667 8.83333 19.1819 8.83333 15.5C8.83333 11.8181 11.8181 8.83334 15.5 8.83334C19.1819 8.83334 22.1667 11.8181 22.1667 15.5ZM54.8333 15.5C54.8333 19.1819 51.8486 22.1667 48.1667 22.1667C44.4848 22.1667 41.5 19.1819 41.5 15.5C41.5 11.8181 44.4848 8.83334 48.1667 8.83334C51.8486 8.83334 54.8333 11.8181 54.8333 15.5ZM64.5 22.1667C68.1819 22.1667 71.1667 19.1819 71.1667 15.5C71.1667 11.8181 68.1819 8.83334 64.5 8.83334C60.8181 8.83334 57.8333 11.8181 57.8333 15.5C57.8333 19.1819 60.8181 22.1667 64.5 22.1667ZM71.1667 31.8333C71.1667 35.5152 68.1819 38.5 64.5 38.5C60.8181 38.5 57.8333 35.5152 57.8333 31.8333C57.8333 28.1514 60.8181 25.1667 64.5 25.1667C68.1819 25.1667 71.1667 28.1514 71.1667 31.8333ZM15.5 54.8333C19.1819 54.8333 22.1667 51.8486 22.1667 48.1667C22.1667 44.4848 19.1819 41.5 15.5 41.5C11.8181 41.5 8.83333 44.4848 8.83333 48.1667C8.83333 51.8486 11.8181 54.8333 15.5 54.8333ZM54.8333 48.1667C54.8333 51.8486 51.8486 54.8333 48.1667 54.8333C44.4848 54.8333 41.5 51.8486 41.5 48.1667C41.5 44.4848 44.4848 41.5 48.1667 41.5C51.8486 41.5 54.8333 44.4848 54.8333 48.1667ZM64.5 71.1667C68.1819 71.1667 71.1667 68.1819 71.1667 64.5C71.1667 60.8181 68.1819 57.8333 64.5 57.8333C60.8181 57.8333 57.8333 60.8181 57.8333 64.5C57.8333 68.1819 60.8181 71.1667 64.5 71.1667Z"
               fill="#0D0D0D" fill-opacity="0.5" />
       </svg>`;
+      if (this.displayTagId) {
+        const idElem = document.createElement("div");
+        idElem.classList.add("id");
+        idElem.innerText = `${id}`;
+        pointer.appendChild(idElem);
+      }
     }
     document.body.appendChild(pointer);
     setTimeout(() => pointer.classList.remove("small"), 1);
@@ -329,7 +393,7 @@ export class TUIOManager {
     const elem = document.getElementById(`${id}`);
     if (elem) {
       elem.classList.add("small");
-      setTimeout(() => elem.remove(), 20);
+      setTimeout(() => elem.remove(), TUIOManager.pointerTransitionDuration);
     }
   }
 
@@ -343,7 +407,7 @@ export class TUIOManager {
       position: absolute;
       z-index: 1000;
       backdrop-filter: blur(10px);
-      transition: scale 90ms ease-out;
+      transition: opacity ${TUIOManager.pointerTransitionDuration}ms ease-out;
       box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
       transform: translate(-50%, -50%);
       transform-origin: center;
@@ -372,8 +436,7 @@ export class TUIOManager {
     }
     
     .tuio-pointer.small {
-      transform: translate(-50%, -50%) scale(0.5);
-      opacity: 0.7;
+      opacity: 0;
     }
     `;
     document.head.appendChild(style);
