@@ -32,7 +32,7 @@ TUIOManager.start();
 ## Configuration
 You can configure the TUIOManager by passing an object to the `start` method:
 ```javascript
-TUIOManager.start({ options });
+TUIOManager.start({ ...options });
 ```
 The following options are available:
 - `anchor`: `HTMLElement` - The element that will be used as the origin for the TUIO coordinates. This is very important
@@ -40,6 +40,7 @@ The following options are available:
     surface covers the whole page, you can leave this field empty. TUIOManager will the use the window's dimensions as
     a reference.
 - `showInteractions`: `boolean` - Whether to show the interactions on the page. Defaults to `false`.
+- `showTagIds`: `boolean` - Whether to show the tag IDs on the page. Defaults to `false`.
 - `socketIOUrl`: `string` - The URL of the socket.io server. Defaults to `http://localhost:9000`.
 
 ## Usage

@@ -1,6 +1,6 @@
 {
   "name": "@dj256/tuiomanager",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "type": "module",
   "scripts": {
     "build": "esbuild src/browser.js --bundle --minify --sourcemap --outfile=dist/tuiomanager.js",

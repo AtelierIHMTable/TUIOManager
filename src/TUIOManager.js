@@ -39,7 +39,7 @@ import { ACTION_MAP, TUIO_EVENT_ACTION, TUIO_EVENT_SOURCE } from "./constants";
 export class TUIOManager {
   static clickMaximumDistance = 7;
   static clickMaximumDuration = 300;
-  static deleteDelay = 100;
+  static deleteDelay = 300;
   static pointerTransitionDuration = 50;
   static updateDistanceThreshold = 5;
   static updateRotationThreshold = 0.07;
@@ -49,7 +49,7 @@ export class TUIOManager {
    * @property {HTMLElement|undefined} anchor - The HTML element to use as anchor for the TUIOManager. If not provided, the window will be used.
    * @property {boolean|undefined} showInteractions - Show interactions on screen. Default : true
    * @property {string|undefined} socketIOUrl - Socket IO Server's url. Default : 'http://localhost:9000'
-   * @property {boolean|undefined} displayTagId - Display tag id on screen. Default : false
+   * @property {boolean|undefined} showTagIds - Display tag ids on screen. If `showInteractions` is false, this option is ignored. Default : false
    */
 
   /**
@@ -58,7 +58,7 @@ export class TUIOManager {
    * @constructor
    * @param {TUIOManagerOptions} options - Options for the TUIOManager.
    */
-  constructor({ anchor, showInteractions, socketIOUrl, displayTagId }) {
+  constructor({ anchor, showInteractions, socketIOUrl, showTagIds }) {
     /**
      * @type {number}
      * @description Width of the window.
@@ -106,7 +106,7 @@ export class TUIOManager {
     /**
      * @type {boolean}
      */
-    this.displayTagId = displayTagId;
+    this.showTagIds = showInteractions && showTagIds;
     this.initResizeListener(anchor);
     this.initSocketIOListeners();
     this.addPointerDrawingListeners();
@@ -121,6 +121,7 @@ export class TUIOManager {
     const optionsFilled = {
       showInteractions: true,
       socketIOUrl: "http://localhost:9000",
+      showTagIds: false,
       ...options,
     };
     if (!TUIOManager.instance) {
@@ -153,7 +154,11 @@ export class TUIOManager {
    */
   handleSocketEvent(socketData, action, afterTimeout = false) {
     const id = socketData.id;
-    if (action === TUIO_EVENT_ACTION.DELETE && !afterTimeout) {
+    if (
+      action === TUIO_EVENT_ACTION.DELETE &&
+      socketData.type === "TAG" &&
+      !afterTimeout
+    ) {
       clearTimeout(this.deleteTimeouts.get(id));
       this.deleteTimeouts.set(
         id,
@@ -163,7 +168,10 @@ export class TUIOManager {
         ),
       );
       return;
-    } else if (action === TUIO_EVENT_ACTION.CREATE) {
+    } else if (
+      action !== TUIO_EVENT_ACTION.DELETE &&
+      socketData.type === "TAG"
+    ) {
       clearTimeout(this.deleteTimeouts.get(id));
     }
     const anchorX = Math.round(socketData.x * this.anchorWidth);
