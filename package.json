@@ -1,6 +1,6 @@
 {
   "name": "@dj256/tuiomanager",
-  "version": "2.2.5",
+  "version": "2.2.6",
   "type": "module",
   "scripts": {
     "build": "esbuild src/browser.js --bundle --minify --sourcemap --outfile=dist/tuiomanager.js",
@@ -30,6 +30,6 @@
     "esbuild": "0.19.11",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
-    "prettier": "3.2.2"
+    "prettier": "3.2.4"
   }
 }
