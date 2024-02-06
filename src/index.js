@@ -1,9 +1,8 @@
 /**
  * @author Christian Brel <ch.brel@gmail.com>
+ * @author Joel Dibasso <joel@dibasso.fr>
  */
-// Import TUIOManager
-import TUIOManager from '../core/TUIOManager'
-
-const tuioManager = new TUIOManager()
-
-tuioManager.start()
+export { TUIOManager } from "./TUIOManager";
+export { TUIOObject } from "./TUIOObject";
+export { TUIOTag } from "./TUIOTag";
+export { TUIOTouch } from "./TUIOTouch";

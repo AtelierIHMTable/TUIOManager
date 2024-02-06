@@ -1,0 +1,36 @@
+<html>
+  <head>
+    <title>TUIOManager Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/@dj256/tuiomanager@2.1"></script>
+    <style>
+      #circle {
+        width: 100px;
+        height: 100px;
+        background-color: red;
+        border-radius: 50%;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="circle"></div>
+    <script>
+      TUIOManager.start();
+      const moveListener = function (e) {
+        const { x, y } = e.detail;
+        document.getElementById("circle").style.top = y + "px";
+        document.getElementById("circle").style.left = x + "px";
+      };
+      document
+        .getElementById("circle")
+        .addEventListener("tuiotouchdown", function () {
+          document.addEventListener("tuiotouchmove", moveListener);
+        });
+      document.addEventListener("tuiotouchup", function () {
+        document.removeEventListener("tuiotouchmove", moveListener);
+      });
+    </script>
+  </body>
+</html>
